@@ -1,0 +1,28 @@
+# Local secrets and model credentials
+.env
+.env.*
+!.env.example
+auth.json
+*.key
+*.pem
+
+# Dependencies and builds
+node_modules/
+dist/
+build/
+.next/
+.vercel/
+coverage/
+
+# Local runner state
+.lingnet/
+checkpoints/
+work/
+logs/
+
+# Editors and operating systems
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+desktop.ini

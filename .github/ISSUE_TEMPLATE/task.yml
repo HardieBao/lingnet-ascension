@@ -1,0 +1,50 @@
+name: 悬赏任务提案
+description: 提议一张真实、可复验的任务卡
+title: "[悬赏] "
+labels:
+  - type: task
+  - status: triage
+body:
+  - type: markdown
+    attributes:
+      value: 提案不会自动开放认领。维护者必须补齐基线、范围、预算、奖励和验收条件。
+  - type: textarea
+    id: outcome
+    attributes:
+      label: 真实产物
+      description: 最终会进入代码库、资源库、测试或正式版本的具体成果。
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: 允许与禁止范围
+      description: 写明允许修改和明确禁止修改的内容。
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: 天道审判条件
+      description: 给出可重复的构建、测试、静态检查或资源验证步骤。
+    validations:
+      required: true
+  - type: dropdown
+    id: grade
+    attributes:
+      label: 建议品阶
+      options:
+        - 黄阶
+        - 玄阶
+        - 地阶
+        - 天阶
+        - 渡劫
+    validations:
+      required: true
+  - type: textarea
+    id: risks
+    attributes:
+      label: 风险与依赖
+      description: 说明前置成果、许可、安全、隐私和算力风险。
+    validations:
+      required: true

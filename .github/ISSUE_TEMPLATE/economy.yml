@@ -1,0 +1,32 @@
+name: 经济与境界反馈
+description: 反馈 Token、修为、功德、装备、押金或渡劫设计
+title: "[经济] "
+labels:
+  - area: economy
+  - status: triage
+body:
+  - type: textarea
+    id: scenario
+    attributes:
+      label: 使用场景
+      description: 描述具体任务、境界、装备和操作顺序。
+    validations:
+      required: true
+  - type: textarea
+    id: problem
+    attributes:
+      label: 问题或利用方式
+      description: 说明如何导致刷币、负余额、不公平升级或体验阻塞。
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 证据和影响
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: 建议修正
+      description: 建议不能引入提现、交易或付费通过。

@@ -1,0 +1,32 @@
+name: 缺陷报告
+description: 报告文档、流程、界面或未来实现中的可复现问题
+title: "[缺陷] "
+labels:
+  - type: bug
+  - status: triage
+body:
+  - type: textarea
+    id: observed
+    attributes:
+      label: 实际结果
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 期望结果
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: 复现步骤
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 环境与证据
+      description: 提供版本、日志或截图；删除密钥和个人信息。
+    validations:
+      required: true
