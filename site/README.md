@@ -1,6 +1,6 @@
 # 灵网纪元站点（Pre-Alpha）
 
-这是灵网纪元的任务大殿与游戏经济原型，使用 Vinext 和 Cloudflare D1；当前小文件成果不依赖 R2。它可以本地运行，但**尚未部署为公开 MVP**；真实代理限额、代码完整预检、生产 GitHub 登录、真实渡劫和首赛季任务供给等仍未验收。
+这是灵网纪元的任务大殿与游戏经济原型，使用 Vinext 和 Cloudflare D1；当前小文件成果不依赖 R2。它可以本地运行，但**尚未发布为正式 MVP**；真实代理限额、代码完整预检、真实社区任务闭环、渡劫和首赛季任务供给等仍未验收。
 
 2026-09-27已实际发布[Pre-Alpha受限预览](https://lingnet-ascension.1301385382gjts.workers.dev)，暂仅HardieBao可登录验收，本人已完成真实GitHub授权与回调验证，真实模型与双人调账保持关闭。预览不等于正式MVP；真实授权及缺口见[发布证据](../docs/verification/pre-alpha-release-2026-09-27.md)。
 
@@ -23,9 +23,9 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 
 生产 GitHub 会话必须由托管环境私密提供 `SESSION_SECRET`（至少 32 个字符），并配置 GitHub OAuth 的客户端信息。缺少密钥时签名会话会被拒绝；源码不包含开发密钥回退。个人 `.env*` 和 `.dev.vars*` 已忽略，勿把凭据写入仓库或 PR。
 
-2026-09-27 已在 HardieBao 账号注册“灵网纪元 · Lingnet Ascension”OAuth App，精确回调为拟部署站点的 `/api/auth/github/callback`，不启用通配回调和设备登录。应用注册不等于生产配置或登录通过；Client Secret 由所有者亲自生成并存入本机私密配置，生产密钥还需独立配置，站点尚未部署。登录代码仅请求 `read:user`，不申请仓库权限。
+2026-09-27 已在 HardieBao 账号注册“灵网纪元 · Lingnet Ascension”OAuth App，精确回调为已上线预览的 `/api/auth/github/callback`，不启用通配回调和设备登录。Client Secret 由所有者亲自生成并存入本机私密配置，两项登录秘密随后经私密通道配置到Cloudflare；本人已完成真实授权与回调验收。登录代码仅请求 `read:user`，不申请仓库权限；账号注册和登录不等于社区成果或正式MVP放行。
 
-实际部署使用 `wrangler.production.jsonc`，不要把构建输出中的本地占位数据库配置上传为生产绑定。先构建，再运行 `node scripts/verify-deployment-auth.mjs`，以及发布工具的 `deploy --config wrangler.production.jsonc --dry-run`；试部署产物应放在系统临时目录，不放进源码扫描范围。新脚本只使用合成 GitHub 和隔离 D1。发布工具已实际认证，生产数据库已备份并应用全部15项迁移；业务表为0，没有合成账号或成果。生产秘密、站点上传、实际登录及其他发布门槛仍需另外完成，见[生产配置接入记录](../docs/verification/production-config-auth-2026-09-27.md)。
+实际部署使用 `wrangler.production.jsonc`，不要把构建输出中的本地占位数据库配置上传为生产绑定。先构建，再运行 `node scripts/verify-deployment-auth.mjs`，以及发布工具的 `deploy --config wrangler.production.jsonc --dry-run`；试部署产物应放在系统临时目录，不放进源码扫描范围。新脚本只使用合成 GitHub 和隔离 D1。生产数据库已备份并应用全部15项迁移；预览已上传，真实登录后账号1，认领、提交和账本事件仍为0，没有合成账号或成果。其他发布门槛仍需完成，见[生产配置接入记录](../docs/verification/production-config-auth-2026-09-27.md)及[真实发布证据](../docs/verification/pre-alpha-release-2026-09-27.md)。
 
 ## 检查
 
@@ -89,7 +89,7 @@ npm run build
 | `POST /api/trials/:id/withdraw`，`{ reason }` | 渡劫本人；1–500 字理由，全额退还渡劫费用，保留记录。仅退出渡劫绑定，原悬赏认领仍保留；释放认领及任务押金继续走原释放流程。 |
 | `POST /api/trials/:id/abort`，`{ reason }` | 指定维护者；记录确认人和至少 20 字的平台故障证据，只能中止尚无正式成果的进行中渡劫，全额退款。 |
 
-开始参数、基线、费用和期限不能改写；终态只允许写入一次且历史不能删除。冻结、解冻与突破由数据库触发器在同一写入中执行；补结算使用 [D1 批量事务](https://developers.cloudflare.com/d1/worker-api/d1-database/#batch)的整批失败回滚语义。境界查询和登录后的首页会补结算当前修士；自定义 Worker 现在也提供 `scheduled` 平台入口，沿用同一成功优先的事务。单个账号失败不阻断其他账号，处理后整体报告异常以供重试。独立生产配置已声明每五分钟 Cron，但尚未部署，不把本地触发演练或配置声明写成线上定时任务已运行。
+开始参数、基线、费用和期限不能改写；终态只允许写入一次且历史不能删除。冻结、解冻与突破由数据库触发器在同一写入中执行；补结算使用 [D1 批量事务](https://developers.cloudflare.com/d1/worker-api/d1-database/#batch)的整批失败回滚语义。境界查询和登录后的首页会补结算当前修士；自定义 Worker 现在也提供 `scheduled` 平台入口，沿用同一成功优先的事务。单个账号失败不阻断其他账号，处理后整体报告异常以供重试。每五分钟Cron已实际部署并读取复核配置，但真实渡劫结算、执行日志与异常告警尚未验收，不用配置声明代替运行证据。
 
 `node scripts/verify-scheduled-trials.mjs` 在真实构建后的本地 Worker 触发平台事件，通过账户、账本页面、境界和渡劫接口验证到期退款、延迟成功、重复/并发幂等、未到期保持冻结以及单账号事务故障隔离。只准备合成账号与正式记录，不发放社区成果；普通 `npm test` 不自动运行它。模拟器在结束时关闭，本地数据保留于明确命名的系统临时目录。上线前仍须配置并验证真实 Cron、执行记录与异常告警。
 
