@@ -35,6 +35,15 @@ tw-animate-css 1.4.0：直接globals.css输入，固定元数据/压缩包与锁
 
 agent-reach更新检查因GitHub公共API限流返回无法检查，未安装/更新工具，也未将其当作已是最新版本或当前项目阻碍。
 
+## 后续实际受限交付
+
+- 公开预览提交8d7ac15092bf2bdc0263beb73b89f395d3164ed5，以2f3d53b为父，仅3个文本文件、484增加/59删除；main与实际HEAD仍35802fe，用户真实暂存区为空。363源码文件、208构建文件的私密字节检查通过，不输出值；最新受限配置/实际构建/API/D1合成登录验证退出0：lingnet-deployment-auth-J4awAA。
+- 当前100%Worker版本57e7b7d4-43a9-432b-b217-069b29db48e4，部署bb27b807-a73b-4880-a8f9-06421edd3916，2026-09-27T20:34:24.004171Z（北京时间9月28日04:34）；版本注释读回8d7ac150一致。仅主理人登录、原D1及Cron、模型调用/双人调账关闭不变；登录秘密只核对两个名称，未读取值，未改套餐或R2。
+- [公开通知](https://lingnet-ascension.1301385382gjts.workers.dev/THIRD_PARTY_RUNTIME.md)实际HTTP200、46489字节，与源码/构建逐字节一致，SHA-256 bf36fb877df3795814974bfa61b30c719e8b748fe6218804be4cc8099df8e310。动态首页仍429/1027；静态通知可取不等于游戏可用。
+- 生产只读核对1账号、0认领、0提交、0账本事件，rows_written=0、changed_db=false；没有制造社区成果或发奖。
+- [远端Linux运行36348522498](https://github.com/HardieBao/lingnet-ascension/actions/runs/36348522498)完成成功，绑定8d7ac150；自检作业108702488341，安装/typegen/测试/类型/lint/构建成功，日志143项/142通过/1跳过/0失败，任务PR作业跳过。不是贡献验收或独立版权放行。
+- GitNexus临时暂存相对原main累计344文件/1910符号/230流程为critical，相对父预览的3文本范围另核对；不能把有限许可原文交付当作累计代码风险关闭。明确材料的原文交付已证明，其他许可来源及正式MVP条件继续未证明。
+
 | 材料 | 版本 | 原文来源文件 / 原始SHA-256 |
 | --- | --- | --- |
 | [@floating-ui/core](https://registry.npmjs.org/%40floating-ui%2Fcore/1.8.0) | 1.8.0 | LICENSE: 0e4c9a9b6c71019cbbea3bdc20b01223110a9035700f9c960c8fcbf78c2325ce |
