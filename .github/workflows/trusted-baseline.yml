@@ -5,7 +5,7 @@ on:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
   push:
-    branches: [main]
+    branches: [main, pre-alpha-2026-09-27]
 
 permissions:
   contents: read
@@ -41,6 +41,7 @@ jobs:
         run: node -e "console.log('Trusted baseline verification complete')"
 
   main:
+    name: Platform baseline self-check (not task verification)
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     timeout-minutes: 20
@@ -58,6 +59,8 @@ jobs:
           node-version: '24'
           package-manager-cache: false
       - run: npm ci --ignore-scripts --no-audit --no-fund
+      - name: Prepare generated framework types
+        run: node node_modules/vinext/dist/cli.js typegen
       - run: npm test
       - run: npm run typecheck
       - run: npm run lint
