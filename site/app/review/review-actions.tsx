@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 
-export function ReviewActions({ submissionId }: { submissionId: string }) {
+export function ReviewActions({ submissionId, frozen = false }: { submissionId: string; frozen?: boolean }) {
   const router = useRouter();
   const [reason, setReason] = useState("");
   const [message, setMessage] = useState("");
@@ -33,10 +33,10 @@ export function ReviewActions({ submissionId }: { submissionId: string }) {
   }
 
   return <div className="review-actions">
-    <label>复核理由<textarea value={reason} onChange={(event) => setReason(event.target.value)} rows={3} placeholder="说明接受或要求修改的依据" /></label>
+    <label>复核理由<textarea value={reason} onChange={(event) => setReason(event.target.value)} rows={3} placeholder={frozen ? "只说明处理依据，不得粘贴密钥或敏感原文" : "说明接受或要求修改的依据"} /></label>
     <div>
-      <Button disabled={busy || reason.trim().length < 8} onClick={() => decide("accept")}>批准待合入</Button>
-      <Button variant="outline" disabled={busy || reason.trim().length < 8} onClick={() => decide("revise")}>要求修订</Button>
+      {!frozen ? <Button disabled={busy || reason.trim().length < 8} onClick={() => decide("accept")}>批准待合入</Button> : null}
+      <Button variant="outline" disabled={busy || reason.trim().length < 8} onClick={() => decide("revise")}>{frozen ? "允许清理后重传" : "要求修订"}</Button>
       <Button variant="ghost" disabled={busy || reason.trim().length < 8} onClick={() => decide("reject")}>驳回</Button>
     </div>
     {message ? <p role="status">{message}</p> : null}
