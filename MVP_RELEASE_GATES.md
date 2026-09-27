@@ -270,6 +270,8 @@
 
 2026-09-28后续：另核对12项已识别运行依赖的固定npm元数据、发布包SHA-512及许可文件SHA-256，7组不同原文（含CVA Apache和Lucide/Feather双通知）已补至公共运行依赖通知。源码1c0e849已部署受限版本8aa6ff99，公开通知HTTP200且与源码/构建字节一致，远端36344979016自检成功；动态首页仍1027。此项不覆盖全依赖树、概念图和本地组件修改的授权，也没有独立放行，第9项仍“未证明”，见[有限运行依赖核验](docs/licenses/runtime-notices-2026-09-28.md)。
 
+再后续本地检查构建实际匹配142块、反查49包，找出两个包根目录缺原文、Vinext内嵌pathslash及CSS/生成材料覆盖缺口。保留有限模块证据与全部49项清单，已恢复原npm构建，不把诊断候选当生产二进制；尚未补全这些材料或放行许可，见[实际模块清单](docs/licenses/bundle-inventory-2026-09-28.md)。
+
 - 三份模板 SVG 对应 Next.js 固定提交 `0423222b7eb3a1373b5bff4c939fd69858928993` 的 create-next-app 模板，逐字节比较仅多一个末尾 LF，不能称为原始字节完全一致。已保存固定源文件、Git blob、当前 SHA-256 与完整 MIT / Copyright (c) 2025 Vercel, Inc. 通知于 `site/public/THIRD_PARTY_ASSETS.md`；没有修改或删除原图。
 - 61 个 UI 组件已逐一与 shadcn/ui 固定提交 `d0fae528221011f75a8c64a917073904c2847493` 比较。只做明确记录的导入路径映射和 CRLF/LF 归一化后，58 个全文一致；`chart.tsx`、`progress.tsx`、`sidebar.tsx` 存在另外的本地修改，其作者与独立授权不能由相似性证明。Button、Sheet 原始字节一致，CSS 与固定源码及发布包条目一致。完整覆盖表及证据限制见 `docs/licenses/component-provenance.md`。
 - 已核对锁文件版本 `radix-ui` 1.6.7、`@base-ui/react` 1.8.0、`@shadcn/react` 0.3.1 的包许可；公开发布包完整性和固定许可来源核对不等于已经验证 provenance 签名。完整 MIT 版权通知按 shadcn、WorkOS、Material-UI SAS 分别保留在 `site/public/THIRD_PARTY_COMPONENTS.md`；组件目录另有 `THIRD_PARTY_NOTICE.md`，不将第三方主体改称项目原创。没有修改依赖、组件逻辑或锁文件。
