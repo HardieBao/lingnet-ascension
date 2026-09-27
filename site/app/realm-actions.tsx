@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import type { Realm } from "@/lib/realms";
+import { TrialPanel } from "./trial-panel";
 
 type Assessment = {
   target: "qi" | "foundation" | "core" | null;
@@ -37,12 +38,12 @@ export function RealmActions({ current, assessment }: { current: Realm; assessme
     }
   }
 
-  if (!assessment.target) return <p className="realm-hint">元婴及以上将在 MVP 后开放。</p>;
   return <div className="realm-actions">
-    {current === "mortal" && assessment.eligible
+    {!assessment.target ? <p className="realm-hint">元婴及以上将在 MVP 后开放。</p> : current === "mortal" && assessment.eligible
       ? <Button className="realm-advance" disabled={busy} onClick={advance}>突破炼气 · 不消耗 Token</Button>
-      : <p className="realm-hint">下一境界：{assessment.target === "qi" ? "炼气" : assessment.target === "foundation" ? "筑基" : "金丹"}。{assessment.target !== "qi" ? "专属渡劫尚未开放，不会预扣 Token。" : "完成新手悬赏后可突破。"}</p>}
-    {assessment.missing.length > 0 ? <ul className="realm-missing">{assessment.missing.map((reason) => <li key={reason}>{reason}</li>)}</ul> : null}
+      : <p className="realm-hint">下一境界：{assessment.target === "qi" ? "炼气" : assessment.target === "foundation" ? "筑基" : "金丹"}。{assessment.target !== "qi" ? "查看渡劫资格与就绪契约；成功才扣除费用。" : "完成新手悬赏后可突破。"}</p>}
+    {assessment.target && assessment.missing.length > 0 ? <ul className="realm-missing">{assessment.missing.map((reason) => <li key={reason}>{reason}</li>)}</ul> : null}
     {message ? <p className="realm-error" role="status">{message}</p> : null}
+    <TrialPanel />
   </div>;
 }
