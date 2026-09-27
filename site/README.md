@@ -2,6 +2,8 @@
 
 这是灵网纪元的任务大殿与游戏经济原型，使用 Vinext 和 Cloudflare D1；当前小文件成果不依赖 R2。它可以本地运行，但**尚未部署为公开 MVP**；真实代理限额、代码完整预检、生产 GitHub 登录、真实渡劫和首赛季任务供给等仍未验收。
 
+2026-09-27已实际发布[Pre-Alpha受限预览](https://lingnet-ascension.1301385382gjts.workers.dev)，暂仅HardieBao可登录验收，本人已完成真实GitHub授权与回调验证，真实模型与双人调账保持关闭。预览不等于正式MVP；真实授权及缺口见[发布证据](../docs/verification/pre-alpha-release-2026-09-27.md)。
+
 ## 本地运行
 
 需要 Node.js 22.13+。在本目录执行：
