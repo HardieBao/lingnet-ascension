@@ -3,6 +3,8 @@
 This notice covers the identified materials below, not every dependency or asset
 in Lingnet Ascension. Original third-party portions retain their own licenses;
 the project's AGPL-3.0-only / CC BY-SA 4.0 declarations do not replace them.
+Additional identified runtime-package texts are preserved in
+[runtime notices](THIRD_PARTY_RUNTIME.md), still not a complete dependency audit.
 The full comparison record is in `docs/licenses/component-provenance.md` in the
 source distribution.
 
