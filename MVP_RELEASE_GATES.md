@@ -2,7 +2,7 @@
 
 本地核对日期：2026-09-28。依据 [plan.md 第 17 节](plan.md#17-mvp-明确完成定义)。本表只记录可核验事实；「代码存在」「本地测试通过」不等于真实用户完成或线上发布。当前工作区有大量未提交改动；最近一次远端核对见下文，不能把历史快照视为实时状态。
 
-最新线上核对：代码预检、新认领奖励快照与隔离成果工作台已在受限预览部署；后续仅通知增量更新至57e7b7d4，52个明确材料/17组原文通知在线HTTP200且源码/构建/交付字节一致。动态首页仍实际返回Cloudflare429/1027（免费请求额度耗尽）。动态站点恢复及实际复测前，不能宣称当前预览可用，更不能放行MVP，见[9月28日发布与额度阻碍](docs/verification/pre-alpha-update-2026-09-28.md)、[工作台后续发布](docs/verification/quarantine-workbench-2026-09-28.md#后续受限预览实际发布)和[扩大通知交付](docs/licenses/bundled-notices-2026-09-28.md#后续实际受限交付)。
+最新线上核对：代码预检、新认领奖励快照与隔离成果工作台已在受限预览部署；后续仅通知增量更新至8f123c01，运行/样式材料与新增生成代码通知在线HTTP200且源码/构建/交付字节一致。动态首页仍实际返回Cloudflare429/1027（免费请求额度耗尽）。动态站点恢复及实际复测前，不能宣称当前预览可用，更不能放行MVP，见[9月28日发布与额度阻碍](docs/verification/pre-alpha-update-2026-09-28.md)、[工作台后续发布](docs/verification/quarantine-workbench-2026-09-28.md#后续受限预览实际发布)、[扩大通知交付](docs/licenses/bundled-notices-2026-09-28.md#后续实际受限交付)和[生成代码通知交付](docs/licenses/generated-materials-2026-09-28.md#后续实际受限交付)。
 
 | 门槛 | 当前证据与结论 | 达标时必须留下的证据 |
 |---|---|---|
@@ -274,7 +274,7 @@
 
 其后已核对49份固定发布包及48份根目录原文，补到52个明确材料映射/17组许可文本，包含两份源仓库原文、pathslash及两个CSS输入。react-remove-scroll-bar发行gitHead仍不可访问，仅以四个已用运行文件的明确转译/标记比对绑定原文，不冒称完整发行来源。源码8d7ac150已部署57e7b7d4，通知在线HTTP200且字节一致，远端36348522498自检成功；动态站点仍1027。生成/未采集材料、概念图、组件本地修改授权及独立放行仍缺，见[扩大通知的来源与限制](docs/licenses/bundled-notices-2026-09-28.md)。
 
-后续把14个原未匹配文件分为6个自有Runner、6个清单/侧文件和2个仅Vite预加载标记改写的块，逐字节/原生成器/明确改写规则核对；10个虚拟ID已定位生成器来源。新增Vite核心、Rolldown完整许可与第三方通知、Cloudflare固定源MIT原文，本地恢复、复制及回归通过，仍不覆盖未知嵌套权利、概念图或最终独立签署，见[生成材料核验](docs/licenses/generated-materials-2026-09-28.md)。
+后续把14个原未匹配文件分为6个自有Runner、6个清单/侧文件和2个仅Vite预加载标记改写的块，逐字节/原生成器/明确改写规则核对；10个虚拟ID已定位生成器来源。新增Vite核心、Rolldown完整许可与第三方通知、Cloudflare固定源MIT原文，源码69122fc2已部署8f123c01，通知HTTP200/字节一致、远端36350453960自检成功；动态首页仍1027。仍不覆盖未知嵌套权利、概念图或最终独立签署，见[生成材料核验](docs/licenses/generated-materials-2026-09-28.md)。
 
 - 三份模板 SVG 对应 Next.js 固定提交 `0423222b7eb3a1373b5bff4c939fd69858928993` 的 create-next-app 模板，逐字节比较仅多一个末尾 LF，不能称为原始字节完全一致。已保存固定源文件、Git blob、当前 SHA-256 与完整 MIT / Copyright (c) 2025 Vercel, Inc. 通知于 `site/public/THIRD_PARTY_ASSETS.md`；没有修改或删除原图。
 - 61 个 UI 组件已逐一与 shadcn/ui 固定提交 `d0fae528221011f75a8c64a917073904c2847493` 比较。只做明确记录的导入路径映射和 CRLF/LF 归一化后，58 个全文一致；`chart.tsx`、`progress.tsx`、`sidebar.tsx` 存在另外的本地修改，其作者与独立授权不能由相似性证明。Button、Sheet 原始字节一致，CSS 与固定源码及发布包条目一致。完整覆盖表及证据限制见 `docs/licenses/component-provenance.md`。
