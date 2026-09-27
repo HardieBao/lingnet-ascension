@@ -3,6 +3,7 @@ import type { Mission } from "@/lib/missions";
 import { isCodeArtifactPath } from "./code-artifact.ts";
 import { artifactPathForMission } from "./verifier.ts";
 import { MODEL_CONTRACT } from "./model-budget.ts";
+import type { StableReward } from "./rewards.ts";
 
 export const REPOSITORY_URL = "https://github.com/HardieBao/lingnet-ascension.git";
 
@@ -22,7 +23,7 @@ export type TaskPackage = {
     };
     model: { harness: "codex-cli"; tokenBudget: number | null } | ({ harness: "codex-cli" } & typeof MODEL_CONTRACT);
     equipment: { localPreflight: boolean; checkpointSlots?: 1 | 2; heartTalisman?: boolean; presetSlots?: 1 | 2 };
-    gameReward: { token: number; officialToken: number; cultivation: number; merit: number };
+    gameReward: { token: number; officialToken: number; cultivation: number; merit: number; stable?: StableReward };
   };
   sha256: string;
 };
@@ -35,6 +36,7 @@ export async function buildTaskPackage(claim: Claim, mission: Mission, {
     title: string; description: string; acceptance: string; allowedPaths: string;
     budgetTokens: number | null;
     modelContract?: typeof MODEL_CONTRACT;
+    stable?: StableReward;
   };
   if (snapshot.modelContract && (snapshot.budgetTokens !== MODEL_CONTRACT.tokenBudget ||
       Object.entries(MODEL_CONTRACT).some(([key, value]) => snapshot.modelContract?.[key as keyof typeof MODEL_CONTRACT] !== value))) {
@@ -62,13 +64,14 @@ export async function buildTaskPackage(claim: Claim, mission: Mission, {
       artifactPath,
     },
     model: snapshot.modelContract ? { harness: "codex-cli", ...snapshot.modelContract } : { harness: "codex-cli", tokenBudget: snapshot.budgetTokens },
-    equipment: { localPreflight: calculationArrayEquipped && !isCodeArtifactPath(artifactPath),
+    equipment: { localPreflight: calculationArrayEquipped,
       ...(snapshot.modelContract ? { checkpointSlots, heartTalisman: heartTalismanEquipped, presetSlots } : {}) },
     gameReward: {
       token: snapshot.token,
       officialToken: snapshot.officialToken,
       cultivation: snapshot.cultivation,
       merit: snapshot.merit,
+      ...(snapshot.stable ? { stable: snapshot.stable } : {}),
     },
   };
   const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(JSON.stringify(payload)));

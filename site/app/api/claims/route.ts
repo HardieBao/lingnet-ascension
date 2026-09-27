@@ -5,7 +5,7 @@ import { expireClaims } from "@/lib/claims";
 import { BASE_ACTIVE_CLAIM_LIMIT, SPLIT_MIND_ACTIVE_CLAIM_LIMIT, SPLIT_MIND_PENDANT_ID } from "@/lib/equipment";
 import { getMission } from "@/lib/missions";
 import { MODEL_CONTRACT } from "@/lib/model-budget";
-import { officialTokenBonus } from "@/lib/rewards";
+import { officialTokenBonus, stableRewardSnapshot } from "@/lib/rewards";
 import { rejectForeignMutation } from "@/lib/request-origin";
 import { readSmallJson } from "@/lib/small-json";
 
@@ -40,6 +40,7 @@ export async function POST(request: Request) {
     officialToken: officialTokenBonus(mission.rank),
     cultivation: mission.reward_cultivation,
     merit: mission.reward_merit,
+    stable: stableRewardSnapshot(mission.rank, mission.reward_token, mission.reward_merit),
     deposit: mission.deposit,
     baseCommit: mission.base_commit,
     title: mission.title,

@@ -18,11 +18,12 @@ const claim = {
 };
 const mission = { id: "PLAT-003C" };
 
-test("code task package preserves the single allowed path and disables document preflight", async () => {
+test("equipped code task package requests complete preflight without changing its scope or rewards", async () => {
   const taskPackage = await buildTaskPackage(claim, mission, { calculationArrayEquipped: true });
   assert.equal(taskPackage.payload.mission.artifactPath, path);
   assert.deepEqual(taskPackage.payload.mission.allowedPaths, [path]);
-  assert.equal(taskPackage.payload.equipment.localPreflight, false);
+  assert.equal(taskPackage.payload.equipment.localPreflight, true);
+  assert.deepEqual(taskPackage.payload.gameReward, { token: 100, officialToken: 30, cultivation: 200, merit: 10 });
   assert.deepEqual(validateTaskPackage(taskPackage), taskPackage.payload);
 });
 

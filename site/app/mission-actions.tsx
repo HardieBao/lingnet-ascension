@@ -91,7 +91,7 @@ export function MissionActions({
         <p className="detail-note">v4 任务包支持元神印记：每位修士本机共用 1 槽，储物袋后 2 槽；基础保留 24 小时，护心符每认领可在失败后延长一次 24 小时。用 <code>node runner.mjs checkpoints 任务包.json</code> 查看，恢复命令为 <code>node --env-file=.env.local runner.mjs resume 任务包.json 检查点编号 --ack-model-costs</code>。每个印记只能恢复一次，不延长租约、不补模型额度；只恢复限定产物并重建上下文，不保存私人会话。用量不明时仍停止模型调用。</p>
         <p className="detail-note">功法基础 1 槽，传功玉简后 2 槽。用 <code>preset-save 任务包.json 配置.json</code> 保存、<code>presets 任务包.json</code> 查看，再在运行命令中追加 <code>--preset 功法编号</code>（放在费用确认参数前）。只允许推理档位、补充提示和更严格的输出上限；不允许密钥、任意命令或提高任务预算。</p>
         {codeTask
-          ? <p className="detail-note code-task-note">Runner 仅产出指定文件。把它提交到本仓库的 Fork，向 main 发起只修改该文件的 PR；可信 CI 通过后，填写 PR 编号。演算阵盘的文档预检不适用于代码任务。PR 通过不等于正式奖励。</p>
+          ? <p className="detail-note code-task-note">Runner 仅产出指定文件。装备演算阵盘后会自动执行本地测试、类型、lint和构建；也可用 <code>node runner.mjs preflight 任务包.json 成果文件</code> 手动预检。固定基线缺少可信检查配置时不能开检。把成果提交到本仓库的 Fork，向 main 发起只修改该文件的 PR；仍须远端可信 CI 通过，再填写 PR 编号并等待独立复核。本地或PR通过都不等于正式奖励。</p>
           : <p className="detail-note">装备演算阵盘后，Runner 会在生成成果后自动执行本地结构预检。修改成果后也可运行 <code>node runner.mjs preflight 任务包.json 成果.md</code>；本地通过仍需服务端独立审判和宗门复核。</p>}
         <a href={`/api/claims/${claim.id}/manifest`} download>下载任务包</a>
         <a href="/runner.mjs" download>下载本地 Runner</a>

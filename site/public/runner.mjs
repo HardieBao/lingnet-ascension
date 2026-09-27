@@ -168,8 +168,9 @@ export function preflightMissionContent(missionId, content) {
 async function preflightFile(payload, artifactPath) {
   const stat = await lstat(artifactPath);
   if (!stat.isFile() || stat.isSymbolicLink() || stat.size === 0 || stat.size > MAX_ARTIFACT_BYTES) {
-    throw new Error("成果不是有效的 Markdown 文件，或超过 128 KiB");
+    throw new Error("成果不是有效的单文件交付物，或超过 128 KiB");
   }
+  if (isCodeArtifactPath(payload.mission.artifactPath)) return codePreflight(payload, await readFile(artifactPath));
   const verdict = preflightMissionContent(payload.mission.id, await readFile(artifactPath, "utf8"));
   for (const check of verdict.checks) console.log(`${check.passed ? "通过" : "未通过"} · ${check.name}：${check.detail}`);
   console.log("本地预检只帮助提前修订，服务端审判和维护者复核仍独立进行。");
@@ -179,10 +180,73 @@ async function preflightFile(payload, artifactPath) {
 export async function runPreflight(taskPackagePath, artifactPath) {
   const taskPackage = JSON.parse(await readFile(taskPackagePath, "utf8"));
   const payload = validateTaskPackage(taskPackage);
-  if (isCodeArtifactPath(payload.mission.artifactPath)) {
-    throw new Error("代码任务的完整验证由 GitHub 可信 CI 执行；请提交 PR 并等待检查通过");
-  }
   if (!await preflightFile(payload, artifactPath)) throw new Error("本地预检未通过，请修改成果后重试");
+}
+
+async function codePreflight(payload, bytes) {
+  // Only the locked baseline prepares dependencies; candidate code never runs on the host.
+  if (bytes.length < 1 || bytes.length > MAX_ARTIFACT_BYTES) throw new Error("代码成果超过128KiB或为空");
+  const { safeContent } = await import("./runner-checkpoints.mjs");
+  safeContent(bytes);
+  const workspace = await mkdtemp(join(tmpdir(), "lingnet-code-check-"));
+  console.log(`代码预检工作区：${workspace}`);
+  await runProcess("git", ["clone", "--config", "core.autocrlf=false", "--config", "core.eol=lf", "--no-checkout", payload.repository.url, workspace], { timeoutMs: 180_000 });
+  await runProcess("git", ["checkout", "--detach", payload.repository.baseCommit], { cwd: workspace });
+  const git = (args) => runProcess("git", ["--no-optional-locks", "-c", "core.fsmonitor=false", ...args], { cwd: workspace });
+  if ((await git(["rev-parse", "HEAD"])).stdout.trim() !== payload.repository.baseCommit) throw new Error("预检固定基线不匹配");
+  for (const path of ["site/package.json", "site/package-lock.json", "ci/verify-pr.mjs"]) {
+    const stat = await lstat(join(workspace, path)).catch(() => null);
+    if (!stat?.isFile() || stat.isSymbolicLink()) throw new Error("固定基线尚无完整可信预检配置；不会回退为任意命令或跳过检查");
+  }
+  const common = ["--read-only", "--cap-drop", "ALL", "--security-opt", "no-new-privileges", "--user", "1000:1000",
+    "--memory", "2g", "--memory-swap", "2g", "--cpus", "2", "--pids-limit", "256", "--log-driver", "none",
+    "--env", "HOME=/tmp", "--env", "npm_config_cache=/tmp/npm-cache", "--env", "LINGNET_CI_READONLY=1",
+    "--env", "CLOUDFLARE_CF_FETCH_ENABLED=false", "--env", "WRANGLER_SEND_METRICS=false", "--env", "WRANGLER_WRITE_LOGS=false",
+    "--env", "GIT_CONFIG_COUNT=1", "--env", "GIT_CONFIG_KEY_0=safe.directory", "--env", "GIT_CONFIG_VALUE_0=/work",
+    "--tmpfs", "/tmp:rw,nosuid,nodev,size=512m,mode=1777", "--workdir", "/work/site"];
+  async function container(args, script) {
+    const id = randomUUID(), name = `lingnet-code-check-${id}`;
+    let owned = false;
+    try {
+      await runProcess("docker", ["create", "--name", name, "--label", `lingnet.preflight=${id}`, ...common, ...args,
+        "lingnet-runner:codex-0.156.1", "sh", "-lc", script]);
+      owned = true;
+      return await runProcess("docker", ["start", "--attach", name], { timeoutMs: 10 * 60_000 });
+    } finally {
+      if (owned) {
+        const info = JSON.parse((await runProcess("docker", ["inspect", name])).stdout)[0];
+        if (info.Config.Labels["lingnet.preflight"] !== id) throw new Error("预检容器归属不符，拒绝清理");
+        await runProcess("docker", ["rm", "--force", name]);
+      }
+    }
+  }
+  console.log("准备可信固定基线的依赖与类型，不运行安装脚本，不执行候选文件……");
+  // This temporary checkout is writable only before the candidate artifact is introduced.
+  await container(["--network", "bridge", "--mount", `type=bind,source=${workspace},target=/work`],
+    "npm ci --ignore-scripts --no-audit --no-fund && node node_modules/vinext/dist/cli.js typegen");
+  if ((await git(["status", "--porcelain", "--untracked-files=all"])).stdout.trim()) throw new Error("依赖准备改变了基线源码，拒绝继续预检");
+  let parent = workspace;
+  for (const name of payload.mission.artifactPath.split("/").slice(0, -1)) {
+    parent = join(parent, name);
+    await mkdir(parent).catch((error) => { if (error.code !== "EEXIST") throw error; });
+    const stat = await lstat(parent);
+    if (!stat.isDirectory() || stat.isSymbolicLink()) throw new Error("代码预检目录不允许链接");
+  }
+  const target = join(parent, basename(payload.mission.artifactPath));
+  const existing = await lstat(target).catch((error) => { if (error.code !== "ENOENT") throw error; return null; });
+  if (existing && (!existing.isFile() || existing.isSymbolicLink())) throw new Error("代码预检不能覆盖链接或目录");
+  await writeFile(target, bytes);
+  assertOnlyAllowedChanges((await git(["status", "--porcelain", "--untracked-files=all"])).stdout, payload.mission.artifactPath);
+  if (Date.now() >= payload.claim.expiresAt) throw new Error("认领已过期，不能继续预检");
+  const outputs = ["dist", ".vinext", ".next", ".wrangler", ".sites-runtime", "node_modules/.vite-temp"];
+  for (const path of outputs) await mkdir(join(workspace, "site", path), { recursive: true });
+  console.log("在断网只读容器执行测试、类型、lint、构建……");
+  await container(["--network", "none", "--mount", `type=bind,source=${workspace},target=/work,readonly`,
+    ...outputs.flatMap((path) => ["--tmpfs", `/work/site/${path}:rw,nosuid,nodev,size=128m,mode=1777`])],
+    "npm test && npm run typecheck -- --incremental false && npm run lint && npm run build");
+  if (Date.now() >= payload.claim.expiresAt) throw new Error("预检完成时认领已过期，不延长租约");
+  console.log("代码完整预检通过：测试、类型、lint、构建；仍须远端可信CI和独立复核，不决定游戏奖励。");
+  return true;
 }
 
 function commandAvailable(invocation) {
@@ -280,7 +344,7 @@ export async function runTask(taskPackagePath, { ackModelCosts = false, checkpoi
   if (!doctor()) throw new Error("环境检查未通过，模型不会启动");
   const workspace = await mkdtemp(join(tmpdir(), "lingnet-runner-"));
   console.log(`独立工作区：${workspace}`);
-  await runProcess("git", ["clone", "--no-checkout", payload.repository.url, workspace], { timeoutMs: 180_000 });
+  await runProcess("git", ["clone", "--config", "core.autocrlf=false", "--config", "core.eol=lf", "--no-checkout", payload.repository.url, workspace], { timeoutMs: 180_000 });
   await runProcess("git", ["checkout", "--detach", payload.repository.baseCommit], { cwd: workspace });
   const head = (await runProcess("git", ["rev-parse", "HEAD"], { cwd: workspace })).stdout.trim();
   if (head !== payload.repository.baseCommit) throw new Error("固定基线校验失败");
@@ -317,7 +381,10 @@ export async function runTask(taskPackagePath, { ackModelCosts = false, checkpoi
   else console.log("本机模型用量：未知；这不是游戏 Token。");
   if (payload.equipment.localPreflight) {
     console.log("演算阵盘已装备，正在执行本地预检……");
-    if (!await preflightFile(payload, output)) {
+    let passed;
+    try { passed = await preflightFile(payload, output); }
+    catch (error) { await retainFailedWork(taskPackage, workspace, checkpointApi); throw error; }
+    if (!passed) {
       await retainFailedWork(taskPackage, workspace, checkpointApi);
       throw new Error("演算阵盘预检未通过；成果已保留，请修改后运行 preflight 命令");
     }
@@ -379,7 +446,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
       await runPreflight(taskPackagePath, option);
     }
     else {
-      console.error("用法：doctor | run <任务包.json> [--preset <功法编号>] --ack-model-costs | resume <任务包.json> <检查点编号> [--preset <功法编号>] --ack-model-costs | checkpoints <任务包.json> | checkpoint-save <任务包.json> <工作区> | checkpoint-discard <任务包.json> <检查点编号> | presets <任务包.json> | preset-save <任务包.json> <配置.json> | preset-discard <任务包.json> <功法编号> | preflight <任务包.json> <成果.md>");
+      console.error("用法：doctor | run <任务包.json> [--preset <功法编号>] --ack-model-costs | resume <任务包.json> <检查点编号> [--preset <功法编号>] --ack-model-costs | checkpoints <任务包.json> | checkpoint-save <任务包.json> <工作区> | checkpoint-discard <任务包.json> <检查点编号> | presets <任务包.json> | preset-save <任务包.json> <配置.json> | preset-discard <任务包.json> <功法编号> | preflight <任务包.json> <成果文件>");
       process.exitCode = 2;
     }
   } catch (error) {
