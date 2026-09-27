@@ -1,0 +1,1177 @@
+{
+  "id": "6f9b4d10-9b0c-479e-b6c2-abc9fb88077d",
+  "prevId": "76b4b375-dd17-4fc4-ba95-0c0e6eb6e857",
+  "version": "6",
+  "dialect": "sqlite",
+  "tables": {
+    "claims": {
+      "name": "claims",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "mission_id": {
+          "name": "mission_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cultivator_id": {
+          "name": "cultivator_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "claimed_at": {
+          "name": "claimed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reward_snapshot": {
+          "name": "reward_snapshot",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_claims_active_mission": {
+          "name": "idx_claims_active_mission",
+          "columns": [
+            "mission_id"
+          ],
+          "where": "state IN ('claimed', 'running', 'submitted', 'review', 'approved')",
+          "isUnique": true
+        },
+        "idx_claims_cultivator_state": {
+          "name": "idx_claims_cultivator_state",
+          "columns": [
+            "cultivator_id",
+            "state"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "claims_mission_id_missions_id_fk": {
+          "name": "claims_mission_id_missions_id_fk",
+          "tableFrom": "claims",
+          "columnsFrom": [
+            "mission_id"
+          ],
+          "tableTo": "missions",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "claims_cultivator_id_cultivators_id_fk": {
+          "name": "claims_cultivator_id_cultivators_id_fk",
+          "tableFrom": "claims",
+          "columnsFrom": [
+            "cultivator_id"
+          ],
+          "tableTo": "cultivators",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "cultivators": {
+      "name": "cultivators",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "provider": {
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "provider_id": {
+          "name": "provider_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "handle": {
+          "name": "handle",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "display_name": {
+          "name": "display_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "realm": {
+          "name": "realm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'mortal'"
+        },
+        "session_version": {
+          "name": "session_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_cultivators_provider": {
+          "name": "idx_cultivators_provider",
+          "columns": [
+            "provider",
+            "provider_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "inventory": {
+      "name": "inventory",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cultivator_id": {
+          "name": "cultivator_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "item_id": {
+          "name": "item_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "acquired_at": {
+          "name": "acquired_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "price_paid": {
+          "name": "price_paid",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "catalog_version": {
+          "name": "catalog_version",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 1
+        },
+        "equipped_at": {
+          "name": "equipped_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_inventory_cultivator_item": {
+          "name": "idx_inventory_cultivator_item",
+          "columns": [
+            "cultivator_id",
+            "item_id"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "inventory_cultivator_id_cultivators_id_fk": {
+          "name": "inventory_cultivator_id_cultivators_id_fk",
+          "tableFrom": "inventory",
+          "columnsFrom": [
+            "cultivator_id"
+          ],
+          "tableTo": "cultivators",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "ledger_events": {
+      "name": "ledger_events",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cultivator_id": {
+          "name": "cultivator_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "resource": {
+          "name": "resource",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "delta": {
+          "name": "delta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "source_key": {
+          "name": "source_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_ledger_source_resource": {
+          "name": "idx_ledger_source_resource",
+          "columns": [
+            "source_key",
+            "resource"
+          ],
+          "isUnique": true
+        },
+        "idx_ledger_cultivator_resource": {
+          "name": "idx_ledger_cultivator_resource",
+          "columns": [
+            "cultivator_id",
+            "resource"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "ledger_events_cultivator_id_cultivators_id_fk": {
+          "name": "ledger_events_cultivator_id_cultivators_id_fk",
+          "tableFrom": "ledger_events",
+          "columnsFrom": [
+            "cultivator_id"
+          ],
+          "tableTo": "cultivators",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "mission_dependencies": {
+      "name": "mission_dependencies",
+      "columns": {
+        "mission_id": {
+          "name": "mission_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "prerequisite_id": {
+          "name": "prerequisite_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "mission_dependencies_mission_id_missions_id_fk": {
+          "name": "mission_dependencies_mission_id_missions_id_fk",
+          "tableFrom": "mission_dependencies",
+          "columnsFrom": [
+            "mission_id"
+          ],
+          "tableTo": "missions",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "mission_dependencies_prerequisite_id_missions_id_fk": {
+          "name": "mission_dependencies_prerequisite_id_missions_id_fk",
+          "tableFrom": "mission_dependencies",
+          "columnsFrom": [
+            "prerequisite_id"
+          ],
+          "tableTo": "missions",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {
+        "mission_dependencies_mission_id_prerequisite_id_pk": {
+          "columns": [
+            "mission_id",
+            "prerequisite_id"
+          ],
+          "name": "mission_dependencies_mission_id_prerequisite_id_pk"
+        }
+      },
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "missions": {
+      "name": "missions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "title": {
+          "name": "title",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "rank": {
+          "name": "rank",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "branch": {
+          "name": "branch",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "base_commit": {
+          "name": "base_commit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "allowed_paths": {
+          "name": "allowed_paths",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "acceptance": {
+          "name": "acceptance",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reward_token": {
+          "name": "reward_token",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reward_cultivation": {
+          "name": "reward_cultivation",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reward_merit": {
+          "name": "reward_merit",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "deposit": {
+          "name": "deposit",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "budget_tokens": {
+          "name": "budget_tokens",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "contract_ready": {
+          "name": "contract_ready",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "required_realm": {
+          "name": "required_realm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'mortal'"
+        },
+        "required_merit": {
+          "name": "required_merit",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": 0
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "realm_events": {
+      "name": "realm_events",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cultivator_id": {
+          "name": "cultivator_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "from_realm": {
+          "name": "from_realm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "to_realm": {
+          "name": "to_realm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_realm_events_target": {
+          "name": "idx_realm_events_target",
+          "columns": [
+            "cultivator_id",
+            "to_realm"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "realm_events_cultivator_id_cultivators_id_fk": {
+          "name": "realm_events_cultivator_id_cultivators_id_fk",
+          "tableFrom": "realm_events",
+          "columnsFrom": [
+            "cultivator_id"
+          ],
+          "tableTo": "cultivators",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "realm_trial_contracts": {
+      "name": "realm_trial_contracts",
+      "columns": {
+        "mission_id": {
+          "name": "mission_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "target_realm": {
+          "name": "target_realm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "duration_ms": {
+          "name": "duration_ms",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "realm_trial_contracts_mission_id_missions_id_fk": {
+          "name": "realm_trial_contracts_mission_id_missions_id_fk",
+          "tableFrom": "realm_trial_contracts",
+          "columnsFrom": [
+            "mission_id"
+          ],
+          "tableTo": "missions",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "realm_trial_contract_target": {
+          "name": "realm_trial_contract_target",
+          "value": "\"realm_trial_contracts\".\"target_realm\" IN ('foundation', 'core')"
+        },
+        "realm_trial_contract_duration": {
+          "name": "realm_trial_contract_duration",
+          "value": "\"realm_trial_contracts\".\"duration_ms\" BETWEEN 60000 AND 259200000"
+        }
+      }
+    },
+    "realm_trials": {
+      "name": "realm_trials",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "claim_id": {
+          "name": "claim_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cultivator_id": {
+          "name": "cultivator_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "from_realm": {
+          "name": "from_realm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "target_realm": {
+          "name": "target_realm",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "fee": {
+          "name": "fee",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "base_commit": {
+          "name": "base_commit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "'active'"
+        },
+        "started_at": {
+          "name": "started_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "expires_at": {
+          "name": "expires_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "finished_at": {
+          "name": "finished_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "finish_reason": {
+          "name": "finish_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_realm_trials_claim": {
+          "name": "idx_realm_trials_claim",
+          "columns": [
+            "claim_id"
+          ],
+          "isUnique": true
+        },
+        "idx_realm_trials_active_cultivator": {
+          "name": "idx_realm_trials_active_cultivator",
+          "columns": [
+            "cultivator_id"
+          ],
+          "where": "state = 'active'",
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "realm_trials_claim_id_claims_id_fk": {
+          "name": "realm_trials_claim_id_claims_id_fk",
+          "tableFrom": "realm_trials",
+          "columnsFrom": [
+            "claim_id"
+          ],
+          "tableTo": "claims",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "realm_trials_cultivator_id_cultivators_id_fk": {
+          "name": "realm_trials_cultivator_id_cultivators_id_fk",
+          "tableFrom": "realm_trials",
+          "columnsFrom": [
+            "cultivator_id"
+          ],
+          "tableTo": "cultivators",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "realm_trial_fee": {
+          "name": "realm_trial_fee",
+          "value": "(\"realm_trials\".\"from_realm\" = 'qi' AND \"realm_trials\".\"target_realm\" = 'foundation' AND \"realm_trials\".\"fee\" = 500) OR (\"realm_trials\".\"from_realm\" = 'foundation' AND \"realm_trials\".\"target_realm\" = 'core' AND \"realm_trials\".\"fee\" = 2000)"
+        },
+        "realm_trial_base": {
+          "name": "realm_trial_base",
+          "value": "length(\"realm_trials\".\"base_commit\") = 40"
+        },
+        "realm_trial_state": {
+          "name": "realm_trial_state",
+          "value": "\"realm_trials\".\"state\" IN ('active', 'passed', 'expired', 'withdrawn', 'failed', 'platform_failure')"
+        },
+        "realm_trial_expiry": {
+          "name": "realm_trial_expiry",
+          "value": "\"realm_trials\".\"expires_at\" > \"realm_trials\".\"started_at\""
+        },
+        "realm_trial_finish": {
+          "name": "realm_trial_finish",
+          "value": "(\"realm_trials\".\"state\" = 'active' AND \"realm_trials\".\"finished_at\" IS NULL AND \"realm_trials\".\"finish_reason\" IS NULL) OR (\"realm_trials\".\"state\" != 'active' AND \"realm_trials\".\"finished_at\" >= \"realm_trials\".\"started_at\" AND length(\"realm_trials\".\"finish_reason\") BETWEEN 1 AND 500)"
+        }
+      }
+    },
+    "submissions": {
+      "name": "submissions",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "claim_id": {
+          "name": "claim_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "cultivator_id": {
+          "name": "cultivator_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "artifact_key": {
+          "name": "artifact_key",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "artifact_sha256": {
+          "name": "artifact_sha256",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "state": {
+          "name": "state",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "verdict": {
+          "name": "verdict",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "reviewer_id": {
+          "name": "reviewer_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "review_reason": {
+          "name": "review_reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "integrated_commit": {
+          "name": "integrated_commit",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reviewed_at": {
+          "name": "reviewed_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        },
+        "integrated_at": {
+          "name": "integrated_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_submissions_state": {
+          "name": "idx_submissions_state",
+          "columns": [
+            "state"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "submissions_claim_id_claims_id_fk": {
+          "name": "submissions_claim_id_claims_id_fk",
+          "tableFrom": "submissions",
+          "columnsFrom": [
+            "claim_id"
+          ],
+          "tableTo": "claims",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "submissions_cultivator_id_cultivators_id_fk": {
+          "name": "submissions_cultivator_id_cultivators_id_fk",
+          "tableFrom": "submissions",
+          "columnsFrom": [
+            "cultivator_id"
+          ],
+          "tableTo": "cultivators",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "token_adjustment_decisions": {
+      "name": "token_adjustment_decisions",
+      "columns": {
+        "request_id": {
+          "name": "request_id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "decision": {
+          "name": "decision",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "decided_by": {
+          "name": "decided_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "decided_at": {
+          "name": "decided_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "token_adjustment_decisions_request_id_token_adjustment_requests_id_fk": {
+          "name": "token_adjustment_decisions_request_id_token_adjustment_requests_id_fk",
+          "tableFrom": "token_adjustment_decisions",
+          "columnsFrom": [
+            "request_id"
+          ],
+          "tableTo": "token_adjustment_requests",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "token_adjustment_decisions_decided_by_cultivators_id_fk": {
+          "name": "token_adjustment_decisions_decided_by_cultivators_id_fk",
+          "tableFrom": "token_adjustment_decisions",
+          "columnsFrom": [
+            "decided_by"
+          ],
+          "tableTo": "cultivators",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "token_adjustment_decision_kind": {
+          "name": "token_adjustment_decision_kind",
+          "value": "\"token_adjustment_decisions\".\"decision\" IN ('approve', 'reject')"
+        },
+        "token_adjustment_decision_reason_length": {
+          "name": "token_adjustment_decision_reason_length",
+          "value": "length(\"token_adjustment_decisions\".\"reason\") BETWEEN 1 AND 500"
+        }
+      }
+    },
+    "token_adjustment_requests": {
+      "name": "token_adjustment_requests",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "target_cultivator_id": {
+          "name": "target_cultivator_id",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "delta": {
+          "name": "delta",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reference": {
+          "name": "reference",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "reason": {
+          "name": "reason",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "requested_by": {
+          "name": "requested_by",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        },
+        "requested_at": {
+          "name": "requested_at",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false
+        }
+      },
+      "indexes": {
+        "idx_token_adjustment_reference": {
+          "name": "idx_token_adjustment_reference",
+          "columns": [
+            "target_cultivator_id",
+            "reference"
+          ],
+          "isUnique": true
+        }
+      },
+      "foreignKeys": {
+        "token_adjustment_requests_target_cultivator_id_cultivators_id_fk": {
+          "name": "token_adjustment_requests_target_cultivator_id_cultivators_id_fk",
+          "tableFrom": "token_adjustment_requests",
+          "columnsFrom": [
+            "target_cultivator_id"
+          ],
+          "tableTo": "cultivators",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        },
+        "token_adjustment_requests_requested_by_cultivators_id_fk": {
+          "name": "token_adjustment_requests_requested_by_cultivators_id_fk",
+          "tableFrom": "token_adjustment_requests",
+          "columnsFrom": [
+            "requested_by"
+          ],
+          "tableTo": "cultivators",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "no action",
+          "onDelete": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {
+        "token_adjustment_delta_range": {
+          "name": "token_adjustment_delta_range",
+          "value": "\"token_adjustment_requests\".\"delta\" != 0 AND \"token_adjustment_requests\".\"delta\" BETWEEN -10000 AND 10000"
+        },
+        "token_adjustment_reference_length": {
+          "name": "token_adjustment_reference_length",
+          "value": "length(\"token_adjustment_requests\".\"reference\") BETWEEN 1 AND 100"
+        },
+        "token_adjustment_reason_length": {
+          "name": "token_adjustment_reason_length",
+          "value": "length(\"token_adjustment_requests\".\"reason\") BETWEEN 20 AND 500"
+        }
+      }
+    }
+  },
+  "views": {},
+  "enums": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  },
+  "internal": {
+    "indexes": {}
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "lingnet-ascension",
+  "account_id": "c09b0d702b8574d6091a4351830c004e",
+  "main": "dist/server/index.js",
+  "no_bundle": true,
+  "compatibility_date": "2026-09-27",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "rules": [
+    {
+      "type": "ESModule",
+      "globs": [
+        "**/*.js",
+        "**/*.mjs"
+      ]
+    }
+  ],
+  "assets": {
+    "directory": "./dist/client"
+  },
+  "workers_dev": true,
+  "preview_urls": false,
+  "vars": {
+    "GITHUB_CLIENT_ID": "Ov23linkkfUCMUFtjgYJ",
+    "PUBLIC_ORIGIN": "https://lingnet-ascension.1301385382gjts.workers.dev",
+    "MAINTAINER_GITHUB_ID": "134252261",
+    "PREVIEW_ONLY_GITHUB_ID": "134252261"
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "lingnet-ascension",
+      "database_id": "1d5d830e-ffb8-41b5-badb-eac21488f2b0",
+      "migrations_dir": "./drizzle"
+    }
+  ],
+  "observability": {
+    "enabled": true,
+    "redact_query_string": true,
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "invocation_logs": false
+    }
+  },
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  }
+}
