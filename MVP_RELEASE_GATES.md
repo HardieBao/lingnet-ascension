@@ -268,7 +268,7 @@
 
 ## 已识别第三方材料的来源与通知（2026-09-27）
 
-2026-09-28后续：另核对12项已识别运行依赖的固定npm元数据、发布包SHA-512及许可文件SHA-256，7组不同原文（含CVA Apache和Lucide/Feather双通知）已补至公共运行依赖通知；交付字节与独立放行尚待核对。此项不覆盖全依赖树、概念图和本地组件修改的授权，第9项仍“未证明”，见[有限运行依赖核验](docs/licenses/runtime-notices-2026-09-28.md)。
+2026-09-28后续：另核对12项已识别运行依赖的固定npm元数据、发布包SHA-512及许可文件SHA-256，7组不同原文（含CVA Apache和Lucide/Feather双通知）已补至公共运行依赖通知。源码1c0e849已部署受限版本8aa6ff99，公开通知HTTP200且与源码/构建字节一致，远端36344979016自检成功；动态首页仍1027。此项不覆盖全依赖树、概念图和本地组件修改的授权，也没有独立放行，第9项仍“未证明”，见[有限运行依赖核验](docs/licenses/runtime-notices-2026-09-28.md)。
 
 - 三份模板 SVG 对应 Next.js 固定提交 `0423222b7eb3a1373b5bff4c939fd69858928993` 的 create-next-app 模板，逐字节比较仅多一个末尾 LF，不能称为原始字节完全一致。已保存固定源文件、Git blob、当前 SHA-256 与完整 MIT / Copyright (c) 2025 Vercel, Inc. 通知于 `site/public/THIRD_PARTY_ASSETS.md`；没有修改或删除原图。
 - 61 个 UI 组件已逐一与 shadcn/ui 固定提交 `d0fae528221011f75a8c64a917073904c2847493` 比较。只做明确记录的导入路径映射和 CRLF/LF 归一化后，58 个全文一致；`chart.tsx`、`progress.tsx`、`sidebar.tsx` 存在另外的本地修改，其作者与独立授权不能由相似性证明。Button、Sheet 原始字节一致，CSS 与固定源码及发布包条目一致。完整覆盖表及证据限制见 `docs/licenses/component-provenance.md`。
