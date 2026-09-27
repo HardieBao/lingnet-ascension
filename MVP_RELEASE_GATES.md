@@ -274,6 +274,8 @@
 
 其后已核对49份固定发布包及48份根目录原文，补到52个明确材料映射/17组许可文本，包含两份源仓库原文、pathslash及两个CSS输入。react-remove-scroll-bar发行gitHead仍不可访问，仅以四个已用运行文件的明确转译/标记比对绑定原文，不冒称完整发行来源。源码8d7ac150已部署57e7b7d4，通知在线HTTP200且字节一致，远端36348522498自检成功；动态站点仍1027。生成/未采集材料、概念图、组件本地修改授权及独立放行仍缺，见[扩大通知的来源与限制](docs/licenses/bundled-notices-2026-09-28.md)。
 
+后续把14个原未匹配文件分为6个自有Runner、6个清单/侧文件和2个仅Vite预加载标记改写的块，逐字节/原生成器/明确改写规则核对；10个虚拟ID已定位生成器来源。新增Vite核心、Rolldown完整许可与第三方通知、Cloudflare固定源MIT原文，本地恢复、复制及回归通过，仍不覆盖未知嵌套权利、概念图或最终独立签署，见[生成材料核验](docs/licenses/generated-materials-2026-09-28.md)。
+
 - 三份模板 SVG 对应 Next.js 固定提交 `0423222b7eb3a1373b5bff4c939fd69858928993` 的 create-next-app 模板，逐字节比较仅多一个末尾 LF，不能称为原始字节完全一致。已保存固定源文件、Git blob、当前 SHA-256 与完整 MIT / Copyright (c) 2025 Vercel, Inc. 通知于 `site/public/THIRD_PARTY_ASSETS.md`；没有修改或删除原图。
 - 61 个 UI 组件已逐一与 shadcn/ui 固定提交 `d0fae528221011f75a8c64a917073904c2847493` 比较。只做明确记录的导入路径映射和 CRLF/LF 归一化后，58 个全文一致；`chart.tsx`、`progress.tsx`、`sidebar.tsx` 存在另外的本地修改，其作者与独立授权不能由相似性证明。Button、Sheet 原始字节一致，CSS 与固定源码及发布包条目一致。完整覆盖表及证据限制见 `docs/licenses/component-provenance.md`。
 - 已核对锁文件版本 `radix-ui` 1.6.7、`@base-ui/react` 1.8.0、`@shadcn/react` 0.3.1 的包许可；公开发布包完整性和固定许可来源核对不等于已经验证 provenance 签名。完整 MIT 版权通知按 shadcn、WorkOS、Material-UI SAS 分别保留在 `site/public/THIRD_PARTY_COMPONENTS.md`；组件目录另有 `THIRD_PARTY_NOTICE.md`，不将第三方主体改称项目原创。没有修改依赖、组件逻辑或锁文件。
