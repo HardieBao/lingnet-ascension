@@ -67,3 +67,5 @@
 - 主理人：@HardieBao；确认日期与签署记录：待本人填写。
 - 备份人：待指定；确认日期与签署记录：待本人填写。
 - 独立复核与正式合入提交：待记录。
+
+<!-- CI smoke only: trusted PR gate probe; do not merge or count as GOV-001. -->
