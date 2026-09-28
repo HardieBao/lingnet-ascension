@@ -327,6 +327,9 @@ a { text-decoration: none; }
 .ledger-balances span { color: #9bb9ad; font-size: 14px; }
 .ledger-balances strong { font-size: 28px; color: #d5f2df; font-variant-numeric: tabular-nums; }
 .ledger-totals { margin: 16px 0 34px; }
+.ledger-recovery { margin: 0 0 24px; padding: 18px 20px; border: 1px solid #80644a; background: #241f1b; color: #f0dcc2; }
+.ledger-recovery h2 { margin: 0 0 8px; font-size: 19px; }
+.ledger-recovery p { margin: 7px 0 0; line-height: 1.6; }
 .ledger-history h2 { font-size: 21px; margin-bottom: 15px; }
 .ledger-history ol { list-style: none; margin: 0; padding: 0; border-top: 1px solid #315250; }
 .ledger-history li { border-bottom: 1px solid #315250; padding: 18px 4px; }

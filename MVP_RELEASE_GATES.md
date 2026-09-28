@@ -2,6 +2,8 @@
 
 本地核对日期：2026-09-28。依据 [plan.md 第 17 节](plan.md#17-mvp-明确完成定义)。本表只记录可核验事实；「代码存在」「本地测试通过」不等于真实用户完成或线上发布。当前工作区有大量未提交改动；最近一次远端核对见下文，不能把历史快照视为实时状态。
 
+2026-09-28 新增：平台初始化审批 [Issue #9](https://github.com/HardieBao/lingnet-ascension/issues/9) 和[草稿 PR #10](https://github.com/HardieBao/lingnet-ascension/pull/10) 已建立，但 PR 的真实检查因 main 缺少可信验证器而失败；没有独立批准、ready 或合入。稳定奖励/回滚欠账只通过本地合成 Worker/D1 演练，生产结算默认关闭；详见[本地记录](docs/verification/stable-settlement-recovery-2026-09-28.md)。以下十项仍未因此变为达标。
+
 最新线上核对：代码预检、新认领奖励快照与隔离成果工作台已在受限预览部署；后续仅通知增量更新至8f123c01，运行/样式材料与新增生成代码通知在线HTTP200且源码/构建/交付字节一致。动态首页仍实际返回Cloudflare429/1027（免费请求额度耗尽）。动态站点恢复及实际复测前，不能宣称当前预览可用，更不能放行MVP，见[9月28日发布与额度阻碍](docs/verification/pre-alpha-update-2026-09-28.md)、[工作台后续发布](docs/verification/quarantine-workbench-2026-09-28.md#后续受限预览实际发布)、[扩大通知交付](docs/licenses/bundled-notices-2026-09-28.md#后续实际受限交付)和[生成代码通知交付](docs/licenses/generated-materials-2026-09-28.md#后续实际受限交付)。
 
 | 门槛 | 当前证据与结论 | 达标时必须留下的证据 |

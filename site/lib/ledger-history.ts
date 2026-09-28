@@ -19,6 +19,9 @@ export const LEDGER_EVENTS_SQL = `
 `;
 
 export function ledgerSourceLabel(sourceKey: string): string {
+  if (sourceKey.startsWith("stable-debt:")) return "回滚欠账自动抵扣";
+  if (sourceKey.endsWith(":stable:reversal")) return "稳定奖励回滚追回";
+  if (sourceKey.endsWith(":stable")) return "稳定运行奖励";
   if (sourceKey.startsWith("trial:")) {
     if (sourceKey.endsWith(":hold")) return "渡劫费用冻结";
     if (sourceKey.endsWith(":locked")) return "渡劫费用转入冻结";

@@ -92,6 +92,68 @@ export const ledgerEvents = sqliteTable("ledger_events", {
   index("idx_ledger_cultivator_resource").on(table.cultivatorId, table.resource),
 ]);
 
+export const stableRewardSettlements = sqliteTable("stable_reward_settlements", {
+  id: text("id").primaryKey(),
+  submissionId: text("submission_id").notNull().references(() => submissions.id),
+  claimId: text("claim_id").notNull().references(() => claims.id),
+  cultivatorId: text("cultivator_id").notNull().references(() => cultivators.id),
+  firstReleaseId: integer("first_release_id").notNull(),
+  firstTag: text("first_tag").notNull(),
+  firstCommit: text("first_commit").notNull(),
+  firstPublishedAt: integer("first_published_at").notNull(),
+  secondReleaseId: integer("second_release_id").notNull(),
+  secondTag: text("second_tag").notNull(),
+  secondCommit: text("second_commit").notNull(),
+  secondPublishedAt: integer("second_published_at").notNull(),
+  artifactSha256: text("artifact_sha256").notNull(),
+  token: integer("token").notNull(),
+  cultivation: integer("cultivation").notNull(),
+  merit: integer("merit").notNull(),
+  reviewedBy: text("reviewed_by").notNull().references(() => cultivators.id),
+  reviewReason: text("review_reason").notNull(),
+  settledAt: integer("settled_at").notNull(),
+}, (table) => [
+  uniqueIndex("idx_stable_settlement_submission").on(table.submissionId),
+  uniqueIndex("idx_stable_settlement_claim").on(table.claimId),
+  check("stable_settlement_versions", sql`${table.firstReleaseId} > 0 AND ${table.secondReleaseId} > 0 AND ${table.firstReleaseId} != ${table.secondReleaseId} AND ${table.firstTag} != ${table.secondTag} AND ${table.firstCommit} != ${table.secondCommit} AND ${table.secondPublishedAt} - ${table.firstPublishedAt} >= 604800000`),
+  check("stable_settlement_rewards", sql`${table.token} >= 0 AND ${table.cultivation} >= 0 AND ${table.merit} >= 0 AND ${table.reviewedBy} != ${table.cultivatorId} AND length(${table.reviewReason}) BETWEEN 20 AND 500`),
+]);
+
+export const stableRewardRevocations = sqliteTable("stable_reward_revocations", {
+  settlementId: text("settlement_id").primaryKey().references(() => stableRewardSettlements.id),
+  cultivatorId: text("cultivator_id").notNull().references(() => cultivators.id),
+  mainCommit: text("main_commit").notNull(),
+  tokenOffset: integer("token_offset").notNull(),
+  cultivationOffset: integer("cultivation_offset").notNull(),
+  meritOffset: integer("merit_offset").notNull(),
+  tokenDebt: integer("token_debt").notNull(),
+  cultivationDebt: integer("cultivation_debt").notNull(),
+  meritDebt: integer("merit_debt").notNull(),
+  revokedBy: text("revoked_by").notNull().references(() => cultivators.id),
+  reason: text("reason").notNull(),
+  revokedAt: integer("revoked_at").notNull(),
+}, (table) => [
+  check("stable_revocation_amounts", sql`${table.tokenOffset} >= 0 AND ${table.cultivationOffset} >= 0 AND ${table.meritOffset} >= 0 AND ${table.tokenDebt} >= 0 AND ${table.cultivationDebt} >= 0 AND ${table.meritDebt} >= 0`),
+  check("stable_revocation_review", sql`${table.revokedBy} != ${table.cultivatorId} AND length(${table.reason}) BETWEEN 20 AND 500`),
+]);
+
+export const stableRewardRecoveryPayments = sqliteTable("stable_reward_recovery_payments", {
+  creditEventId: text("credit_event_id").primaryKey().references(() => ledgerEvents.id),
+  cultivatorId: text("cultivator_id").notNull().references(() => cultivators.id),
+  resource: text("resource").notNull(),
+  amount: integer("amount").notNull(),
+  createdAt: integer("created_at").notNull(),
+}, (table) => [
+  check("stable_recovery_payment_amount", sql`${table.amount} > 0 AND ${table.resource} IN ('token', 'cultivation', 'merit')`),
+]);
+
+export const stableRewardHoldReleases = sqliteTable("stable_reward_hold_releases", {
+  settlementId: text("settlement_id").primaryKey().references(() => stableRewardRevocations.settlementId),
+  reviewedBy: text("reviewed_by").notNull().references(() => cultivators.id),
+  reason: text("reason").notNull(),
+  reviewedAt: integer("reviewed_at").notNull(),
+}, (table) => [check("stable_hold_release_reason", sql`length(${table.reason}) BETWEEN 20 AND 500`)]);
+
 export const tokenAdjustmentRequests = sqliteTable("token_adjustment_requests", {
   id: text("id").primaryKey(),
   targetCultivatorId: text("target_cultivator_id").notNull().references(() => cultivators.id),
