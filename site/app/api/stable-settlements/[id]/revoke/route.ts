@@ -6,7 +6,7 @@ import { readSmallJson } from "@/lib/small-json";
 import { inspectCurrentRollback } from "@/lib/stable-versions";
 
 type Settlement = {
-  claim_id: string; cultivator_id: string; second_commit: string; artifact_sha256: string;
+  claim_id: string; cultivator_id: string; artifact_sha256: string;
   artifact_path: string; token: number; cultivation: number; merit: number;
 };
 
@@ -23,7 +23,7 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   const { id } = await context.params;
   const db = database();
   const settlement = await db.prepare(`
-    SELECT s.claim_id, s.cultivator_id, s.second_commit, s.artifact_sha256,
+    SELECT s.claim_id, s.cultivator_id, s.artifact_sha256,
       json_extract(c.reward_snapshot, '$.allowedPaths') AS artifact_path,
       s.token, s.cultivation, s.merit
     FROM stable_reward_settlements s JOIN claims c ON c.id = s.claim_id
@@ -33,8 +33,8 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   if (settlement.cultivator_id === reviewer.id) return Response.json({ error: "作者不能核对自己的回滚" }, { status: 403 });
   let observed;
   try {
-    observed = await inspectCurrentRollback({ secondCommit: settlement.second_commit,
-      artifactPath: settlement.artifact_path, artifactSha256: settlement.artifact_sha256 });
+    observed = await inspectCurrentRollback({ artifactPath: settlement.artifact_path,
+      artifactSha256: settlement.artifact_sha256 });
   } catch { return Response.json({ error: "无法核验当前主分支，未执行追回" }, { status: 502 }); }
   if (!observed.rolledBack) return Response.json({ error: "成果仍与正式版本一致，不能追回" }, { status: 409 });
   const balances = await db.prepare(`

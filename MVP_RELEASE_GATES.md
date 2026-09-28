@@ -6,6 +6,8 @@
 
 追加只读经济核对（2026-09-28 11:42 UTC）：按 `site/lib/economy-audit.ts` 的余额、押金和未知资源条件对生产 D1 做只读聚合，检查 1 个账号、异常账号 0、Token 冻结合计 0、应冻结合计 0；查询回执 `rows_written=0`、`changed_db=false`。D1 API 对 `PRAGMA integrity_check` 返回 `SQLITE_AUTH`，未获得文件级完整性结论。当前账本仍无事件，不能以这次零差异推断真实赛季运行后的严重经济事件为零。
 
+2026-09-28 12:08 UTC：仓库今后 Release 的不可变保护经 GitHub API 启用并读回 `enabled: true`；当时公开 Release 数仍为 0。稳定奖励的本地版本判定已新增“只接受不可变 Release”，回滚核对改为以当前成果字节为准；两项修正只通过隔离合成 API/D1 红绿验证，尚未合入 `main`、迁移或部署生产，不把保护设置本身算成三周公开可玩版本。
+
 2026-09-28 新增：平台初始化审批 [Issue #9](https://github.com/HardieBao/lingnet-ascension/issues/9) 和[草稿 PR #10](https://github.com/HardieBao/lingnet-ascension/pull/10) 已建立，但 PR 的真实检查因 main 缺少可信验证器而失败；没有独立批准、ready 或合入。稳定奖励/回滚欠账只通过本地合成 Worker/D1 演练，生产结算默认关闭；详见[本地记录](docs/verification/stable-settlement-recovery-2026-09-28.md)。以下十项仍未因此变为达标。
 
 最新线上核对：代码预检、新认领奖励快照与隔离成果工作台已在受限预览部署；后续仅通知增量更新至8f123c01，运行/样式材料与新增生成代码通知在线HTTP200且源码/构建/交付字节一致。动态首页仍实际返回Cloudflare429/1027（免费请求额度耗尽）。动态站点恢复及实际复测前，不能宣称当前预览可用，更不能放行MVP，见[9月28日发布与额度阻碍](docs/verification/pre-alpha-update-2026-09-28.md)、[工作台后续发布](docs/verification/quarantine-workbench-2026-09-28.md#后续受限预览实际发布)、[扩大通知交付](docs/licenses/bundled-notices-2026-09-28.md#后续实际受限交付)和[生成代码通知交付](docs/licenses/generated-materials-2026-09-28.md#后续实际受限交付)。

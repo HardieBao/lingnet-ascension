@@ -33,7 +33,7 @@ async function boundedJson(url: string, fetcher: typeof fetch): Promise<Record<s
 async function release(tag: string, fetcher: typeof fetch): Promise<StableVersion | null> {
   const published = await boundedJson(`${API}/releases/tags/${encodeURIComponent(tag)}`, fetcher);
   const publishedAt = typeof published.published_at === "string" ? Date.parse(published.published_at) : NaN;
-  if (published.tag_name !== tag || published.draft !== false || published.prerelease !== false ||
+  if (published.tag_name !== tag || published.draft !== false || published.prerelease !== false || published.immutable !== true ||
       !Number.isSafeInteger(published.id) || (published.id as number) < 1 || !Number.isFinite(publishedAt)) return null;
   const commit = await boundedJson(`${API}/commits/${encodeURIComponent(tag)}`, fetcher);
   if (typeof commit.sha !== "string" || !SHA.test(commit.sha)) return null;
@@ -76,15 +76,14 @@ export async function inspectStableVersions(input: {
 }
 
 export async function inspectCurrentRollback(input: {
-  secondCommit: string; artifactPath: string; artifactSha256: string;
+  artifactPath: string; artifactSha256: string;
 }, fetcher: typeof fetch = fetch): Promise<{ rolledBack: boolean; mainCommit: string }> {
-  if (!SHA.test(input.secondCommit) || !/^[a-f0-9]{64}$/i.test(input.artifactSha256) ||
+  if (!/^[a-f0-9]{64}$/i.test(input.artifactSha256) ||
       !/^[A-Za-z0-9_./-]+$/.test(input.artifactPath) || input.artifactPath.startsWith("/") ||
       input.artifactPath.split("/").includes("..")) throw new Error("Invalid settlement evidence");
   const current = await boundedJson(`${API}/commits/main`, fetcher);
   if (typeof current.sha !== "string" || !SHA.test(current.sha)) throw new Error("Current main commit unavailable");
   const mainCommit = current.sha.toLowerCase();
-  if (!await isDescendant(input.secondCommit, mainCommit, fetcher)) return { rolledBack: true, mainCommit };
   const path = input.artifactPath.split("/").map(encodeURIComponent).join("/");
   const response = await fetcher(`${API}/contents/${path}?ref=${mainCommit}`, {
     headers: { ...HEADERS, Accept: "application/vnd.github.raw+json" },

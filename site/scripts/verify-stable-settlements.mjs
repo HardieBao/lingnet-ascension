@@ -16,7 +16,9 @@ const digest = createHash("sha256").update(artifact).digest("hex");
 const publication = Date.now() - 8 * 86400000;
 let secondPublishedAt = publication + 7 * 86400000;
 let secondContent = artifact;
+let firstReleaseImmutable = true;
 let mainCommit = second, mainContent = artifact;
+let mainLineageStatus = "ahead";
 let githubCalls = 0;
 const modules = readdirSync(server, { recursive: true }).filter((path) => /\.(?:m?js)$/.test(path))
   .sort((left, right) => (left === "index.js" ? -1 : right === "index.js" ? 1 : left.localeCompare(right)))
@@ -29,6 +31,7 @@ function github(request) {
   if (url.pathname === `${root}/releases/tags/v1` || url.pathname === `${root}/releases/tags/v2`) {
     const one = url.pathname.endsWith("v1");
     return Response.json({ id: one ? 101 : 102, tag_name: one ? "v1" : "v2", draft: false, prerelease: false,
+      immutable: one ? firstReleaseImmutable : true,
       published_at: new Date(one ? publication : secondPublishedAt).toISOString() });
   }
   if (url.pathname === `${root}/commits/v1` || url.pathname === `${root}/commits/v2`) {
@@ -37,8 +40,9 @@ function github(request) {
   if (url.pathname === `${root}/commits/main`) return Response.json({ sha: mainCommit });
   if (url.pathname.startsWith(`${root}/compare/`)) {
     const comparison = url.pathname.slice(`${root}/compare/`.length);
+    if (comparison === `${second}...${"d".repeat(40)}`) return Response.json({ status: mainLineageStatus });
     if ([`${original}...${first}`, `${first}...${second}`, `${first}...main`, `${second}...main`, `${second}...${second}`,
-      `${second}...${"d".repeat(40)}`, `${"d".repeat(40)}...main`].includes(comparison)) {
+      `${"d".repeat(40)}...main`].includes(comparison)) {
       return Response.json({ status: "ahead" });
     }
   }
@@ -100,6 +104,10 @@ try {
   secondContent = "rolled back\n";
   assert.equal((await api("reviewer", "/api/stable-settlements", request)).status, 409, "Changed artifact cannot be rewarded");
   secondContent = artifact;
+  firstReleaseImmutable = false;
+  assert.equal((await api("reviewer", "/api/stable-settlements", request)).status, 409,
+    "A mutable release cannot prove the published tag still points to the same commit");
+  firstReleaseImmutable = true;
   const concurrent = await Promise.all(Array.from({ length: 8 }, () => api("reviewer", "/api/stable-settlements", request)));
   assert.equal(concurrent.filter((result) => result.status === 201).length, 1, JSON.stringify(concurrent));
   assert.equal(concurrent.filter((result) => result.status === 409).length, 7);
@@ -124,6 +132,10 @@ try {
   assert.equal((await api("reviewer", `/api/stable-settlements/${settlementId}/revoke`, revoke)).status, 409,
     "Unchanged current artifact is not a rollback");
   mainCommit = "d".repeat(40);
+  mainLineageStatus = "diverged";
+  mainContent = artifact;
+  assert.equal((await api("reviewer", `/api/stable-settlements/${settlementId}/revoke`, revoke)).status, 409,
+    "A rewritten main containing the same artifact cannot justify revocation");
   mainContent = "rolled back after public release\n";
   assert.equal((await api("author", `/api/stable-settlements/${settlementId}/revoke`, revoke)).status, 403);
   const revoked = await api("reviewer", `/api/stable-settlements/${settlementId}/revoke`, revoke);
