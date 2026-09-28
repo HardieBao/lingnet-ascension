@@ -1,0 +1,1762 @@
+{
+  "inspection": "candidate build using current project configuration and installed Vinext build preparation; not automatically the deployed build",
+  "capturedChunks": 144,
+  "matchedChunks": 142,
+  "unmatchedChunks": [
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/index-D_caT0Ig.js"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/link-K1GQ0lrE.js"
+    }
+  ],
+  "emittedJavaScript": 156,
+  "uncapturedFiles": [
+    "dist/client/budget-gateway.mjs",
+    "dist/client/runner-checkpoints.mjs",
+    "dist/client/runner-presets.mjs",
+    "dist/client/runner-sandbox.mjs",
+    "dist/client/runner-workspace.mjs",
+    "dist/client/runner.mjs",
+    "dist/server/vinext-client-assets.js",
+    "dist/server/__vite_rsc_assets_manifest.js",
+    "dist/server/ssr/vinext-client-assets.js",
+    "dist/server/ssr/__vite_rsc_assets_manifest.js",
+    "dist/client/_next/static/cff9c410-53e4-4c53-8360-32e1c1cbfaf1/_buildManifest.js",
+    "dist/client/_next/static/cff9c410-53e4-4c53-8360-32e1c1cbfaf1/_ssgManifest.js",
+    "dist/client/_next/static/chunks/index-D_caT0Ig.js",
+    "dist/client/_next/static/chunks/link-K1GQ0lrE.js"
+  ],
+  "packages": [
+    {
+      "root": "node_modules/@floating-ui/core",
+      "name": "@floating-ui/core",
+      "version": "1.8.0",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@floating-ui/core/dist/floating-ui.core.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@floating-ui/dom",
+      "name": "@floating-ui/dom",
+      "version": "1.8.0",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@floating-ui/dom/dist/floating-ui.dom.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@floating-ui/react-dom",
+      "name": "@floating-ui/react-dom",
+      "version": "2.1.9",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@floating-ui/react-dom/dist/floating-ui.react-dom.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@floating-ui/utils",
+      "name": "@floating-ui/utils",
+      "version": "0.2.12",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@floating-ui/utils/dist/floating-ui.utils.dom.mjs",
+        "node_modules/@floating-ui/utils/dist/floating-ui.utils.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/number",
+      "name": "@radix-ui/number",
+      "version": "1.1.3",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/number/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/primitive",
+      "name": "@radix-ui/primitive",
+      "version": "1.1.7",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/primitive/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-alert-dialog",
+      "name": "@radix-ui/react-alert-dialog",
+      "version": "1.1.23",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-alert-dialog/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-collection",
+      "name": "@radix-ui/react-collection",
+      "version": "1.1.15",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-collection/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-compose-refs",
+      "name": "@radix-ui/react-compose-refs",
+      "version": "1.1.5",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "rsc",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-compose-refs/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-context",
+      "name": "@radix-ui/react-context",
+      "version": "1.2.2",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-context/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-dialog",
+      "name": "@radix-ui/react-dialog",
+      "version": "1.1.23",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-dialog/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-direction",
+      "name": "@radix-ui/react-direction",
+      "version": "1.1.4",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-direction/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-dismissable-layer",
+      "name": "@radix-ui/react-dismissable-layer",
+      "version": "1.1.19",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-dismissable-layer/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-focus-guards",
+      "name": "@radix-ui/react-focus-guards",
+      "version": "1.1.6",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-focus-guards/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-focus-scope",
+      "name": "@radix-ui/react-focus-scope",
+      "version": "1.1.16",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-focus-scope/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-id",
+      "name": "@radix-ui/react-id",
+      "version": "1.1.4",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-id/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-label",
+      "name": "@radix-ui/react-label",
+      "version": "2.1.15",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-label/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-popper",
+      "name": "@radix-ui/react-popper",
+      "version": "1.3.7",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-popper/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-portal",
+      "name": "@radix-ui/react-portal",
+      "version": "1.1.17",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-portal/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-presence",
+      "name": "@radix-ui/react-presence",
+      "version": "1.1.10",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-presence/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-primitive",
+      "name": "@radix-ui/react-primitive",
+      "version": "2.1.10",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-primitive/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-progress",
+      "name": "@radix-ui/react-progress",
+      "version": "1.1.16",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-progress/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-select",
+      "name": "@radix-ui/react-select",
+      "version": "2.3.7",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-select/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-slot",
+      "name": "@radix-ui/react-slot",
+      "version": "1.3.3",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "rsc",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-slot/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-use-callback-ref",
+      "name": "@radix-ui/react-use-callback-ref",
+      "version": "1.1.4",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-use-callback-ref/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-use-controllable-state",
+      "name": "@radix-ui/react-use-controllable-state",
+      "version": "1.2.6",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-use-controllable-state/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-use-effect-event",
+      "name": "@radix-ui/react-use-effect-event",
+      "version": "0.0.5",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-use-effect-event/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-use-layout-effect",
+      "name": "@radix-ui/react-use-layout-effect",
+      "version": "1.1.4",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-use-layout-effect/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-use-previous",
+      "name": "@radix-ui/react-use-previous",
+      "version": "1.1.4",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-use-previous/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-use-size",
+      "name": "@radix-ui/react-use-size",
+      "version": "1.1.4",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-use-size/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@radix-ui/react-visually-hidden",
+      "name": "@radix-ui/react-visually-hidden",
+      "version": "1.2.11",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@radix-ui/react-visually-hidden/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/@vitejs/plugin-rsc",
+      "name": "@vitejs/plugin-rsc",
+      "version": "0.5.35",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "rsc",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/@vitejs/plugin-rsc/dist/core/rsc.js",
+        "node_modules/@vitejs/plugin-rsc/dist/core/ssr.js",
+        "node_modules/@vitejs/plugin-rsc/dist/react/rsc/client.js",
+        "node_modules/@vitejs/plugin-rsc/dist/react/rsc/server.js",
+        "node_modules/@vitejs/plugin-rsc/dist/react/ssr.js",
+        "node_modules/@vitejs/plugin-rsc/dist/shared-BWJvctW6.js",
+        "node_modules/@vitejs/plugin-rsc/dist/shared-CXQb6hk9.js",
+        "node_modules/@vitejs/plugin-rsc/dist/shared-Y4B6DJ99.js"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/aria-hidden",
+      "name": "aria-hidden",
+      "version": "1.2.6",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/aria-hidden/dist/es2015/index.js"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/class-variance-authority",
+      "name": "class-variance-authority",
+      "version": "0.7.1",
+      "declaredLicense": "Apache-2.0",
+      "vendored": false,
+      "environments": [
+        "client",
+        "rsc",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/class-variance-authority/dist/index.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/clsx",
+      "name": "clsx",
+      "version": "2.1.1",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "rsc",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/clsx/dist/clsx.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/get-nonce",
+      "name": "get-nonce",
+      "version": "1.0.1",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/get-nonce/dist/es2015/index.js"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/lucide-react",
+      "name": "lucide-react",
+      "version": "1.47.0",
+      "declaredLicense": "ISC",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/lucide-react/dist/esm/Icon.mjs",
+        "node_modules/lucide-react/dist/esm/context.mjs",
+        "node_modules/lucide-react/dist/esm/createLucideIcon.mjs",
+        "node_modules/lucide-react/dist/esm/icons/check.mjs",
+        "node_modules/lucide-react/dist/esm/icons/chevron-down.mjs",
+        "node_modules/lucide-react/dist/esm/icons/chevron-up.mjs",
+        "node_modules/lucide-react/dist/esm/icons/x.mjs",
+        "node_modules/lucide-react/dist/esm/shared/src/build/buildLucideIconForReact.mjs",
+        "node_modules/lucide-react/dist/esm/shared/src/build/buildLucideIconNode.mjs",
+        "node_modules/lucide-react/dist/esm/shared/src/build/defaultAttributes.mjs",
+        "node_modules/lucide-react/dist/esm/shared/src/utils/hasA11yProp.mjs",
+        "node_modules/lucide-react/dist/esm/shared/src/utils/mergeClasses.mjs",
+        "node_modules/lucide-react/dist/esm/shared/src/utils/toCamelCase.mjs",
+        "node_modules/lucide-react/dist/esm/shared/src/utils/toKebabCase.mjs",
+        "node_modules/lucide-react/dist/esm/shared/src/utils/toLucideIconData.mjs",
+        "node_modules/lucide-react/dist/esm/shared/src/utils/toPascalCase.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/react",
+      "name": "react",
+      "version": "19.3.0",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "rsc",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/react/cjs/react-jsx-runtime.production.js",
+        "node_modules/react/cjs/react-jsx-runtime.react-server.production.js",
+        "node_modules/react/cjs/react.production.js",
+        "node_modules/react/cjs/react.react-server.production.js",
+        "node_modules/react/index.js",
+        "node_modules/react/jsx-runtime.js",
+        "node_modules/react/jsx-runtime.react-server.js",
+        "node_modules/react/react.react-server.js"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/react-dom",
+      "name": "react-dom",
+      "version": "19.3.0",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "rsc",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/react-dom/cjs/react-dom-client.production.js",
+        "node_modules/react-dom/cjs/react-dom-server-legacy.browser.production.js",
+        "node_modules/react-dom/cjs/react-dom-server.edge.production.js",
+        "node_modules/react-dom/cjs/react-dom.production.js",
+        "node_modules/react-dom/cjs/react-dom.react-server.production.js",
+        "node_modules/react-dom/client.js",
+        "node_modules/react-dom/index.js",
+        "node_modules/react-dom/react-dom.react-server.js",
+        "node_modules/react-dom/server.edge.js",
+        "node_modules/react-dom/static.edge.js"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/react-remove-scroll",
+      "name": "react-remove-scroll",
+      "version": "2.7.2",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/react-remove-scroll/dist/es2015/Combination.js",
+        "node_modules/react-remove-scroll/dist/es2015/SideEffect.js",
+        "node_modules/react-remove-scroll/dist/es2015/UI.js",
+        "node_modules/react-remove-scroll/dist/es2015/aggresiveCapture.js",
+        "node_modules/react-remove-scroll/dist/es2015/handleScroll.js",
+        "node_modules/react-remove-scroll/dist/es2015/medium.js",
+        "node_modules/react-remove-scroll/dist/es2015/sidecar.js"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/react-remove-scroll-bar",
+      "name": "react-remove-scroll-bar",
+      "version": "2.3.8",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/react-remove-scroll-bar/dist/es2015/component.js",
+        "node_modules/react-remove-scroll-bar/dist/es2015/constants.js",
+        "node_modules/react-remove-scroll-bar/dist/es2015/utils.js"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/react-server-dom-webpack",
+      "name": "react-server-dom-webpack",
+      "version": "19.3.0",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "rsc",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/react-server-dom-webpack/cjs/react-server-dom-webpack-client.edge.production.js",
+        "node_modules/react-server-dom-webpack/cjs/react-server-dom-webpack-server.edge.production.js",
+        "node_modules/react-server-dom-webpack/client.edge.js",
+        "node_modules/react-server-dom-webpack/server.edge.js",
+        "node_modules/react-server-dom-webpack/static.edge.js"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/react-style-singleton",
+      "name": "react-style-singleton",
+      "version": "2.2.3",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/react-style-singleton/dist/es2015/component.js",
+        "node_modules/react-style-singleton/dist/es2015/hook.js",
+        "node_modules/react-style-singleton/dist/es2015/singleton.js"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/scheduler",
+      "name": "scheduler",
+      "version": "0.28.0",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client"
+      ],
+      "modules": [
+        "node_modules/scheduler/cjs/scheduler.production.js",
+        "node_modules/scheduler/index.js"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/tailwind-merge",
+      "name": "tailwind-merge",
+      "version": "3.6.0",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "rsc",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/tailwind-merge/dist/bundle-mjs.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/tslib",
+      "name": "tslib",
+      "version": "2.8.1",
+      "declaredLicense": "0BSD",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/tslib/tslib.es6.mjs"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/use-callback-ref",
+      "name": "use-callback-ref",
+      "version": "1.3.3",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/use-callback-ref/dist/es2015/assignRef.js",
+        "node_modules/use-callback-ref/dist/es2015/useMergeRef.js",
+        "node_modules/use-callback-ref/dist/es2015/useRef.js"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/use-sidecar",
+      "name": "use-sidecar",
+      "version": "1.1.3",
+      "declaredLicense": "MIT",
+      "vendored": false,
+      "environments": [
+        "client",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/use-sidecar/dist/es2015/exports.js",
+        "node_modules/use-sidecar/dist/es2015/medium.js"
+      ],
+      "vendoredModules": []
+    },
+    {
+      "root": "node_modules/vinext",
+      "name": "vinext",
+      "version": "1.0.0-beta.5",
+      "declaredLicense": "MIT",
+      "vendored": true,
+      "environments": [
+        "client",
+        "rsc",
+        "ssr"
+      ],
+      "modules": [
+        "node_modules/vinext/dist/build/google-fonts/build-url.js",
+        "node_modules/vinext/dist/build/google-fonts/sort-variants.js",
+        "node_modules/vinext/dist/client/app-nav-failure-handler.js",
+        "node_modules/vinext/dist/client/client-rewrite-matcher.js",
+        "node_modules/vinext/dist/client/instrumentation-client-state.js",
+        "node_modules/vinext/dist/client/navigation-runtime.js",
+        "node_modules/vinext/dist/config/config-matchers.js",
+        "node_modules/vinext/dist/config/request-context.js",
+        "node_modules/vinext/dist/deps/.pnpm/pathslash@0.1.0/deps/pathslash/dist/index.js",
+        "node_modules/vinext/dist/routing/route-matching.js",
+        "node_modules/vinext/dist/routing/route-pattern.js",
+        "node_modules/vinext/dist/routing/route-trie.js",
+        "node_modules/vinext/dist/routing/utils.js",
+        "node_modules/vinext/dist/server/app-action-request.js",
+        "node_modules/vinext/dist/server/app-bfcache-id.js",
+        "node_modules/vinext/dist/server/app-bfcache-identity.js",
+        "node_modules/vinext/dist/server/app-browser-hydration.js",
+        "node_modules/vinext/dist/server/app-browser-mpa-navigation.js",
+        "node_modules/vinext/dist/server/app-browser-rsc-redirect.js",
+        "node_modules/vinext/dist/server/app-client-reference-preloader.js",
+        "node_modules/vinext/dist/server/app-elements-wire.js",
+        "node_modules/vinext/dist/server/app-elements.js",
+        "node_modules/vinext/dist/server/app-fallback-renderer.js",
+        "node_modules/vinext/dist/server/app-history-state.js",
+        "node_modules/vinext/dist/server/app-hook-warning-suppression.js",
+        "node_modules/vinext/dist/server/app-interception-context-header.js",
+        "node_modules/vinext/dist/server/app-layout-param-observation.js",
+        "node_modules/vinext/dist/server/app-mounted-slots-header.js",
+        "node_modules/vinext/dist/server/app-page-boundary-render.js",
+        "node_modules/vinext/dist/server/app-page-boundary.js",
+        "node_modules/vinext/dist/server/app-page-cache-finalizer.js",
+        "node_modules/vinext/dist/server/app-page-cache-render.js",
+        "node_modules/vinext/dist/server/app-page-cache.js",
+        "node_modules/vinext/dist/server/app-page-dispatch.js",
+        "node_modules/vinext/dist/server/app-page-element-builder.js",
+        "node_modules/vinext/dist/server/app-page-execution.js",
+        "node_modules/vinext/dist/server/app-page-head.js",
+        "node_modules/vinext/dist/server/app-page-http-access-fallback-metadata.js",
+        "node_modules/vinext/dist/server/app-page-method.js",
+        "node_modules/vinext/dist/server/app-page-params.js",
+        "node_modules/vinext/dist/server/app-page-probe.js",
+        "node_modules/vinext/dist/server/app-page-render-identity.js",
+        "node_modules/vinext/dist/server/app-page-render-observation.js",
+        "node_modules/vinext/dist/server/app-page-render.js",
+        "node_modules/vinext/dist/server/app-page-request.js",
+        "node_modules/vinext/dist/server/app-page-response.js",
+        "node_modules/vinext/dist/server/app-page-route-wiring.js",
+        "node_modules/vinext/dist/server/app-page-search-params-observation.js",
+        "node_modules/vinext/dist/server/app-page-segment-plan.js",
+        "node_modules/vinext/dist/server/app-page-segment-state.js",
+        "node_modules/vinext/dist/server/app-page-stream.js",
+        "node_modules/vinext/dist/server/app-post-middleware-context.js",
+        "node_modules/vinext/dist/server/app-prerender-endpoints.js",
+        "node_modules/vinext/dist/server/app-prerender-static-params.js",
+        "node_modules/vinext/dist/server/app-render-dependency.js",
+        "node_modules/vinext/dist/server/app-request-context.js",
+        "node_modules/vinext/dist/server/app-route-handler-cache.js",
+        "node_modules/vinext/dist/server/app-route-handler-dispatch.js",
+        "node_modules/vinext/dist/server/app-route-handler-execution.js",
+        "node_modules/vinext/dist/server/app-route-handler-policy.js",
+        "node_modules/vinext/dist/server/app-route-handler-response.js",
+        "node_modules/vinext/dist/server/app-route-handler-runtime.js",
+        "node_modules/vinext/dist/server/app-route-module-loader.js",
+        "node_modules/vinext/dist/server/app-route-tree-prefetch.js",
+        "node_modules/vinext/dist/server/app-router-entry.js",
+        "node_modules/vinext/dist/server/app-rsc-cache-busting.js",
+        "node_modules/vinext/dist/server/app-rsc-embedded-chunks.js",
+        "node_modules/vinext/dist/server/app-rsc-error-handler.js",
+        "node_modules/vinext/dist/server/app-rsc-errors.js",
+        "node_modules/vinext/dist/server/app-rsc-handler.js",
+        "node_modules/vinext/dist/server/app-rsc-redirect-flight.js",
+        "node_modules/vinext/dist/server/app-rsc-render-mode.js",
+        "node_modules/vinext/dist/server/app-rsc-request-normalization.js",
+        "node_modules/vinext/dist/server/app-rsc-response-finalizer.js",
+        "node_modules/vinext/dist/server/app-rsc-route-matching.js",
+        "node_modules/vinext/dist/server/app-segment-config.js",
+        "node_modules/vinext/dist/server/app-ssr-entry.js",
+        "node_modules/vinext/dist/server/app-ssr-error-meta.js",
+        "node_modules/vinext/dist/server/app-ssr-router-instance.js",
+        "node_modules/vinext/dist/server/app-ssr-stream.js",
+        "node_modules/vinext/dist/server/app-static-generation.js",
+        "node_modules/vinext/dist/server/artifact-compatibility.js",
+        "node_modules/vinext/dist/server/before-interactive-head.js",
+        "node_modules/vinext/dist/server/bfcache-identity.js",
+        "node_modules/vinext/dist/server/cache-control.js",
+        "node_modules/vinext/dist/server/cache-headers.js",
+        "node_modules/vinext/dist/server/cache-proof.js",
+        "node_modules/vinext/dist/server/client-reuse-manifest.js",
+        "node_modules/vinext/dist/server/client-trace-metadata.js",
+        "node_modules/vinext/dist/server/cookie-utils.js",
+        "node_modules/vinext/dist/server/csp.js",
+        "node_modules/vinext/dist/server/default-global-error-module.js",
+        "node_modules/vinext/dist/server/default-global-not-found-module.js",
+        "node_modules/vinext/dist/server/default-not-found-module.js",
+        "node_modules/vinext/dist/server/defer-until-stream-consumed.js",
+        "node_modules/vinext/dist/server/dev-initial-server-error.js",
+        "node_modules/vinext/dist/server/edge-api-runtime.js",
+        "node_modules/vinext/dist/server/fetch-handler.js",
+        "node_modules/vinext/dist/server/headers.js",
+        "node_modules/vinext/dist/server/html.js",
+        "node_modules/vinext/dist/server/http-error-responses.js",
+        "node_modules/vinext/dist/server/image-optimization.js",
+        "node_modules/vinext/dist/server/implicit-tags.js",
+        "node_modules/vinext/dist/server/instrumentation.js",
+        "node_modules/vinext/dist/server/isr-cache.js",
+        "node_modules/vinext/dist/server/isr-decision.js",
+        "node_modules/vinext/dist/server/middleware-response-headers.js",
+        "node_modules/vinext/dist/server/navigation-planner.js",
+        "node_modules/vinext/dist/server/navigation-trace.js",
+        "node_modules/vinext/dist/server/next-error-digest.js",
+        "node_modules/vinext/dist/server/normalize-path.js",
+        "node_modules/vinext/dist/server/open-redirect.js",
+        "node_modules/vinext/dist/server/operation-token.js",
+        "node_modules/vinext/dist/server/pages-client-assets.js",
+        "node_modules/vinext/dist/server/pages-data-route.js",
+        "node_modules/vinext/dist/server/pages-i18n.js",
+        "node_modules/vinext/dist/server/pregenerated-concrete-paths.js",
+        "node_modules/vinext/dist/server/prerender-route-params.js",
+        "node_modules/vinext/dist/server/prerender-work-unit-setup.js",
+        "node_modules/vinext/dist/server/request-pipeline.js",
+        "node_modules/vinext/dist/server/rsc-completion-metadata.js",
+        "node_modules/vinext/dist/server/rsc-stream-hints.js",
+        "node_modules/vinext/dist/server/server-action-not-found.js",
+        "node_modules/vinext/dist/server/server-globals.js",
+        "node_modules/vinext/dist/server/skip-cache-proof.js",
+        "node_modules/vinext/dist/server/static-layout-client-reuse-proof.js",
+        "node_modules/vinext/dist/server/streaming-metadata.js",
+        "node_modules/vinext/dist/server/worker-revalidation-context.js",
+        "node_modules/vinext/dist/server/worker-utils.js",
+        "node_modules/vinext/dist/shims/app-router-scroll-state.js",
+        "node_modules/vinext/dist/shims/app-router-scroll.js",
+        "node_modules/vinext/dist/shims/before-interactive-context.js",
+        "node_modules/vinext/dist/shims/cache-handler.js",
+        "node_modules/vinext/dist/shims/cache-request-state.js",
+        "node_modules/vinext/dist/shims/cdn-cache.js",
+        "node_modules/vinext/dist/shims/client-hook-error.js",
+        "node_modules/vinext/dist/shims/default-global-error.js",
+        "node_modules/vinext/dist/shims/default-not-found.js",
+        "node_modules/vinext/dist/shims/error-boundary-navigation.js",
+        "node_modules/vinext/dist/shims/error-boundary.js",
+        "node_modules/vinext/dist/shims/fetch-cache.js",
+        "node_modules/vinext/dist/shims/font-google-base.js",
+        "node_modules/vinext/dist/shims/font-local.js",
+        "node_modules/vinext/dist/shims/font-utils.js",
+        "node_modules/vinext/dist/shims/hash-scroll.js",
+        "node_modules/vinext/dist/shims/headers.js",
+        "node_modules/vinext/dist/shims/i18n-context.js",
+        "node_modules/vinext/dist/shims/internal/als-registry.js",
+        "node_modules/vinext/dist/shims/internal/app-page-props-cache-key.js",
+        "node_modules/vinext/dist/shims/internal/app-prefetch-fetch-queue.js",
+        "node_modules/vinext/dist/shims/internal/app-route-prefetch-policy.js",
+        "node_modules/vinext/dist/shims/internal/app-router-context.js",
+        "node_modules/vinext/dist/shims/internal/cookie-serialize.js",
+        "node_modules/vinext/dist/shims/internal/hybrid-client-route-owner-direct.js",
+        "node_modules/vinext/dist/shims/internal/hybrid-client-route-owner.js",
+        "node_modules/vinext/dist/shims/internal/link-status-registry.js",
+        "node_modules/vinext/dist/shims/internal/make-hanging-promise.js",
+        "node_modules/vinext/dist/shims/internal/pages-router-accessor.js",
+        "node_modules/vinext/dist/shims/internal/route-pattern-for-warning.js",
+        "node_modules/vinext/dist/shims/internal/router-context.js",
+        "node_modules/vinext/dist/shims/internal/work-unit-async-storage.js",
+        "node_modules/vinext/dist/shims/layout-segment-context.js",
+        "node_modules/vinext/dist/shims/link-prefetch.js",
+        "node_modules/vinext/dist/shims/link.js",
+        "node_modules/vinext/dist/shims/metadata.js",
+        "node_modules/vinext/dist/shims/navigation-context-state.js",
+        "node_modules/vinext/dist/shims/navigation-errors.js",
+        "node_modules/vinext/dist/shims/navigation-state.js",
+        "node_modules/vinext/dist/shims/navigation.js",
+        "node_modules/vinext/dist/shims/ppr-fallback-shell.js",
+        "node_modules/vinext/dist/shims/readonly-url-search-params.js",
+        "node_modules/vinext/dist/shims/request-context.js",
+        "node_modules/vinext/dist/shims/root-params.js",
+        "node_modules/vinext/dist/shims/script-nonce-context.js",
+        "node_modules/vinext/dist/shims/server.js",
+        "node_modules/vinext/dist/shims/slot.js",
+        "node_modules/vinext/dist/shims/streamed-icons.js",
+        "node_modules/vinext/dist/shims/thenable-params.js",
+        "node_modules/vinext/dist/shims/unified-request-context.js",
+        "node_modules/vinext/dist/shims/unrecognized-action-error.js",
+        "node_modules/vinext/dist/shims/url-safety.js",
+        "node_modules/vinext/dist/shims/url-utils.js",
+        "node_modules/vinext/dist/utils/asset-prefix.js",
+        "node_modules/vinext/dist/utils/base-path.js",
+        "node_modules/vinext/dist/utils/cache-control-metadata.js",
+        "node_modules/vinext/dist/utils/compare.js",
+        "node_modules/vinext/dist/utils/deployment-id.js",
+        "node_modules/vinext/dist/utils/domain-locale.js",
+        "node_modules/vinext/dist/utils/encode-cache-tag.js",
+        "node_modules/vinext/dist/utils/external-url.js",
+        "node_modules/vinext/dist/utils/hash.js",
+        "node_modules/vinext/dist/utils/html-limited-bots.js",
+        "node_modules/vinext/dist/utils/middleware-request-headers.js",
+        "node_modules/vinext/dist/utils/navigation-signal.js",
+        "node_modules/vinext/dist/utils/number.js",
+        "node_modules/vinext/dist/utils/parse-cookie.js",
+        "node_modules/vinext/dist/utils/promise.js",
+        "node_modules/vinext/dist/utils/protocol-headers.js",
+        "node_modules/vinext/dist/utils/query.js",
+        "node_modules/vinext/dist/utils/record.js",
+        "node_modules/vinext/dist/utils/redirect-digest.js",
+        "node_modules/vinext/dist/utils/regex-safety.js",
+        "node_modules/vinext/dist/utils/sorted-array.js",
+        "node_modules/vinext/dist/utils/text-stream.js"
+      ],
+      "vendoredModules": [
+        "node_modules/vinext/dist/deps/.pnpm/pathslash@0.1.0/deps/pathslash/dist/index.js"
+      ]
+    }
+  ],
+  "unresolved": [],
+  "excludedModuleCategories": [
+    "virtual-module"
+  ],
+  "chunks": [
+    {
+      "environment": "rsc",
+      "file": "dist/server/index.js",
+      "sha256": "0f736b12e5df10137e90b9b200d7b45230bf5ab2f004038bae6a013eb2b3fa0e"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/app-page-cache-Bf31vgXh.js",
+      "sha256": "e51fd42536d9a6291180b8efd97acd0285aab2fd6c89d160ad53049f3529c415"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/app-page-cache-finalizer-CE8unYMZ.js",
+      "sha256": "29137e41f8f6a001a6e00a0a5a7ae616b38d08a5acdb5357e78a9480115453ff"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/app-page-cache-render-bIdPUn64.js",
+      "sha256": "255a74267889a45328218e771205edad4bf6867c8ab5664db0dd84f822da3a18"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/app-page-stream-CZtd4ETo.js",
+      "sha256": "e26ce161c2e7ff6e243c2e25ffe533416396664852a10b4e11a123f63539c575"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/app-prerender-endpoints-B8LFnfum.js",
+      "sha256": "b2f270dcf1de75bfa38afd1eea209c59006c113110a736bbd99e8da36d48ecac"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/app-prerender-static-params-CQx_SEq8.js",
+      "sha256": "e1e7ce70cee71e66e94f5d2be7aa1be4d6d19e8001649fce7ad7f650aa2b8a71"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/app-route-handler-dispatch-D9Ut3348.js",
+      "sha256": "01d0aeb9b04e6328cfb6420aa488ba86ac594fbaac3b8a89de2d48a74dc89753"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/app-segment-config-tAWm0e82.js",
+      "sha256": "5b15bfee2a1eeebbc951237931a53383e37184c1dbe221c62a7941a88bf105a5"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/app-static-generation-BX8cz43B.js",
+      "sha256": "71451721ae4a42108e9ed32567cd9d9861beb4952215b0fd57ffc373cd3edc01"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/artifact-safety-WO9HcTVv.js",
+      "sha256": "f1ef984d758d98101647a79a11304bd2072da365350577ca9197f3d3d34dd0cb"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/auth-CmZ8iKgA.js",
+      "sha256": "8550289c4cd8ab1bbe2513bd0d4d23b6f845d4b18d84a599585fcd714fb6f3a9"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/cache-headers-BxRE6Ox3.js",
+      "sha256": "ad73ecd80517a2f908344198fefc387d24b7c42502f242da54c88604144907fb"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/claim-lease-DajK-KDa.js",
+      "sha256": "1ec5c7abb2546f7e415f26bf2cefb683ab3fe34ea3cad396270006a80cc5f47f"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/claims-_wuUZEQf.js",
+      "sha256": "bbc4c592a8088be01534ab6f27c34d4760f5661df68a07b397fbd4f7637e7f72"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/code-artifact-CEeXki_d.js",
+      "sha256": "caaae291cc1e046329fe7bcf551622f6e764055a50c45d65ed5f09d1f06eb926"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/equipment-BC1FhWV3.js",
+      "sha256": "99fbeba979644da69e43b459a41b11d2880b73995a48283ad4fabef9449d5e69"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/framework~index-BjwbVW54.js",
+      "sha256": "9237ede0d6bc56379a860440ff1f27c836c8ea74f2a28611f607214bf557a85d"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/framework~index~page~page~layout~page~page~page~app-page-cache-render~app-page-cache~app-ro~fi3ky6r1-BDwuqTcc.js",
+      "sha256": "25c6373699eb0a8a03f004807731d7a51599a584d3d1372dd8f2eeaa083b4a8e"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/framework~index~page~page~page~page~page~app-route-handler-dispatch-D8t-A-k7.js",
+      "sha256": "e04391b9b0c1481a9f40c9e34e961f707b7b563df49ef848840e37ab2fb6a7e8"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/framework~index~route~route~route~route~route~route~route~route~route~route~route~route~rou~beynpo3g-DuqsB0SW.js",
+      "sha256": "9c80e51b4a3c2902c89187beacc697e4dcb6b671764e1f25691b8396352ba23a"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/github-integration-CISXixSS.js",
+      "sha256": "7b3c234795d90e547a455c0bbe70816370c499829f75a2e2468e7a4995e6f977"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/headers-BYiFhFdN.js",
+      "sha256": "9112659afd41eb0a8ffc4cbff2289a22e91a3c72e08ff14bc6c144cb40b481f1"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/implicit-tags-Bfb-Kzau.js",
+      "sha256": "7c75af85bc3fec85e47dd319bb29716f7d08c07d4885daf5a34a6c192ff017a4"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/isr-cache-BeRgWais.js",
+      "sha256": "3da3b3637a5848834b479d9aa8f1307301c2de50c0dcf6561c54437b63557043"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/isr-decision-ChlrVOGC.js",
+      "sha256": "eae73a1c259a046a3514a487817d312d63e82b6e33b4f20295e9dcade844f384"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/link-MFQMzN11.js",
+      "sha256": "95468037f5de991d4855cb362178ebd650f1a74bd04692875d2c1608d7ae5f5d"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/mission-unlock-DriW9RJV.js",
+      "sha256": "ed370c8c9b47b1854cb9e9b2f37adf047ca7c1779395dbd8f212a2956cb085eb"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/missions-NmRNwnBB.js",
+      "sha256": "6190077f687a6b685565019e1d075a45d02accddabdbb4707c8a8060161fadba"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/navigation-context-state-Couvuuko.js",
+      "sha256": "c09506b648286880234ec7e78dc06d23f0da4ddeb34652e4ad115ce20732b096"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/navigation.react-server-D3ar6rV3.js",
+      "sha256": "c649fdd811bdde93cdcf22fcb9b0da884b4bb2f90f4e14080f95fd7cc49ee17d"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/page-B0CydD4T.js",
+      "sha256": "ac524e50853902a77c58feecc91c54a1369ff798c04a12827fc24a5977eb4d13"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/page-C_wKg8vH.js",
+      "sha256": "7c1a44213d631be34443ec7231e665d58a4f15de5f3556c39f358439c08cd458"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/page-Ggusdlp0.js",
+      "sha256": "2355a78a8faeb05a271591f9acc907b289443f6f9ce4ea49223f9364e45cfd90"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/page-cMQpKACT.js",
+      "sha256": "483516d829d6426aa0f85388dba3b51e3d40542a8576383096b89b6add6ef6d8"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/page-gmtGQdDN.js",
+      "sha256": "619527869cd4a3e77c37abfeaf550b02bcaa7d97e55ab8ec8ec3430c0f9b4139"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/realm-state-Cmw98RLu.js",
+      "sha256": "71ec46c2bf7e3ae070b7056d1cdada1c6eafd9ecd4440e4f65f63a638b99ac0a"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/realm-trial-runtime-DtKr1ubk.js",
+      "sha256": "795dc20c0dbd03cba2399f016eaf8b7cc89eae279bb6f976ee7cf19a7c99b403"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/realm-trials-Bke_EHHM.js",
+      "sha256": "eee606ca4a8806ee4f74f8b0f8e9d3790659fba2364be749b7cb30e962a363ed"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/request-origin-B8JfVdkG.js",
+      "sha256": "66083f4f0fdbbf39063cc6ab171d5afad098c1f6ec15690c2e33bbdb44ed3421"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/revalidation-source-C5VD43h-.js",
+      "sha256": "9d8bd6006c42ce5d03dd63fbcdba1936c70f1fb3ea9f54eeceb3185f64544952"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/revalidations-dN-5JuWg.js",
+      "sha256": "8ddc72fbad9c49f9765a3fd6b329cc379d4885fce3bb8d354b013038ccfd6573"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/rewards-CcJ1u88X.js",
+      "sha256": "c78921733e53ea4cafac91989d058b297c0a51e67b39c9d8a49b445deb1436a8"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/rolldown-runtime-hePW80VL.js",
+      "sha256": "580ad8c58061a4dde99bde0a56905e382f0568516ee2f5b84dbfb52085709021"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/root-params-F8fYPVa2.js",
+      "sha256": "fccea8912ced3abe8c21dd3c870d271a4c80a3a3052553a045c13dad9a34b9d1"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-BAGFGTTh.js",
+      "sha256": "bc8fd2e35f486707c23e6c1ab30c2c32f4f80256b705bbe067fec7d2b7a2384f"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-BDioYYEo.js",
+      "sha256": "d42b8b85de5090d8f710c7b88caa803e50e61fd4cf63ab9f0fdc2897cfad5804"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-BPWoam2-.js",
+      "sha256": "3391392ddc355f21e5e70b9ccf544d62f1557760ed5959c65e470c984e999e98"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-BRwdmmRg.js",
+      "sha256": "0e56054aa6c573bf64d4dd5a1f81f22cc0a48cf4054b287d5f6bc7159603f3b4"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-BeTotgxl.js",
+      "sha256": "368ed3b919b8a234cecaac92a4dec8101da7de907339c4b6ecad3f8f06f614a0"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-BxRzl85w.js",
+      "sha256": "b249311fcfb5209082cbf02296ef7de0282610826f5964c359841d81220b6b1b"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-C1ScgjXM.js",
+      "sha256": "1a1b9ad4d5e6a33f07a21cd4968571b185b551daf8cc7b83a19f942782ecccc5"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-C1Z2QnLL.js",
+      "sha256": "352ef1542eaae1406c54a52b577cab9ce0a6571c195c7dd54d36f59b6306241d"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-C5PayOUK.js",
+      "sha256": "a2dfd132a900b9f2041f00737c24a1400319b25a768a838010808cff1ae2def9"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-CVG8ilUn.js",
+      "sha256": "9a989419068045554ecf8d7c0b42ba1004ebf2502261064a9ab9c3528c4a079f"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-CWVZwijO.js",
+      "sha256": "fb89055505efa83e5a01f38099456cfc0679771c4aafc04fe50a613175c667cd"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-CWr51KDg.js",
+      "sha256": "b7b3048dfd45455394b813124a493a3cac153d7cb37bf7dcd843a995f4305620"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-CY8w4IAK.js",
+      "sha256": "d94a113ebff562158b78b2291dfcd88c3d79b52fb32072ca1bebf56020628669"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-Cebpqipy.js",
+      "sha256": "cb14754dba935b6b9ded26d35b2caa0d572a69b63ec5e0e4f2b1adb7616a8763"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-Cfn2PkZ4.js",
+      "sha256": "1e0a44d7584ed07a81fd6ecbfe8ff439f8af5422dc3eafd682247789e97e909c"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-CormUJfU.js",
+      "sha256": "4ea81874791fb5da0df0d2c1907a487c6c5cdc77cd683a9fbfc7de14910d9411"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-DQvSrr4S.js",
+      "sha256": "b60da909b4eff9730747e89c5d0d16acd8abec0ebc1b36fac4243c1c5ac565a2"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-DXfDICwq.js",
+      "sha256": "278ed7f5b15de07e909b39a5ab1cc35b3708e2127b6f6aad7f5719f42b9db4a7"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-DZpJPAPe.js",
+      "sha256": "874b1ac444a35b7066d44b4e118323670cf91def3722a44dcd7c2493134f4a19"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-DctKqQS3.js",
+      "sha256": "8ef234bf6ff0dcedc10151169212c01091920c2e3bcca23ffee420c85b9f3019"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-Dq3dMWew.js",
+      "sha256": "1a9b32969fa732e9567da174ed650d0dda67dd6d3d2c551bf430e5188127804c"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-DsCdDPKb.js",
+      "sha256": "d5c138d18817d28222ce9ccac09dc5747e511b8bb3f05cf995d55ca412a82a8b"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-Dv4-G45S.js",
+      "sha256": "f81737fc3795dded026df4ae8af52f6d292d998f3c338f472f4113141ed4d386"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-IIsZ6HIc.js",
+      "sha256": "73232431abb80620547b97f4f2ce2f77ed7e7b125ae34bec36081b01c5f7c890"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-IkmOZ87d.js",
+      "sha256": "77662d55c6ea7a8f0e250c8287707596fd66626c35eadd89477ce47123391a76"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-RTFn1Tmn.js",
+      "sha256": "2a3b14fbabd88bc5061f895696c0f815de0393f7a900fe26d8d3488aae7ab86c"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-v3XtM6OB.js",
+      "sha256": "00f7054eb29e26e4ef7e277dbc7316fd5fdb8ffaf35061047c8c0e68864a4490"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/route-verx8u--.js",
+      "sha256": "a767e8a7a573554fb28f75d54965e034ec918541e543a6adb9d6571c5cb2759b"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/runtime-CiP6P92t.js",
+      "sha256": "90569febd3924b03aa9a66b4353d6c809eb27d4bd775e12cbc096b7886cb55cc"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/server-BCryPqp_.js",
+      "sha256": "52b9ed78e6ff82441b17f5a32b177502a372dc5b396e37f122146b83230b2efe"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/small-json-f5HM26UM.js",
+      "sha256": "73f863e308c4c94c260c485e317d518283f0ecaf62611a8d0db1e347095817c2"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/submission-limit-CO17-WJc.js",
+      "sha256": "94902c1a578ea98314a0952df1002ae8cd6199bdd7096853c332428be28865b2"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/text-stream-WDB803zl.js",
+      "sha256": "cd7cbdc7018e150807392b614ae5f7b5b881b0dbe9413f746cde17500397e212"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/token-adjustment-auth-BQxczwo7.js",
+      "sha256": "2117a2946a38293401220e2d039136ccb4ceb52aacbadbbfadec3d69e2b7ab1d"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/unified-request-context-BDqnKgsD.js",
+      "sha256": "60f4d3eeed43342ab7a2efca78c335da9456ccabfbaf1d785d7fea12be9ba5c9"
+    },
+    {
+      "environment": "rsc",
+      "file": "dist/server/_next/static/verifier-CYh8aJ9M.js",
+      "sha256": "911dc4453646a30463756431b4ee8f62a4eba602ed063f97cb0a94c6584a5432"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/adjustment-console-oxKVrFK5.js",
+      "sha256": "b099ba4bd2aba801d77c9a3172c338dd4795ca9216c023eaafe47760695817c8"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/alert-dialog-n9h-y2N6.js",
+      "sha256": "7e627153ed2279f46f570092bd3b0dfc07156391d0122b8df05b5ea9826630cb"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/app-elements-xeiSkgaS.js",
+      "sha256": "2d50f8d05d119ad701d09f3adfb3a66d74192c0bd7b54845061301717f56833f"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/app-route-prefetch-policy-PRlA8FYI.js",
+      "sha256": "34ccfaad577f70a63411120c2dce8ff5c864cdf787aa8ec00e7ec5971fb45273"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/app-rsc-cache-busting-BpmUvDMP.js",
+      "sha256": "771a3c7f58ac96318e7445b10ead8298bbc432bef720e3ef6b14b52ceff6232c"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/app-rsc-render-mode-fsLZfEO0.js",
+      "sha256": "4b9102d2c65825a0650295220d7556fa4b24dad1cefa91aea7d8ca1fb4b1e717"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/button-5rKFsXC6.js",
+      "sha256": "ddfd8a63a7e54642a63abf60c955be2c11c4d3d8b61c072667408a8402f0de67"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/deployment-id-omnKpZ2w.js",
+      "sha256": "4eac4cf9a0df6d00ff027aa233b3538eda51aa7285a21b459e353c3308b919e3"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/dist-D8ODtdSF.js",
+      "sha256": "dabe7df493227989d7eab9ccdf77a903d50d7663c72c8e13f44093daff48529d"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/dist-YZDI3W4n.js",
+      "sha256": "c370752fa79dac55652c19295ca5cf65aa5fe75827cca758f243dcf45572ac72"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/equipment-actions-D3IOVcEt.js",
+      "sha256": "03cd9a618babb1ca0407904c5b501b2efa8eb6d7b8972c1f4ef1230870bf8220"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/framework-2k-VFE-j.js",
+      "sha256": "64b19b6b695d4a29b12f2cfda47d7ad2ee8b4c0ba092ee3b1c431cd906d7d623"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/hash-B9TVtkv9.js",
+      "sha256": "fba69692645d8206561e12edf1653f0f7931d0f14f8f753ec3be5031dfd004d1"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/headers-CjJR8pP7.js",
+      "sha256": "51357797d917682bc122c37cb645bca75ec31f20c9fec6eaa36624907b551e45"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/hybrid-client-route-owner-SIiAJX6e.js",
+      "sha256": "3faef8a861582573b90cf567c7be64213b90c5db571ce922497a06521556041f"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/layout-segment-context-BM8phsqs.js",
+      "sha256": "513d1bd384dba5f0ec1ccb981897b764266a1439c49ad106a44bc9eab4e8577d"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/mission-actions-BD1EtKxE.js",
+      "sha256": "7ee96583375866a4980aed65afcaefdee48256a2de21b0bf8b9e00722ea6294d"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/navigation-errors-CYYxbanh.js",
+      "sha256": "7fbbe9472f8b861781774dd53cb5f5c170dce4b4e19ce337e29a7be8dab6364a"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/progress-D626_yvf.js",
+      "sha256": "45f4f06da94544eb29d1c613d0eb987cc712912a12bf19025c234beb56e39f3f"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/protocol-headers-De2985Ry.js",
+      "sha256": "9b15d2c8452ddb9df5d6f2cfb3a23dd576a10dc0450fb72565d9f293abab0edd"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/query-DugiHe4Q.js",
+      "sha256": "0a1973f3c6175c2655da2d796c0b590a07352ee8c22aed1a49cd90513fa34b02"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/realm-actions-DLJsARIu.js",
+      "sha256": "244eddb8a029644f11e158ff3aab663efe5ad259f3d0bdefa0391ef3e82b7ac8"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/record-BGze3w87.js",
+      "sha256": "b9bdb7b7d0e4844d241dba61104d18111d61ef92af3f137d15749531d276f9cf"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/review-actions-DyGw7Pzw.js",
+      "sha256": "6a0e218ef6a1d28e739c16e81f182660813eef4ede110fb313389bd6bf8a4280"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/rolldown-runtime-hePW80VL.js",
+      "sha256": "580ad8c58061a4dde99bde0a56905e382f0568516ee2f5b84dbfb52085709021"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/streamed-icons-CFj3hsoG.js",
+      "sha256": "3d0fcecaf6751e8c0c1bc0c97abcea16d2f9ff1e6a289fa164e69c5e6f460faf"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/table-2GYGwgvN.js",
+      "sha256": "a83c50c8afe4ba5764802de7763278d8a264cf316ccba3fd91c26eb546a53f04"
+    },
+    {
+      "environment": "client",
+      "file": "dist/client/_next/static/chunks/utils-DojpP95n.js",
+      "sha256": "1084378bd6ab2062240a259d5c16130dbff532c7f5b041639fdae9f9214f9fe1"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/index.js",
+      "sha256": "2e46643e692bc0e99da97fcadf6100fb651ad6fc27663a006ad96c476d44b211"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/adjustment-console-C2tpyV3P.js",
+      "sha256": "d707fb4889058be0618f1c8414a6d4d6a579a1a75543313dad0fff3d5d5f8eec"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/alert-dialog-9Ekel_sL.js",
+      "sha256": "d131059d928dcd72b15f53f61c844c1d2a88c7789940327506f30ff9790c67d0"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/app-elements-7KDOYFvG.js",
+      "sha256": "fa98dbfcab32a8d326dfb117c6c77360168fda120daca8927d42c985e94bfe41"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/app-nav-failure-handler-BW2-CIfV.js",
+      "sha256": "f6a9d62fb9873f70236c9c3eb21337fa5337df87f170dcb04565daeffb5f2f62"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/app-prefetch-fetch-queue-eWpA2HBX.js",
+      "sha256": "da4d9a279d0f0264e0512603c8ae98acfa8dd2d5dbeefdf7d02d3c1cc99a9e06"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/app-router-scroll-ooh-Eu_Y.js",
+      "sha256": "501066f6bad7e9f03c8258376c6fa8748354bcdd44f6bbd0397ffb688bee4ca9"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/app-router-scroll-state-Ddg0JoEg.js",
+      "sha256": "297c12527396b1f852c51490039491cf1c80b472707adfaa87ec136f815a3526"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/button-CifSaqQ3.js",
+      "sha256": "e6578f10f2764ee8932e80edf3ab7fcb2c9ff67d97970791ab1f23a6186c87ba"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/dist-BTpgzpzP.js",
+      "sha256": "d17a8ac62a10a60a62217c50c1673193aeea33c875cecac97402859a4d067c16"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/dist-DSvNsMto.js",
+      "sha256": "afc1beaa233086dc99a4b902e52a7e46e09d49b90c6f25c52225dcbecc8af24b"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/equipment-actions-D4jtZ8j0.js",
+      "sha256": "88684524caa10726923bb2a91f3477402376676e075f73c8f59a94bea14bb7bb"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/error-boundary-BALsvqEh.js",
+      "sha256": "e7cf12b0ee51580e01245dd9d8e32f796a8fc41f5db46bcc958ee6d1421e10ce"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/html-limited-bots-DIgWdpIA.js",
+      "sha256": "675084142498eea80ba97b0ddc45f4adf3653f3c3aebf06daf45add34063aa09"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/hybrid-client-route-owner-DpVs3O56.js",
+      "sha256": "0af254f3a9e8d020955faa1c5f9b8fdf7aaaa9a5f0266cdefeb7aa0896f4921a"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/jsx-runtime-7_pICZxP.js",
+      "sha256": "99453e2dcd1e92e38f3b1e9689b0ca9ebb6b424281190aabbffc711e01bcef84"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/layout-segment-context-SmYtErxG.js",
+      "sha256": "976ee7c92ca2ca5697171b0049d24e1508f42a8919b9bf1b398c9a9c834c9549"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/link-BxFyLGux.js",
+      "sha256": "1c8f1a9f954170605e7e32ad62ad5ffe6b0acada8e76618659bfd89d5275ee3b"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/mission-actions-jrqd7ie_.js",
+      "sha256": "1f8fb655805bf0efebceabec4340278818da224dddb8d35589e8c6216231c2a9"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/navigation-D0s94AVz.js",
+      "sha256": "6b7ec28135d2ebe4d9cddd0ef1dcc313516b0126cb248e7da56e28193e820587"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/navigation-context-state-2-8tV1ZB.js",
+      "sha256": "f679e5c325f864ce7df9716e37997659a6ebf3aa4f308bfe53b2aadee8d642ce"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/navigation-errors-D5mcf3ZW.js",
+      "sha256": "5d3aea187e7c5eac1007acbd4087b9f61edb7105ac6d5900d9860bd7bf047101"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/navigation-server-DO2ORvuK.js",
+      "sha256": "63eb7469f03c69be237925e9daef88e2ca9c7c8d87196e0a44d5cf26e57a5082"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/progress-C9CMkH7Q.js",
+      "sha256": "aaff3a1b2cbab38c9ba058d5dc958da35aa42194fbb3bf6d04eac8603dfaf232"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/react-DJibUF-Z.js",
+      "sha256": "3eb2c840817ad432a1745abaf30bc0bcac8d05cf95da242f0224500a931ebbe1"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/react-dom-XTWFYW0t.js",
+      "sha256": "8d419543f05df3c6bd7e171df57d402f8f5718dabd8a98ec78de087b98c41bf9"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/realm-actions-BewOf4sV.js",
+      "sha256": "813d33b8671cab206d638545e9f9d0a963e371858fcd60627a6e25dbaeabe38e"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/record-BGze3w87.js",
+      "sha256": "b9bdb7b7d0e4844d241dba61104d18111d61ef92af3f137d15749531d276f9cf"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/review-actions-lwVwZGVV.js",
+      "sha256": "9d3dca628be564fb2bc8fe2118de8adc502de256e50a597cb29bc62fba625251"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/static.edge-L70sXKfV.js",
+      "sha256": "da5d2b6c73bf5564ab2b5fd62f6b0569eaf5f85ad666a4d8bf5d7d5470f81ebe"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/streamed-icons-4nOaHHG1.js",
+      "sha256": "18b36d6f3a07de81470d308fd2da3953df5f98d5934f7d250ddb3140b5fd17be"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/table-BsD7kr97.js",
+      "sha256": "a486b7703b4cb8b4472f9c71a9a9dfb5ad41caae9e531244334d74ae6fd8bbe6"
+    },
+    {
+      "environment": "ssr",
+      "file": "dist/server/ssr/_next/static/utils-DojpP95n.js",
+      "sha256": "1084378bd6ab2062240a259d5c16130dbff532c7f5b041639fdae9f9214f9fe1"
+    }
+  ],
+  "sourceBasis": {
+    "publishedPreview": "a20b4d25ee877be0831f58194287d1b222d1561e",
+    "businessCode": "fa4e92c398a3c308d211afd28ac06e5dabd41ace",
+    "actualWorkspaceHead": "35802fe8167c5a24e8d66787d14b984aa1da3aa5",
+    "temporaryInspectorSha256": "e2f19df253fe35b7f384ae76abe1ae88407734d5171a10c38b69b00429821b8c",
+    "originalInventorySha256": "8de896ea4f4336afed26b50eefdd2309d3efd1812065834dcfc9fe29b74bea08",
+    "note": "The diagnostic candidate was not deployed. Root-package ownership does not prove ownership of vendored modules, virtual/generated code, CSS, assets or uncaptured files."
+  }
+}

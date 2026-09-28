@@ -10,6 +10,10 @@ auth.json
 node_modules/
 dist/
 build/
+!site/build/
+site/build/*
+!site/build/sites-vite-plugin.ts
+!site/build/sites-vite-plugin.LICENSE
 .next/
 .vercel/
 coverage/
@@ -26,3 +30,6 @@ logs/
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# Temporary design drafts (no application runtime)
+.superdesign/tmp/

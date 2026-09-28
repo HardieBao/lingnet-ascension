@@ -67,6 +67,8 @@ Token 不代表现金、API 余额或链上资产。MVP 不支持充值、提现
 - [贡献指南](./CONTRIBUTING.md)
 - [Pre-Alpha 声明](./PRE_ALPHA.md)
 - [决策记录](./docs/adr/)
+- [站点本地运行与检查](./site/README.md)
+- [MVP 发布证据表](./MVP_RELEASE_GATES.md)
 
 ## 如何参与
 
@@ -91,6 +93,9 @@ Token 不代表现金、API 余额或链上资产。MVP 不支持充值、提现
 ├─ CONTRIBUTING.md
 ├─ CODE_OF_CONDUCT.md
 ├─ PRE_ALPHA.md
+├─ site/                 # Pre-Alpha 站点与本地 Runner
+├─ ci/                   # 可信基线验证脚本
+├─ .github/workflows/    # 只读 PR 回归门禁
 ├─ LICENSE
 ├─ LICENSES/
 ├─ docs/

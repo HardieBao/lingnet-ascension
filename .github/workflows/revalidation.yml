@@ -1,0 +1,48 @@
+name: LingNet independent revalidation
+run-name: 'LingNet revalidation #${{ github.event.pull_request.number }}'
+
+on:
+  pull_request:
+    branches: [main]
+    paths: ['revalidations/*.json']
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+
+jobs:
+  revalidate:
+    name: Revalidate integrated result
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout report
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          path: candidate
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Checkout trusted verifier
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.base.sha }}
+          path: trusted
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Recheck fixed integrated result
+        id: verify
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          REVALIDATOR_GITHUB_ID: ${{ github.event.pull_request.user.id }}
+        run: node --experimental-strip-types trusted/ci/verify-revalidation.mjs trusted candidate "$BASE_SHA" "$REVALIDATOR_GITHUB_ID"
+      - name: Replay passed
+        if: steps.verify.outputs.revalidation_result == 'passed'
+        run: printf '%s\n' 'Trusted replay completed; target checks passed. Human adoption is still required.'
+      - name: Replay failed
+        if: steps.verify.outputs.revalidation_result == 'failed'
+        run: printf '%s\n' 'Trusted replay completed; target checks failed. Review the evidence before adopting this finding.'
