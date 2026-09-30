@@ -16,6 +16,7 @@ import { listMissions } from "@/lib/missions";
 import { getRealmState } from "@/lib/realm-state";
 import { realmNames, type Realm } from "@/lib/realms";
 import { officialTokenBonus } from "@/lib/rewards";
+import { isRecoveryReviewer } from "@/lib/stable-reward-workbench";
 import { artifactPathForMission } from "@/lib/verifier";
 import { MissionActions } from "./mission-actions";
 import { RealmActions } from "./realm-actions";
@@ -105,6 +106,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
             {cultivator ? <Link href="/ledger">我的账本</Link> : null}
             {cultivator && isMaintainer(cultivator) ? <Link href="/review">宗门复核</Link> : null}
             {cultivator && isMaintainer(cultivator) ? <Link href="/economy">经济对账</Link> : null}
+            {cultivator && (isMaintainer(cultivator) || isRecoveryReviewer(cultivator, Reflect.get(env, "RECOVERY_APPROVER_GITHUB_ID"))) ? <Link href="/stable-rewards">稳定奖励复核</Link> : null}
             <a href="#rules">修炼法则</a>
           </nav>
           <div className="side-foot">模型凭据留在本机 · 当前为 Pre-Alpha<br /><a href="https://github.com/HardieBao/lingnet-ascension/tree/pre-alpha-2026-09-27" target="_blank" rel="noopener noreferrer">查看对应源码 · AGPL-3.0</a></div>
