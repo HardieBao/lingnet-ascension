@@ -20,6 +20,8 @@ const repository = "HardieBao/lingnet-ascension";
 let runId = 99, runAttempt = 1, reportHead = head, outcome = "passed";
 let workflow = ".github/workflows/revalidation.yml";
 let reportDigest = digest;
+const safeFindings = "合成 HTTP 复验报告，验证身份、来源与采纳事务，不是实际 CI 或真实社区成果。";
+let reportFindings = safeFindings;
 let outboundCalls = 0;
 const reportPath = `revalidations/${submission}.json`;
 const browserMode = process.argv.includes("--browser");
@@ -43,7 +45,7 @@ async function github(request) {
     const bytes = Buffer.from(JSON.stringify({ version: 1, submissionId: submission, missionId: "GOV-001",
       artifactPath: "GOVERNANCE.md", integratedCommit: original, artifactSha256: reportDigest,
       validatorBaseCommit: base, reporterGitHubId: "202",
-      findings: "合成 HTTP 复验报告，验证身份、来源与采纳事务，不是实际 CI 或真实社区成果。" }));
+      findings: reportFindings }));
     return Response.json({ type: "file", encoding: "base64", size: bytes.length, sha: "fixture-blob", content: bytes.toString("base64") });
   }
   if (path === `/repos/${repository}/actions/runs/${runId}`) return Response.json({
@@ -170,6 +172,12 @@ try {
   reportDigest = "f".repeat(64);
   assert.equal((await api("fixture-reporter", "/api/revalidations", request)).status, 409);
   reportDigest = digest;
+  reportFindings = "合成报告中的访问凭据 sk-" + "x".repeat(24);
+  const unsafeReport = await api("fixture-reporter", "/api/revalidations", request);
+  assert.equal(unsafeReport.status, 409, "Credential-shaped findings must not enter the report ledger");
+  assert(!JSON.stringify(unsafeReport.body).includes(reportFindings), "Refusals do not echo findings");
+  assert.equal((await api("fixture-reporter", "/api/revalidations")).body.revalidations.length, 0);
+  reportFindings = safeFindings;
   const created = await api("fixture-reporter", "/api/revalidations", request);
   assert.equal(created.status, 201, JSON.stringify(created.body));
   const id = created.body.revalidation.id;
@@ -204,6 +212,11 @@ try {
     "UPDATE claims SET cultivator_id='fixture-author' WHERE id='fixture-claim'",
     `UPDATE submissions SET cultivator_id='fixture-author',reviewer_id='fixture-adopter' WHERE id='${submission}'`,
   ]);
+  reportFindings = "合成报告中的私人配置 PASSWORD=synthetic_private_password";
+  assert.equal((await api("fixture-adopter", `/api/revalidations/${id}/decision`, decision)).status, 409,
+    "A changed public report containing credentials cannot be adopted");
+  assert.equal((await api("fixture-reporter", "/api/revalidations")).body.revalidations[0].decision, null);
+  reportFindings = safeFindings;
   runAttempt = 2;
   assert.equal((await api("fixture-adopter", `/api/revalidations/${id}/decision`, decision)).status, 409);
   assert.equal((await api("fixture-reporter", "/api/realms")).body.progress.independentReviews, 0);

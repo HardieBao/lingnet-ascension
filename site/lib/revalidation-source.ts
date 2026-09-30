@@ -1,5 +1,6 @@
 import { verifyFileIntegration } from "./github-integration.ts";
 import { parseRevalidationReport, type RevalidationReport } from "./revalidation-report.ts";
+import { artifactSafetyIssues } from "./artifact-safety.ts";
 
 const REPOSITORY = "HardieBao/lingnet-ascension";
 const API = `https://api.github.com/repos/${REPOSITORY}`;
@@ -58,6 +59,9 @@ export async function inspectRevalidationPullRequest(
       report.artifactPath !== expected.artifactPath || report.integratedCommit !== expected.integratedCommit.toLowerCase() ||
       report.artifactSha256 !== expected.artifactSha256.toLowerCase() || report.validatorBaseCommit !== baseSha.toLowerCase() ||
       report.reporterGitHubId !== githubUserId) return { passed: false, reason: "报告未绑定本次正式成果、摘要、验证器基线与复验人" };
+  if (artifactSafetyIssues(report.findings).length) {
+    return { passed: false, reason: "复验观察包含疑似密钥或私人凭据；若是实际凭据，请先撤销或轮换，再清理报告并重新复验" };
+  }
   const run = await json(`${API}/actions/runs/${runId}`, fetcher) as {
     id?: number; name?: string; path?: string; event?: string; status?: string; conclusion?: string; head_sha?: string;
     actor?: { id?: number }; run_attempt?: number; display_title?: string;
