@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
+import { createServer } from "node:http";
 import { createHash, createHmac } from "node:crypto";
 import { mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { basename, dirname, join, resolve, sep } from "node:path";
+import { basename, dirname, extname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Miniflare, Response, convertV4MiniflareOptions } from "miniflare";
 
@@ -21,6 +22,8 @@ let workflow = ".github/workflows/revalidation.yml";
 let reportDigest = digest;
 let outboundCalls = 0;
 const reportPath = `revalidations/${submission}.json`;
+const browserMode = process.argv.includes("--browser");
+let browserServer;
 async function github(request) {
   outboundCalls++;
   const url = new URL(request.url);
@@ -89,6 +92,14 @@ async function seed(statements) {
   const response = await mf.dispatchFetch("http://fixture.local/fixture/setup", { method: "POST", body: JSON.stringify(statements) });
   assert.equal(response.status, 200, await response.text());
 }
+async function page(actor, path) {
+  const response = await mf.dispatchFetch(`http://fixture.local${path}`, {
+    headers: actor ? { Cookie: cookie(actor) } : {},
+  });
+  const html = await response.text();
+  assert.equal(response.status, 200, html.slice(0, 500));
+  return html;
+}
 const request = { submissionId: submission, pullNumber: 7, runId: 99 };
 const decision = { decision: "accept", reason: "维护者独立核对合成报告，验证采纳事务而非真实贡献" };
 try {
@@ -107,6 +118,46 @@ try {
     `INSERT INTO submissions (id,claim_id,cultivator_id,artifact_key,artifact_sha256,state,reviewer_id,integrated_commit,integrated_at,created_at)
       VALUES ('${submission}','fixture-claim','fixture-author','fixture.md','${digest}','accepted','fixture-adopter','${original}',10,2)`,
   ]);
+  if (browserMode) {
+    const client = join(site, "dist", "client");
+    const assets = new Set(readdirSync(client, { recursive: true }).map((path) => path.replaceAll("\\", "/")));
+    let origin;
+    browserServer = createServer(async (request, response) => {
+      try {
+        const url = new URL(request.url, origin);
+        if (url.pathname === "/fixture/sign-in") {
+          const actor = url.searchParams.get("actor");
+          if (!["author", "reporter", "adopter", "outsider"].includes(actor)) {
+            response.writeHead(400); response.end("Choose a synthetic actor"); return;
+          }
+          response.writeHead(303, { Location: actor === "adopter" ? "/review" : "/revalidations",
+            "Set-Cookie": `${cookie(`fixture-${actor}`)}; Path=/; HttpOnly; SameSite=Lax` });
+          response.end(); return;
+        }
+        const asset = url.pathname.slice(1);
+        if (assets.has(asset) && /\.(?:js|css|svg)$/.test(asset)) {
+          response.setHeader("Content-Type", { ".js": "application/javascript", ".css": "text/css", ".svg": "image/svg+xml" }[extname(asset)]);
+          response.end(readFileSync(join(client, asset))); return;
+        }
+        const chunks = [];
+        for await (const chunk of request) chunks.push(chunk);
+        const result = await mf.dispatchFetch(origin + request.url, { method: request.method, headers: request.headers,
+          ...(["GET", "HEAD"].includes(request.method) ? {} : { body: Buffer.concat(chunks) }) });
+        response.writeHead(result.status, Object.fromEntries(result.headers)); response.end(Buffer.from(await result.arrayBuffer()));
+      } catch { response.writeHead(500); response.end("Synthetic fixture request failed"); }
+    });
+    await new Promise((done) => browserServer.listen(0, "127.0.0.1", done));
+    origin = `http://127.0.0.1:${browserServer.address().port}`;
+    console.log(`LOCAL_REVALIDATION_UI=${origin}`);
+    console.log("Use /fixture/sign-in?actor=reporter|adopter|author|outsider. PR 7 / run 99 are synthetic. Send stop to close.");
+    await new Promise((done) => { process.stdin.once("data", done); process.once("SIGINT", done); process.once("SIGTERM", done); });
+  } else {
+  assert.match(await page(null, "/revalidations"), /请先使用 GitHub 登录/);
+  const available = await page("fixture-reporter", "/revalidations");
+  assert.match(available, /核验并提交报告/);
+  assert.match(available, /revalidations\/11111111-1111-4111-8111-111111111111\.json/);
+  assert.doesNotMatch(await page("fixture-author", "/revalidations"), /核验并提交报告/,
+    "Original authors must not see a self-revalidation form");
   assert.equal((await api(null, "/api/revalidations")).status, 401);
   assert.equal((await api("fixture-reporter", "/api/revalidations", request, { Origin: "https://foreign.invalid" })).status, 403);
   const before = outboundCalls;
@@ -122,6 +173,14 @@ try {
   const created = await api("fixture-reporter", "/api/revalidations", request);
   assert.equal(created.status, 201, JSON.stringify(created.body));
   const id = created.body.revalidation.id;
+  assert.doesNotMatch(await page("fixture-reporter", "/revalidations"), /核验并提交报告/,
+    "A pending record removes the target from the new-report form");
+  assert.doesNotMatch(await page("fixture-outsider", "/revalidations"), new RegExp(id), "Report history is private to its reporter");
+  assert.match(await page("fixture-adopter", "/review"), /采纳复验报告/);
+  assert.doesNotMatch(await page("fixture-outsider", "/review"), /采纳复验报告/);
+  assert.equal((await api("fixture-adopter", `/api/revalidations/${id}/decision`, {
+    decision: "accept", reason: "合成凭据检查 " + "sk-" + "x".repeat(24),
+  })).status, 400, "Review reasons must not persist credential-shaped content");
   assert.equal((await api("fixture-reporter", "/api/realms")).body.progress.independentReviews, 0);
   assert.equal((await api("fixture-reporter", "/api/revalidations", request)).status, 409);
   const ownerList = await api("fixture-reporter", "/api/revalidations");
@@ -135,6 +194,9 @@ try {
     "UPDATE claims SET cultivator_id='fixture-adopter' WHERE id='fixture-claim'",
     `UPDATE submissions SET cultivator_id='fixture-adopter',reviewer_id='fixture-outsider' WHERE id='${submission}'`,
   ]);
+  const authorReview = await page("fixture-adopter", "/review");
+  assert.match(authorReview, /需要其他独立维护者处理这份报告/);
+  assert.doesNotMatch(authorReview, /采纳复验报告/);
   const beforeAuthorDecision = outboundCalls;
   assert.equal((await api("fixture-adopter", `/api/revalidations/${id}/decision`, decision)).status, 403);
   assert.equal(outboundCalls, beforeAuthorDecision, "Original author is denied even when configured as maintainer");
@@ -151,6 +213,9 @@ try {
   reportHead = head;
   assert.equal((await api("fixture-adopter", `/api/revalidations/${id}/decision`, {
     decision: "reject", reason: "合成驳回演练，保留原证据并要求新的运行记录" })).status, 200);
+  const rejectedPage = await page("fixture-reporter", "/revalidations");
+  assert.match(rejectedPage, /已驳回/);
+  assert.match(rejectedPage, /核验并提交报告/);
   assert.equal((await api("fixture-reporter", "/api/realms")).body.progress.independentReviews, 0);
   assert.equal((await api("fixture-reporter", "/api/revalidations", request)).status, 409, "A rejected run cannot be reused");
   runId = 100;
@@ -170,12 +235,18 @@ try {
   assert.equal(finalList.length, 2);
   assert.equal(finalList.find((item) => item.id === id).decision, "reject");
   assert.equal(finalList.find((item) => item.id === retryId).decision, "accept");
+  const acceptedPage = await page("fixture-reporter", "/revalidations");
+  assert.match(acceptedPage, /已采纳/);
+  assert.match(acceptedPage, /原成果复跑失败/);
+  assert.doesNotMatch(acceptedPage, /核验并提交报告/);
   await seed([`UPDATE submissions SET artifact_sha256='${"f".repeat(64)}' WHERE id='${submission}'`]);
   assert.equal((await api("fixture-reporter", "/api/realms")).body.progress.independentReviews, 0,
     "Changed original evidence no longer grants a current qualification");
   console.log("Built API → D1 → realm qualification verified: one adopted record, zero minted Token; 20 decisions settle once.");
   console.log("Synthetic sessions/GitHub evidence only; this is not a real PR, human adoption or community result.");
+  }
 } finally {
+  if (browserServer) { browserServer.closeAllConnections(); await new Promise((done) => browserServer.close(done)); }
   await mf.dispose();
   const target = realpathSync(temporary);
   assert(target.startsWith(realpathSync(tmpdir()) + sep) && basename(target).startsWith("lingnet-revalidation-http-"));
