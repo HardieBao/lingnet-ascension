@@ -246,6 +246,7 @@ try {
   console.log("Synthetic sessions/GitHub evidence only; this is not a real PR, human adoption or community result.");
   }
 } finally {
+  process.stdin.pause();
   if (browserServer) { browserServer.closeAllConnections(); await new Promise((done) => browserServer.close(done)); }
   await mf.dispose();
   const target = realpathSync(temporary);
