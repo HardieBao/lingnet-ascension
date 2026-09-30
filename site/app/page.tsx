@@ -103,6 +103,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
             <a href="#realm">境界天梯</a>
             <Link href="/equipment">装备阁</Link>
             {cultivator ? <Link href="/ledger">我的账本</Link> : null}
+            {cultivator?.provider === "github" ? <Link href="/revalidations">独立复验</Link> : null}
             {cultivator && isMaintainer(cultivator) ? <Link href="/review">宗门复核</Link> : null}
             {cultivator && isMaintainer(cultivator) ? <Link href="/economy">经济对账</Link> : null}
             <a href="#rules">修炼法则</a>
