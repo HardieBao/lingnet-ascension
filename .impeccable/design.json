@@ -1,0 +1,352 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-30T22:11:39.905Z",
+  "title": "Design System: 灵网纪元",
+  "extensions": {
+    "colorMeta": {
+      "background": {
+        "role": "neutral",
+        "displayName": "页面底面",
+        "tonalRamp": [
+          "oklch(15% 0.0157 211.17)",
+          "oklch(26.43% 0.0157 211.17)",
+          "oklch(37.86% 0.0157 211.17)",
+          "oklch(49.29% 0.0157 211.17)",
+          "oklch(60.71% 0.0157 211.17)",
+          "oklch(72.14% 0.0157 211.17)",
+          "oklch(83.57% 0.0157 211.17)",
+          "oklch(95% 0.0157 211.17)"
+        ]
+      },
+      "foreground": {
+        "role": "neutral",
+        "displayName": "正文",
+        "tonalRamp": [
+          "oklch(15% 0.0125 164.79)",
+          "oklch(26.43% 0.0125 164.79)",
+          "oklch(37.86% 0.0125 164.79)",
+          "oklch(49.29% 0.0125 164.79)",
+          "oklch(60.71% 0.0125 164.79)",
+          "oklch(72.14% 0.0125 164.79)",
+          "oklch(83.57% 0.0125 164.79)",
+          "oklch(95% 0.0125 164.79)"
+        ]
+      },
+      "card": {
+        "role": "neutral",
+        "displayName": "控件底面",
+        "tonalRamp": [
+          "oklch(15% 0.0198 207.24)",
+          "oklch(26.43% 0.0198 207.24)",
+          "oklch(37.86% 0.0198 207.24)",
+          "oklch(49.29% 0.0198 207.24)",
+          "oklch(60.71% 0.0198 207.24)",
+          "oklch(72.14% 0.0198 207.24)",
+          "oklch(83.57% 0.0198 207.24)",
+          "oklch(95% 0.0198 207.24)"
+        ]
+      },
+      "primary": {
+        "role": "primary",
+        "displayName": "薄荷主操作",
+        "tonalRamp": [
+          "oklch(15% 0.0771 177.20)",
+          "oklch(26.43% 0.0771 177.20)",
+          "oklch(37.86% 0.0771 177.20)",
+          "oklch(49.29% 0.0771 177.20)",
+          "oklch(60.71% 0.0771 177.20)",
+          "oklch(72.14% 0.0771 177.20)",
+          "oklch(83.57% 0.0771 177.20)",
+          "oklch(95% 0.0771 177.20)"
+        ]
+      },
+      "primary-foreground": {
+        "role": "neutral",
+        "displayName": "主操作深色文字",
+        "tonalRamp": [
+          "oklch(15% 0.0297 199.00)",
+          "oklch(26.43% 0.0297 199.00)",
+          "oklch(37.86% 0.0297 199.00)",
+          "oklch(49.29% 0.0297 199.00)",
+          "oklch(60.71% 0.0297 199.00)",
+          "oklch(72.14% 0.0297 199.00)",
+          "oklch(83.57% 0.0297 199.00)",
+          "oklch(95% 0.0297 199.00)"
+        ]
+      },
+      "muted": {
+        "role": "neutral",
+        "displayName": "次操作底面",
+        "tonalRamp": [
+          "oklch(15% 0.0240 204.74)",
+          "oklch(26.43% 0.0240 204.74)",
+          "oklch(37.86% 0.0240 204.74)",
+          "oklch(49.29% 0.0240 204.74)",
+          "oklch(60.71% 0.0240 204.74)",
+          "oklch(72.14% 0.0240 204.74)",
+          "oklch(83.57% 0.0240 204.74)",
+          "oklch(95% 0.0240 204.74)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "轻分隔线",
+        "tonalRamp": [
+          "oklch(15% 0.0336 207.69)",
+          "oklch(26.43% 0.0336 207.69)",
+          "oklch(37.86% 0.0336 207.69)",
+          "oklch(49.29% 0.0336 207.69)",
+          "oklch(60.71% 0.0336 207.69)",
+          "oklch(72.14% 0.0336 207.69)",
+          "oklch(83.57% 0.0336 207.69)",
+          "oklch(95% 0.0336 207.69)"
+        ]
+      },
+      "preset-muted-foreground": {
+        "role": "neutral",
+        "displayName": "本机辅助文字",
+        "tonalRamp": [
+          "oklch(15% 0.0278 176.14)",
+          "oklch(26.43% 0.0278 176.14)",
+          "oklch(37.86% 0.0278 176.14)",
+          "oklch(49.29% 0.0278 176.14)",
+          "oklch(60.71% 0.0278 176.14)",
+          "oklch(72.14% 0.0278 176.14)",
+          "oklch(83.57% 0.0278 176.14)",
+          "oklch(95% 0.0278 176.14)"
+        ]
+      },
+      "preset-input-border": {
+        "role": "neutral",
+        "displayName": "本机控件边界",
+        "tonalRamp": [
+          "oklch(15% 0.0358 190.60)",
+          "oklch(26.43% 0.0358 190.60)",
+          "oklch(37.86% 0.0358 190.60)",
+          "oklch(49.29% 0.0358 190.60)",
+          "oklch(60.71% 0.0358 190.60)",
+          "oklch(72.14% 0.0358 190.60)",
+          "oklch(83.57% 0.0358 190.60)",
+          "oklch(95% 0.0358 190.60)"
+        ]
+      },
+      "preset-action-border": {
+        "role": "neutral",
+        "displayName": "次操作边界",
+        "tonalRamp": [
+          "oklch(15% 0.0392 184.22)",
+          "oklch(26.43% 0.0392 184.22)",
+          "oklch(37.86% 0.0392 184.22)",
+          "oklch(49.29% 0.0392 184.22)",
+          "oklch(60.71% 0.0392 184.22)",
+          "oklch(72.14% 0.0392 184.22)",
+          "oklch(83.57% 0.0392 184.22)",
+          "oklch(95% 0.0392 184.22)"
+        ]
+      },
+      "preset-action-hover": {
+        "role": "neutral",
+        "displayName": "次操作悬停",
+        "tonalRamp": [
+          "oklch(15% 0.0320 192.65)",
+          "oklch(26.43% 0.0320 192.65)",
+          "oklch(37.86% 0.0320 192.65)",
+          "oklch(49.29% 0.0320 192.65)",
+          "oklch(60.71% 0.0320 192.65)",
+          "oklch(72.14% 0.0320 192.65)",
+          "oklch(83.57% 0.0320 192.65)",
+          "oklch(95% 0.0320 192.65)"
+        ]
+      },
+      "preset-primary-hover": {
+        "role": "primary",
+        "displayName": "本机主操作悬停",
+        "tonalRamp": [
+          "oklch(15% 0.0610 175.44)",
+          "oklch(26.43% 0.0610 175.44)",
+          "oklch(37.86% 0.0610 175.44)",
+          "oklch(49.29% 0.0610 175.44)",
+          "oklch(60.71% 0.0610 175.44)",
+          "oklch(72.14% 0.0610 175.44)",
+          "oklch(83.57% 0.0610 175.44)",
+          "oklch(95% 0.0610 175.44)"
+        ]
+      },
+      "preset-disclosure": {
+        "role": "primary",
+        "displayName": "本机折叠提示",
+        "tonalRamp": [
+          "oklch(15% 0.0467 170.43)",
+          "oklch(26.43% 0.0467 170.43)",
+          "oklch(37.86% 0.0467 170.43)",
+          "oklch(49.29% 0.0467 170.43)",
+          "oklch(60.71% 0.0467 170.43)",
+          "oklch(72.14% 0.0467 170.43)",
+          "oklch(83.57% 0.0467 170.43)",
+          "oklch(95% 0.0467 170.43)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "body": {
+        "displayName": "平台正文",
+        "purpose": "既有平台字体栈；不声明新的展示字体。"
+      },
+      "preset-body": {
+        "displayName": "本机正文",
+        "purpose": "本机操作说明与按钮文字。"
+      },
+      "preset-headline": {
+        "displayName": "本机页标题",
+        "purpose": "本机功法殿标题；窄屏降为 26px。"
+      },
+      "preset-title": {
+        "displayName": "本机分区标题",
+        "purpose": "保存与已存分区。"
+      },
+      "preset-row-title": {
+        "displayName": "本机行标题",
+        "purpose": "预设名称与导入区标题。"
+      },
+      "preset-label": {
+        "displayName": "本机字段标签",
+        "purpose": "输入字段可见名称。"
+      },
+      "preset-help": {
+        "displayName": "本机辅助文字",
+        "purpose": "限制说明和页脚。"
+      },
+      "preset-meta": {
+        "displayName": "本机元数据",
+        "purpose": "预设可用性说明。"
+      }
+    },
+    "shadows": [],
+    "motion": [],
+    "breakpoints": [
+      {
+        "name": "preset-stack",
+        "value": "700px"
+      },
+      {
+        "name": "platform-mobile",
+        "value": "760px"
+      },
+      {
+        "name": "platform-two-column",
+        "value": "1200px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "本机主按钮",
+      "kind": "button",
+      "refersTo": "preset-button-primary",
+      "description": "现有保存按钮的可用状态；演示不调用本机服务。",
+      "html": "<button class=\"ds-preset-primary\" type=\"button\">保存到本机槽位</button>",
+      "css": ".ds-preset-primary{font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:16px;line-height:1.65;color:var(--foreground,#e4eee9);min-height:44px;border:1px solid #446560;border-radius:6px;padding:9px 16px;background:var(--muted,#152729);cursor:pointer;text-decoration:none;display:inline-block;background:var(--primary,#9ae3d1);color:var(--primary-foreground,#082021);border-color:var(--primary,#9ae3d1);font-weight:700}.ds-preset-primary:hover:not(:disabled){background:#b7efdf}.ds-preset-primary:focus-visible{outline:2px solid var(--primary,#9ae3d1);outline-offset:3px;}.ds-preset-primary:disabled{opacity:.55;cursor:not-allowed}"
+    },
+    {
+      "name": "本机次按钮",
+      "kind": "button",
+      "refersTo": "preset-button-secondary",
+      "description": "刷新与保留操作共用的次按钮。",
+      "html": "<button class=\"ds-preset-secondary\" type=\"button\">刷新本机记录</button>",
+      "css": ".ds-preset-secondary{font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:16px;line-height:1.65;color:var(--foreground,#e4eee9);min-height:44px;border:1px solid #446560;border-radius:6px;padding:9px 16px;background:var(--muted,#152729);cursor:pointer;text-decoration:none;display:inline-block;}.ds-preset-secondary:hover:not(:disabled){background:#243e3d}.ds-preset-secondary:focus-visible{outline:2px solid var(--primary,#9ae3d1);outline-offset:3px;}.ds-preset-secondary:disabled{opacity:.55;cursor:not-allowed}"
+    },
+    {
+      "name": "功法名称字段",
+      "kind": "input",
+      "refersTo": "preset-field",
+      "description": "带可见标签的现有单行字段。",
+      "html": "<label class=\"ds-preset-field\" for=\"ds-preset-name\">功法名称<input id=\"ds-preset-name\" class=\"ds-preset-input\" maxlength=\"40\" placeholder=\"例如：谨慎修订\" required></label>",
+      "css": ".ds-preset-field{display:grid;gap:6px;font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:15px;line-height:1.65;color:var(--foreground,#e4eee9);}.ds-preset-input{font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:15px;line-height:1.65;color:var(--foreground,#e4eee9);background:var(--card,#0e1c1e);border:1px solid #365452;border-radius:6px;padding:10px;width:100%;min-width:0;}.ds-preset-input:focus-visible{outline:2px solid var(--primary,#9ae3d1);outline-offset:3px;}.ds-preset-input:disabled{opacity:.55;cursor:not-allowed}"
+    },
+    {
+      "name": "推理档位选择",
+      "kind": "input",
+      "refersTo": "preset-field",
+      "description": "保留原生选择器与实际档位选项。",
+      "html": "<label class=\"ds-preset-choice\" for=\"ds-preset-effort\">推理档位<select id=\"ds-preset-effort\" class=\"ds-preset-select\"><option>low</option><option>none</option><option>medium</option><option>high</option><option>xhigh</option><option>max</option></select></label>",
+      "css": ".ds-preset-choice{display:grid;gap:6px;font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:15px;line-height:1.65;color:var(--foreground,#e4eee9);}.ds-preset-select{font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:15px;line-height:1.65;color:var(--foreground,#e4eee9);background:var(--card,#0e1c1e);border:1px solid #365452;border-radius:6px;padding:10px;width:100%;min-width:0;color-scheme:dark}.ds-preset-select:focus-visible{outline:2px solid var(--primary,#9ae3d1);outline-offset:3px;}.ds-preset-select:disabled{opacity:.55;cursor:not-allowed}"
+    },
+    {
+      "name": "补充提示字段",
+      "kind": "input",
+      "refersTo": "preset-field",
+      "description": "现有多行提示输入；允许垂直调整。",
+      "html": "<label class=\"ds-preset-prompt-label\" for=\"ds-preset-prompt\">补充提示<textarea id=\"ds-preset-prompt\" class=\"ds-preset-textarea\" rows=\"4\" maxlength=\"1024\" spellcheck=\"false\" placeholder=\"只写开发偏好，不填写密钥、私人配置或自定义命令。\"></textarea></label>",
+      "css": ".ds-preset-prompt-label{display:grid;gap:6px;font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:15px;line-height:1.65;color:var(--foreground,#e4eee9);}.ds-preset-textarea{font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:15px;line-height:1.65;color:var(--foreground,#e4eee9);background:var(--card,#0e1c1e);border:1px solid #365452;border-radius:6px;padding:10px;width:100%;min-width:0;resize:vertical}.ds-preset-textarea:focus-visible{outline:2px solid var(--primary,#9ae3d1);outline-offset:3px;}.ds-preset-textarea:disabled{opacity:.55;cursor:not-allowed}"
+    },
+    {
+      "name": "本机预设行",
+      "kind": "card",
+      "refersTo": "preset-row",
+      "description": "现有平面预设列表行；名称、参数、编号为合成预览数据。",
+      "html": "<article class=\"ds-preset-row\"><div class=\"ds-preset-top\"><h3>合成谨慎修订</h3><span class=\"ds-preset-badge\">当前槽位可用</span></div><p class=\"ds-preset-muted\">推理 low · 单次输出最多 256 模型 Token</p><details class=\"ds-preset-details\"><summary>查看补充提示</summary><p>合成预览内容，仅展示本机预设样式。</p></details><label class=\"ds-preset-id-label\" for=\"ds-preset-id\">功法编号（用于 Runner 手动选择）<input id=\"ds-preset-id\" class=\"ds-preset-id\" value=\"synthetic-preset-id\" readonly></label><div class=\"ds-preset-actions\"><a class=\"ds-preset-export\" href=\"#ds-preview-export\">导出安全 JSON</a></div><details class=\"ds-preset-confirm\"><summary>删除此功法</summary><p>只删除这一预设，不能撤销。建议先导出备份；任务成果和历史运行记录不会删除。</p><div class=\"ds-preset-actions\"><button class=\"ds-preset-keep\" type=\"button\">保留功法</button><button class=\"ds-preset-delete\" type=\"button\">确认删除此功法</button></div></details></article>",
+      "css": ".ds-preset-row{font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:16px;line-height:1.65;color:var(--foreground,#e4eee9);padding:20px 0;border-bottom:1px solid var(--border,#254044)}.ds-preset-row:first-child{padding-top:0}.ds-preset-top{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}.ds-preset-top h3{font-size:18px;margin:0}.ds-preset-badge{font-size:13px;color:#adc5be}.ds-preset-row p{margin:8px 0;max-width:72ch;overflow-wrap:anywhere}.ds-preset-muted{color:#adc5be}.ds-preset-details{margin-top:12px}.ds-preset-details summary,.ds-preset-confirm summary{cursor:pointer;color:#b7dfd0}.ds-preset-details p{white-space:pre-wrap}.ds-preset-id-label{display:grid;gap:6px;font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:15px;line-height:1.65;color:var(--foreground,#e4eee9);font-size:14px;margin-top:12px}.ds-preset-id{font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:14px;line-height:1.65;color:var(--foreground,#e4eee9);background:var(--card,#0e1c1e);border:1px solid #365452;border-radius:6px;padding:10px;width:100%;min-width:0;}.ds-preset-actions{display:flex;justify-content:flex-start;gap:12px;flex-wrap:wrap;align-items:center;margin-top:14px}.ds-preset-export,.ds-preset-keep,.ds-preset-delete{font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:16px;line-height:1.65;color:var(--foreground,#e4eee9);min-height:44px;border:1px solid #446560;border-radius:6px;padding:9px 16px;background:var(--muted,#152729);cursor:pointer;text-decoration:none;display:inline-block;}.ds-preset-export:hover,.ds-preset-keep:hover:not(:disabled),.ds-preset-delete:hover:not(:disabled){background:#243e3d}.ds-preset-delete{color:#f0b8a8}.ds-preset-confirm{margin:12px 0}.ds-preset-id:focus-visible,.ds-preset-export:focus-visible,.ds-preset-keep:focus-visible,.ds-preset-delete:focus-visible,.ds-preset-details summary:focus-visible,.ds-preset-confirm summary:focus-visible{outline:2px solid var(--primary,#9ae3d1);outline-offset:3px;}.ds-preset-keep:disabled,.ds-preset-delete:disabled,.ds-preset-id:disabled{opacity:.55;cursor:not-allowed}"
+    },
+    {
+      "name": "补充提示折叠",
+      "kind": "custom",
+      "refersTo": "preset-disclosure",
+      "description": "可在预览中展开的原生详情；文字为合成示例。",
+      "html": "<details class=\"ds-preset-disclosure\"><summary>查看补充提示</summary><p>合成预览：谨慎修订现有代码。\n只展示补充提示的换行表现。</p></details>",
+      "css": ".ds-preset-disclosure{font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:16px;line-height:1.65;color:var(--foreground,#e4eee9);margin-top:12px}.ds-preset-disclosure summary{cursor:pointer;color:#b7dfd0}.ds-preset-disclosure summary:focus-visible{outline:2px solid var(--primary,#9ae3d1);outline-offset:3px;}.ds-preset-disclosure p{margin:8px 0;max-width:72ch;overflow-wrap:anywhere;white-space:pre-wrap}"
+    },
+    {
+      "name": "本机功法空状态",
+      "kind": "custom",
+      "description": "窄屏修订后的实际空状态文案，指向表单而不是左右位置。",
+      "html": "<p class=\"ds-preset-empty\">还没有功法。可使用「保存新功法」表单保存开发偏好，或导入安全 JSON 配置；不需要模型密钥。</p>",
+      "css": ".ds-preset-empty{font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:16px;line-height:1.65;color:var(--foreground,#e4eee9);color:#adc5be;padding:24px 0;margin:8px 0;max-width:72ch;overflow-wrap:anywhere}"
+    },
+    {
+      "name": "本机状态反馈",
+      "kind": "custom",
+      "description": "现有成功与错误反馈区；内容为可复现的界面文案，不表示真实运行。",
+      "html": "<p class=\"ds-preset-notice\" role=\"status\" aria-live=\"polite\">已导入同一本机槽位。</p><p class=\"ds-preset-notice ds-preset-notice-error\" role=\"status\" aria-live=\"polite\">配置超过 8 KiB，未导入。</p>",
+      "css": ".ds-preset-notice{font-family:Arial,\"Microsoft YaHei\",sans-serif;font-size:16px;line-height:1.65;color:var(--foreground,#e4eee9);min-height:32px;margin:12px 0 20px;color:var(--primary,#9ae3d1);max-width:72ch;overflow-wrap:anywhere}.ds-preset-notice-error{color:#eea497}"
+    }
+  ],
+  "narrative": {
+    "northStar": "",
+    "overview": "本记录描述当前实现中可复用的暗色操作页体系，以及本机功法殿的局部变体。已确认的品牌只有「灵网纪元」与赛博修仙语境；功能称谓对应真实流程。墨绿操作面、薄荷主操作、原生表单与细分隔线来自既有源码，不构成新的品牌方案。\n\n质感与颜色名称是暂定描述，尚未获得额外偏好确认。没有已确认的 Creative North Star、批准的设计效果图或新的视觉世界。此文档依据实现和本地合成截图记录事实；截图、预设与演示文案不代表真实社区成果、真人复核或正式 MVP 完成。",
+    "keyCharacteristics": [
+      "深色底面与浅色正文承载操作信息。",
+      "薄荷主操作与明确的状态文案并用。",
+      "本机功法页保留原生控件、折叠详情和线性列表。",
+      "桌面编辑器与列表并列；窄屏按编辑器、列表的顺序堆叠。"
+    ],
+    "rules": [
+      {
+        "name": "Local Variant",
+        "body": "本机功法殿使用自己的控件半径、辅助文字色和响应断点；将这些值迁移到其他页面前，先核对该页面现有实现。",
+        "section": "colors"
+      },
+      {
+        "name": "Readable Operation",
+        "body": "本机功法页正文、标签、辅助文字和元数据按不同层级显示；帮助文字保持为可阅读的正文补充，不缩成装饰性标记。",
+        "section": "typography"
+      },
+      {
+        "name": "Honest State",
+        "body": "本机功法页的成功、错误、槽位不足和不可启用状态同时有明确文案；颜色与禁用外观不能代替结果说明。",
+        "section": "components"
+      }
+    ],
+    "dos": [
+      "Do 沿用前置层的实际暗色覆写，先区分平台通用 token 与本机功法页变体。",
+      "Do 保留标签、可见键盘焦点、原生详情展开与完整的状态文案。",
+      "Do 让本机功法页在窄屏先展示编辑器，再展示已存功法；帮助文案与提示内容能够换行，只读编号字段保持单行、可选择并横向滚动。",
+      "Do 将任何示例预设、截图数据与用量标注为本地合成验证材料。"
+    ],
+    "donts": [
+      "Don't 将本机功法页的 6px 控件半径或 700px 断点扩大为所有页面的统一要求。",
+      "Don't 从单个品牌标记、未回答的偏好或合成截图推导新的品牌隐喻与视觉承诺。",
+      "Don't 将绿色状态、界面完成或合成记录表述为真实贡献、模型限额核验、真人接受或 MVP 发布证据。",
+      "Don't 将既有装饰性眉题及系统字体展示面当作新页面必须继承的品牌规则。"
+    ]
+  }
+}
