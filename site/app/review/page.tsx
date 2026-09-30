@@ -1,6 +1,8 @@
 import Link from "next/link";
 import { database } from "@/db/runtime";
 import { getCurrentCultivator, isMaintainer } from "@/lib/auth";
+import { REVALIDATION_WORKBENCH_SQL, type RevalidationWorkbenchRecord } from "@/lib/revalidations";
+import { RevalidationRecords } from "../revalidations/revalidation-records";
 import { IntegrationActions, ReviewActions } from "./review-actions";
 
 export const dynamic = "force-dynamic";
@@ -42,7 +44,7 @@ export default async function ReviewPage() {
     return <main className="review-page"><Link href="/">← 返回任务大殿</Link><h1>需要维护者权限</h1><p>宗门复核由指定维护者完成。</p></main>;
   }
   const db = database();
-  const [pending, approved, frozen] = await Promise.all([
+  const [pending, approved, frozen, revalidations] = await Promise.all([
     db.prepare(
       "SELECT s.id, c.mission_id, m.title, u.display_name AS author, s.created_at, s.verdict FROM submissions s JOIN claims c ON c.id = s.claim_id JOIN missions m ON m.id = c.mission_id JOIN cultivators u ON u.id = s.cultivator_id WHERE s.state = 'awaiting_review' ORDER BY s.created_at ASC"
     ).all<ReviewItem>(),
@@ -52,6 +54,8 @@ export default async function ReviewPage() {
     db.prepare(
       "SELECT s.id, c.mission_id, m.title, u.display_name AS author, s.cultivator_id AS author_id, s.created_at FROM submissions s JOIN claims c ON c.id = s.claim_id JOIN missions m ON m.id = c.mission_id JOIN cultivators u ON u.id = s.cultivator_id WHERE s.state = 'frozen' ORDER BY s.created_at ASC"
     ).all<FrozenItem>(),
+    db.prepare(`${REVALIDATION_WORKBENCH_SQL} WHERE d.decision IS NULL ORDER BY r.created_at ASC, r.id ASC LIMIT 50`)
+      .all<RevalidationWorkbenchRecord>(),
   ]);
   return <main className="review-page">
     <Link href="/">← 返回任务大殿</Link>
@@ -94,5 +98,9 @@ export default async function ReviewPage() {
         <IntegrationActions submissionId={item.id} />
       </article>
     })}
+    <h2>待采纳复验</h2>
+    <p>核对报告和专用复跑证据后再作决定。复验人和原成果作者均需回避，可信的失败复跑也可采纳。</p>
+    {revalidations.results.length === 0 ? <div className="review-empty">目前没有待采纳复验报告。</div>
+      : <RevalidationRecords records={revalidations.results} reviewerId={cultivator.id} />}
   </main>;
 }

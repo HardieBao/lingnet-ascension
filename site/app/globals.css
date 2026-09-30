@@ -160,7 +160,7 @@ body {
 }
 
 html { scroll-behavior: smooth; }
-body { min-width: 320px; }
+body { min-width: min(320px, 100%); }
 a { text-decoration: none; }
 .shell {
   min-height: 100vh;
@@ -291,6 +291,20 @@ a { text-decoration: none; }
 .review-actions input:focus-visible { outline: 2px solid #9ae3d1; outline-offset: 2px; }
 .review-actions > div { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 13px; }
 .review-actions > button { margin-top: 13px; }
+.revalidation-form fieldset { border: 1px solid #315250; padding: 20px; min-width: 0; display: grid; gap: 16px; }
+.revalidation-form legend { padding: 0 8px; font-size: 20px; color: #e4eee9; }
+.revalidation-form select { width: 100%; min-width: 0; border: 1px solid #315250; background: #0b181a; color: #e4eee9; padding: 11px; font-size: 16px; }
+.revalidation-form p, .revalidation-steps { color: #a6c2b8; font-size: 14px; line-height: 1.7; }
+.revalidation-steps { padding-left: 22px; }
+.revalidation-links { display: flex; gap: 16px; flex-wrap: wrap; }
+.revalidation-links a { color: #a2ead2; text-decoration: underline; font-size: 14px; }
+.revalidation-findings { white-space: pre-wrap; overflow-wrap: anywhere; }
+.revalidation-evidence { margin-top: 18px; }
+.revalidation-evidence summary { color: #a2ead2; cursor: pointer; }
+.revalidation-evidence code { overflow-wrap: anywhere; }
+.revalidation-evidence label { display: grid; gap: 8px; color: #a6c2b8; font-size: 14px; }
+.revalidation-evidence textarea { width: 100%; min-width: 0; padding: 12px; border: 1px solid #315250; background: #0b181a; color: #e4eee9; font-size: 13px; resize: vertical; }
+.revalidation-form select:focus-visible, .revalidation-evidence summary:focus-visible, .revalidation-evidence textarea:focus-visible, .review-actions textarea:focus-visible { outline: 2px solid #9ae3d1; outline-offset: 2px; }
 .equipment-page { max-width: 1100px; margin: 0 auto; padding: 38px 28px 80px; color: #e4eee9; }
 .equipment-back { color: #9ae3d1; font-size: 14px; }
 .equipment-heading { display: flex; justify-content: space-between; align-items: end; gap: 32px; margin: 38px 0 26px; }
