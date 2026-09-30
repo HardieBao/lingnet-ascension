@@ -1,8 +1,9 @@
 import assert from "node:assert/strict";
+import { createServer } from "node:http";
 import { createHash, createHmac } from "node:crypto";
 import { mkdtempSync, readFileSync, readdirSync, realpathSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
-import { basename, dirname, join, resolve, sep } from "node:path";
+import { basename, dirname, extname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Miniflare, Response, convertV4MiniflareOptions } from "miniflare";
 
@@ -20,6 +21,8 @@ let firstReleaseImmutable = true;
 let mainCommit = second, mainContent = artifact;
 let mainLineageStatus = "ahead";
 let githubCalls = 0;
+const browserMode = process.argv.includes("--browser");
+let browserServer;
 const modules = readdirSync(server, { recursive: true }).filter((path) => /\.(?:m?js)$/.test(path))
   .sort((left, right) => (left === "index.js" ? -1 : right === "index.js" ? 1 : left.localeCompare(right)))
   .map((path) => ({ type: "ESModule", path: join(server, path), contents: readFileSync(join(server, path), "utf8") }));
@@ -55,8 +58,15 @@ function github(request) {
 const binding = { DB: "isolated-stable-settlement" };
 const mf = new Miniflare(convertV4MiniflareOptions({ cf: false, host: "127.0.0.1", port: 0,
   d1Persist: join(temporary, "d1"), workers: [
-    { name: "fixture-entry", modules: true, d1Databases: binding, serviceBindings: { APP: "application" },
+    { name: "fixture-entry", modules: true, d1Databases: binding, serviceBindings: { APP: "application", OFF: "application-off", SELF: "application-self" },
       compatibilityDate: "2026-09-21", script: `export default { async fetch(request, env) {
+        const url = new URL(request.url);
+        for (const [prefix, worker] of [['/fixture/off/', 'OFF'], ['/fixture/self/', 'SELF']]) {
+          if (url.pathname.startsWith(prefix)) {
+            url.pathname = '/' + url.pathname.slice(prefix.length);
+            return env[worker].fetch(new Request(url, request));
+          }
+        }
         if (new URL(request.url).pathname !== '/fixture/setup') return env.APP.fetch(request);
         for (const sql of await request.json()) await env.DB.prepare(sql).run();
         return Response.json({seeded:true});
@@ -65,6 +75,12 @@ const mf = new Miniflare(convertV4MiniflareOptions({ cf: false, host: "127.0.0.1
       compatibilityFlags: ["nodejs_compat"], d1Databases: binding,
       bindings: { SESSION_SECRET: secret, MAINTAINER_GITHUB_ID: "303", RECOVERY_APPROVER_GITHUB_ID: "404",
         ENABLE_STABLE_SETTLEMENTS: "true" }, outboundService: github },
+    { name: "application-off", rootPath: server, modules, compatibilityDate: "2026-09-21",
+      compatibilityFlags: ["nodejs_compat"], d1Databases: binding,
+      bindings: { SESSION_SECRET: secret, MAINTAINER_GITHUB_ID: "303", RECOVERY_APPROVER_GITHUB_ID: "404" }, outboundService: github },
+    { name: "application-self", rootPath: server, modules, compatibilityDate: "2026-09-21",
+      compatibilityFlags: ["nodejs_compat"], d1Databases: binding,
+      bindings: { SESSION_SECRET: secret, MAINTAINER_GITHUB_ID: "303", RECOVERY_APPROVER_GITHUB_ID: "303" }, outboundService: github },
   ] }));
 function cookie(id) {
   const payload = Buffer.from(JSON.stringify({ sub: id, ver: 0, exp: Math.floor(Date.now() / 1000) + 3600 })).toString("base64url");
@@ -81,22 +97,105 @@ async function seed(statements) {
   const response = await mf.dispatchFetch("http://fixture.local/fixture/setup", { method: "POST", body: JSON.stringify(statements) });
   assert.equal(response.status, 200, await response.text());
 }
+async function page(actor) {
+  const response = await mf.dispatchFetch("http://fixture.local/stable-rewards", {
+    headers: actor ? { Cookie: cookie(actor) } : {},
+  });
+  const html = await response.text();
+  assert.equal(response.status, 200, html.slice(0, 300));
+  return html;
+}
 const request = { submissionId: "fixture-submission", firstTag: "v1", secondTag: "v2",
   reason: "独立核对两次公开版本中的同一成果摘要，确认仍有效且没有回滚" };
 try {
-  for (const file of readdirSync(join(site, "drizzle")).filter((name) => name.endsWith(".sql")).sort()) {
+  const migrations = readdirSync(join(site, "drizzle")).filter((name) => name.endsWith(".sql")).sort();
+  for (const file of migrations.slice(0, 15)) {
+    await seed(readFileSync(join(site, "drizzle", file), "utf8").split("--> statement-breakpoint").filter((sql) => sql.trim()));
+  }
+  await seed(["INSERT INTO cultivators (id,provider,provider_id,handle,display_name,created_at) VALUES ('reviewer','github','303','Fixture','合成维护者',1)"]);
+  const unavailable = await mf.dispatchFetch("http://fixture.local/fixture/off/stable-rewards", { headers: { Cookie: cookie("reviewer") } });
+  assert.equal(unavailable.status, 200);
+  const unavailableHtml = await unavailable.text();
+  assert.match(unavailableHtml, /稳定奖励结算尚未开放/);
+  assert.match(unavailableHtml, /稳定奖励记录暂不可用/);
+  assert.doesNotMatch(unavailableHtml, /aria-label="稳定奖励结算"/);
+  assert.equal((await api("reviewer", "/fixture/off/api/stable-settlements", request)).status, 503);
+  for (const file of migrations.slice(15)) {
     await seed(readFileSync(join(site, "drizzle", file), "utf8").split("--> statement-breakpoint").filter((sql) => sql.trim()));
   }
   await seed([
-    "INSERT INTO cultivators (id,provider,provider_id,handle,display_name,created_at) VALUES ('author','github','101','Fixture','Fixture',1),('reviewer','github','303','Fixture','Fixture',1),('second-reviewer','github','404','Fixture','Fixture',1)",
-    `INSERT INTO missions (id,title,description,rank,branch,state,base_commit,allowed_paths,acceptance,reward_token,reward_cultivation,reward_merit,created_at) VALUES ('GOV-001','Fixture','Synthetic','黄阶','Fixture','done','${original}','GOVERNANCE.md','Synthetic',50,100,5,1)`,
+    "INSERT OR IGNORE INTO cultivators (id,provider,provider_id,handle,display_name,created_at) VALUES ('author','github','101','Fixture','合成原作者',1),('reviewer','github','303','Fixture','合成维护者',1),('second-reviewer','github','404','Fixture','合成独立复核者',1)",
+    `INSERT INTO missions (id,title,description,rank,branch,state,base_commit,allowed_paths,acceptance,reward_token,reward_cultivation,reward_merit,created_at) VALUES ('GOV-001','合成稳定成果 · 不计社区贡献','Synthetic','黄阶','Fixture','done','${original}','GOVERNANCE.md','Synthetic',50,100,5,1)`,
     `INSERT INTO claims (id,mission_id,cultivator_id,state,claimed_at,expires_at,reward_snapshot) VALUES ('fixture-claim','GOV-001','author','completed',1,1000,'{"allowedPaths":"GOVERNANCE.md","stable":{"policyVersion":1,"token":10,"cultivation":20,"merit":1,"minimumVersionGapMs":604800000}}')`,
     `INSERT INTO submissions (id,claim_id,cultivator_id,artifact_key,artifact_sha256,state,reviewer_id,integrated_commit,integrated_at,created_at) VALUES ('fixture-submission','fixture-claim','author','fixture.md','${digest}','accepted','reviewer','${original}',10,2)`,
   ]);
+  await seed([
+    `INSERT INTO missions (id,title,description,rank,branch,state,base_commit,allowed_paths,acceptance,reward_token,reward_cultivation,reward_merit,created_at) VALUES ('SELF-STABLE','合成本人作品','Synthetic','黄阶','Fixture','done','${original}','GOVERNANCE.md','Synthetic',50,100,5,1)`,
+    `INSERT INTO claims (id,mission_id,cultivator_id,state,claimed_at,expires_at,reward_snapshot) VALUES ('self-claim','SELF-STABLE','reviewer','completed',1,1000,'{"allowedPaths":"GOVERNANCE.md","stable":{"policyVersion":1,"token":10,"cultivation":20,"merit":1,"minimumVersionGapMs":604800000}}')`,
+    `INSERT INTO submissions (id,claim_id,cultivator_id,artifact_key,artifact_sha256,state,reviewer_id,integrated_commit,integrated_at,created_at) VALUES ('self-submission','self-claim','reviewer','self.md','${digest}','accepted','second-reviewer','${original}',10,2)`,
+  ]);
+  const beforePageLookup = githubCalls;
+  assert.match(await page(null), /需要维护者或独立追回复核人权限/);
+  assert.doesNotMatch(await page("author"), /aria-label="稳定奖励结算"/);
+  const initialWorkbench = await page("reviewer");
+  assert.match(initialWorkbench, /aria-label="稳定奖励结算"/);
+  assert.match(initialWorkbench, /fixture-submission/);
+  assert.doesNotMatch(initialWorkbench, /self-submission/, "Maintainers cannot select their own award target");
+  assert.doesNotMatch(await page("second-reviewer"), /fixture-submission/,
+    "Recovery reviewers do not receive unrevoked awards or grant targets");
+  assert.equal(githubCalls, beforePageLookup, "Reading the workbench never contacts external evidence services");
+  const closedReady = await mf.dispatchFetch("http://fixture.local/fixture/off/stable-rewards", { headers: { Cookie: cookie("reviewer") } });
+  const closedReadyHtml = await closedReady.text();
+  assert.equal(closedReady.status, 200);
+  assert.match(closedReadyHtml, /稳定奖励结算尚未开放/);
+  assert.doesNotMatch(closedReadyHtml, /稳定奖励记录暂不可用/);
+  assert.doesNotMatch(closedReadyHtml, /aria-label="稳定奖励结算"/);
+  if (browserMode) {
+    const client = join(site, "dist", "client");
+    const assets = new Set(readdirSync(client, { recursive: true }).map((path) => path.replaceAll("\\", "/")));
+    let origin;
+    browserServer = createServer(async (incoming, outgoing) => {
+      try {
+        const url = new URL(incoming.url, origin);
+        if (url.pathname === "/fixture/sign-in") {
+          const actor = url.searchParams.get("actor");
+          if (!["author", "reviewer", "second-reviewer"].includes(actor)) { outgoing.writeHead(400); outgoing.end("Choose a synthetic actor"); return; }
+          outgoing.writeHead(303, { Location: "/stable-rewards", "Set-Cookie": `${cookie(actor)}; Path=/; HttpOnly; SameSite=Lax` });
+          outgoing.end(); return;
+        }
+        if (url.pathname === "/fixture/state") {
+          const state = await api("author", "/api/me");
+          outgoing.writeHead(state.status, { "Content-Type": "application/json" });
+          outgoing.end(JSON.stringify({ balances: state.body.balances, recovery: state.body.recovery, githubCalls })); return;
+        }
+        if (url.pathname === "/fixture/rollback") {
+          await seed(["INSERT INTO ledger_events (id,cultivator_id,resource,delta,source_key,created_at) VALUES ('ui-used-token','author','token',-10,'fixture:ui-used',4),('ui-used-cultivation','author','cultivation',-20,'fixture:ui-used',4),('ui-used-merit','author','merit',-1,'fixture:ui-used',4)"]);
+          mainCommit = "d".repeat(40); mainContent = "synthetic rollback after release\n";
+          outgoing.writeHead(303, { Location: "/stable-rewards" }); outgoing.end(); return;
+        }
+        const asset = url.pathname.slice(1);
+        if (assets.has(asset) && /\.(?:js|css|svg)$/.test(asset)) {
+          outgoing.setHeader("Content-Type", { ".js": "application/javascript", ".css": "text/css", ".svg": "image/svg+xml" }[extname(asset)]);
+          outgoing.end(readFileSync(join(client, asset))); return;
+        }
+        const chunks = []; for await (const chunk of incoming) chunks.push(chunk);
+        const result = await mf.dispatchFetch(origin + incoming.url, { method: incoming.method, headers: incoming.headers,
+          ...(["GET", "HEAD"].includes(incoming.method) ? {} : { body: Buffer.concat(chunks) }) });
+        outgoing.writeHead(result.status, Object.fromEntries(result.headers)); outgoing.end(Buffer.from(await result.arrayBuffer()));
+      } catch { outgoing.writeHead(500); outgoing.end("Synthetic fixture request failed"); }
+    });
+    await new Promise((done) => browserServer.listen(0, "127.0.0.1", done));
+    origin = `http://127.0.0.1:${browserServer.address().port}`;
+    console.log(`LOCAL_STABLE_REWARD_UI=${origin}`);
+    console.log("Synthetic actors: reviewer|second-reviewer|author. Tags v1/v2. /fixture/state observes; /fixture/rollback consumes only synthetic rewards and changes fake main. Send stop to close.");
+    await new Promise((done) => { process.stdin.once("data", done); process.once("SIGINT", done); process.once("SIGTERM", done); });
+  } else {
   assert.equal((await api(null, "/api/stable-settlements", request)).status, 403);
   const before = githubCalls;
   assert.equal((await api("author", "/api/stable-settlements", request)).status, 403);
   assert.equal(githubCalls, before, "Author cannot settle their own reward");
+  assert.equal((await api("reviewer", "/api/stable-settlements", { ...request, submissionId: "self-submission" })).status, 403);
+  assert.equal(githubCalls, before, "A maintainer's own award is denied before external lookup");
   secondPublishedAt = publication + 6 * 86400000;
   assert.equal((await api("reviewer", "/api/stable-settlements", request)).status, 409, "Six days is too short");
   assert.equal((await api("author", "/api/me")).body.balances.token, 0);
@@ -112,6 +211,12 @@ try {
   assert.equal(concurrent.filter((result) => result.status === 201).length, 1, JSON.stringify(concurrent));
   assert.equal(concurrent.filter((result) => result.status === 409).length, 7);
   const settlementId = concurrent.find((result) => result.status === 201).body.id;
+  const settledWorkbench = await page("reviewer");
+  assert.match(settledWorkbench, /已结算/);
+  assert.match(settledWorkbench, /aria-label="回滚追回"/);
+  assert.doesNotMatch(settledWorkbench, /aria-label="稳定奖励结算"/,
+    "Already-settled targets leave the grant form");
+  assert.doesNotMatch(await page("second-reviewer"), new RegExp(settlementId));
   assert.deepEqual((await api("author", "/api/me")).body.balances, { token: 10, tokenLocked: 0, cultivation: 20, merit: 1 });
   assert.equal((await api("reviewer", "/api/stable-settlements", request)).status, 409, "Cannot settle twice");
   await seed([
@@ -121,6 +226,7 @@ try {
   ]);
   assert.equal((await api("reviewer", "/api/stable-settlements", { ...request, submissionId: "old-submission" })).status, 409,
     "Legacy claim without a stable snapshot cannot receive rewards");
+  assert.doesNotMatch(await page("reviewer"), /aria-label="稳定奖励结算"/);
   await seed([
     "INSERT INTO ledger_events (id,cultivator_id,resource,delta,source_key,created_at) VALUES ('fixture-token','author','token',190,'fixture:prior',3),('fixture-cultivation','author','cultivation',100,'fixture:prior',3),('fixture-merit','author','merit',5,'fixture:prior',3)",
   ]);
@@ -141,6 +247,18 @@ try {
   const revoked = await api("reviewer", `/api/stable-settlements/${settlementId}/revoke`, revoke);
   assert.equal(revoked.status, 201, JSON.stringify(revoked.body));
   assert.deepEqual(revoked.body.debt, { token: 10, cultivation: 20, merit: 1 });
+  const recoveryWorkbench = await page("second-reviewer");
+  assert.match(recoveryWorkbench, /aria-label="独立追回复核"/);
+  assert.match(recoveryWorkbench, /当前账号待抵扣欠账/);
+  assert.doesNotMatch(recoveryWorkbench, /aria-label="回滚追回"/);
+  assert.doesNotMatch(await page("reviewer"), /aria-label="独立追回复核"/);
+  const closedRecovery = await mf.dispatchFetch("http://fixture.local/fixture/off/stable-rewards", { headers: { Cookie: cookie("second-reviewer") } });
+  assert.match(await closedRecovery.text(), /aria-label="独立追回复核"/,
+    "Closing new grants must not prevent recovery review of historical records");
+  const selfRecovery = await mf.dispatchFetch("http://fixture.local/fixture/self/stable-rewards", { headers: { Cookie: cookie("reviewer") } });
+  const selfRecoveryHtml = await selfRecovery.text();
+  assert.match(selfRecoveryHtml, /你是原作者或执行追回者/);
+  assert.doesNotMatch(selfRecoveryHtml, /aria-label="独立追回复核"/);
   assert.deepEqual((await api("author", "/api/me")).body.balances, { token: 0, tokenLocked: 0, cultivation: 0, merit: 0 });
   assert.deepEqual((await api("author", "/api/me")).body.recovery,
     { hold: true, debt: { token: 10, cultivation: 20, merit: 1 } });
@@ -161,14 +279,21 @@ try {
     "Open recovery hold blocks advancement despite sufficient cultivation and merit");
   const review = { reason: "第二独立审批人核对原结算、回滚证据和全部欠账冲抵记录，同意解除保护冻结" };
   assert.equal((await api("reviewer", `/api/stable-settlements/${settlementId}/release-hold`, review)).status, 403);
-  assert.equal((await api("second-reviewer", `/api/stable-settlements/${settlementId}/release-hold`, review)).status, 200);
+  assert.equal((await api("reviewer", `/fixture/self/api/stable-settlements/${settlementId}/release-hold`, review)).status, 409);
+  assert.equal((await api("second-reviewer", `/fixture/off/api/stable-settlements/${settlementId}/release-hold`, review)).status, 200);
+  const releasedWorkbench = await page("second-reviewer");
+  assert.match(releasedWorkbench, /复核冻结已解除/);
+  assert.doesNotMatch(releasedWorkbench, /aria-label="独立追回复核"/);
   assert.deepEqual((await api("author", "/api/me")).body.recovery,
     { hold: false, debt: { token: 0, cultivation: 0, merit: 0 } });
   assert.equal((await api("author", "/api/equipment/purchase", { itemId: "heart-talisman" })).status, 201,
     "Independent release restores spending only after debt was repaid");
   assert.equal((await api("author", "/api/realms/advance", { target: "qi" })).status, 200);
   console.log("Built Worker API/D1: public-release settlement, rollback debt, spending hold and independent release; synthetic only.");
+  }
 } finally {
+  process.stdin.pause();
+  if (browserServer) { browserServer.closeAllConnections(); await new Promise((done) => browserServer.close(done)); }
   await mf.dispose();
   const target = realpathSync(temporary);
   assert(target.startsWith(realpathSync(tmpdir()) + sep) && basename(target).startsWith("lingnet-stable-settlement-"));

@@ -22,6 +22,7 @@ test("trusted revalidation CLI replays the exact integrated document without app
   const git = (...args) => execFileSync("git", ["-C", repository, ...args], { encoding: "utf8" }).trim();
   try {
     git("init", "-b", "main");
+    git("config", "core.autocrlf", "false");
     git("config", "user.name", "Revalidation Fixture");
     git("config", "user.email", "fixture@example.invalid");
     git("config", "commit.gpgsign", "false");
