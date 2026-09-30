@@ -55,3 +55,12 @@ node scripts/verify-revalidations.mjs --browser
 所有测试身份、GitHub 响应、原成果与采纳均为合成。本次没有真实模型调用，没有生产数据库写入、经济迁移、用户授权扩大或 Worker 切流。生产仍是旧受限 Pre-Alpha，0015/0016 两份经济迁移等待真实维护者复核。
 
 这补齐一条可操作的复验入口，不证明原计划第 17 节的真实贡献闭环、两类真人渡劫、25 个社区成果、连续三周公开版本或赛季复盘已经达标。
+
+## 固定公开提交与干净副本复现
+
+- [草稿 PR #13](https://github.com/HardieBao/lingnet-ascension/pull/13) 的源码提交为 `f72431aa98b4c4581654141a08443f76231e3aba`，相对固定 main 基线恰有 8 个站点源码文件、238 行增加、2 行删除，`git diff --check` 无错误。未合入 main。
+- 复现脚本与首份本文保存在 `5c679ddce7c9f27fe88e6179185741f35a037d8a`，其父提交就是上述源码提交，新增差异仅为验证脚本和本文。后续证据文字追加不改变该已测试的代码和脚本版本。
+- [真实 pull_request 运行 36743535986](https://github.com/HardieBao/lingnet-ascension/actions/runs/36743535986) 成功，头提交为 `f72431aa...`，成功步骤绑定测试合并提交 `6af03b8e0fc8af51b83a417120c90774cfe2ee6e`；使用 main 的可信验证器和测试。
+- 从公开证据提交 `5c679dd...` 制作干净 Git 归档，在系统临时目录 `lingnet-revalidation-proof-bf0bd3cb123641c383b308857c66848f/source` 完成 `npm ci --ignore-scripts --no-audit --no-fund`、构建和 `node scripts/verify-revalidations.mjs`，全部退出 0。没有复制用户的环境私密文件或其他未提交内容。
+
+固定提交可直接克隆并检出上述证据 SHA，再执行本页复现命令。绿色 CI 与合成复现证明代码检查范围，不能替代真人审阅或真实社区试运行。
