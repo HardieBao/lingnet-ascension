@@ -42,6 +42,8 @@ node scripts/verify-revalidations.mjs --browser
 
 实际浏览器完成键盘提交、维护者鼠标采纳和结果页读取；错误凭据理由被拒绝并保留原输入，错误仓库地址使表单无效并显示说明。页面无浏览器错误。320 × 850 布局核对结果：复验页、首页、装备页均为 `clientWidth = scrollWidth = 305`，账本页均为 320；采用页面可用宽度而非只与 `innerWidth` 比较。
 
+浏览器辅助模式的退出处理追加了标准输入暂停。独立 Node 子进程实际等待本地服务就绪，再通过标准输入发送 `stop`，完整清理后退出码 0；此前本轮启动的三个残留测试进程已按准确 PID 与命令行核对后清理。普通 API/D1 回归和脚本 lint 在清理修正后再次退出 0。
+
 本机截图保存在 `docs/verification/images/revalidation-form-mobile-2026-09-30.png`、`revalidation-review-2026-09-30.png` 和 `revalidation-result-mobile-2026-09-30.png`；这些截图记录合成数据，未计真实社区成果。
 
 ## GitNexus 与范围
