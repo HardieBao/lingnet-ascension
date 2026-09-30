@@ -76,3 +76,13 @@ node scripts/verify-revalidations.mjs --browser
 新增来源测试覆盖三类形状和拒绝不回显。实际构建/API/D1 验证不安全观察未进入记录、采纳失败没有写入决定，原独立身份、报告变化、20 次并发只结算一次和页面回归继续通过。普通测试现为 144 项、143 通过、1 个原有跳过、0 失败；类型、lint 和构建退出 0。新回归源文件与实测脚本留在证据分支，候选源码 CI 仍使用 main 的可信测试。
 
 修改前 GitNexus 对 `inspectRevalidationPullRequest` 的上游影响为 LOW：两个直接调用者，分别是报告提交和报告决定接口。该增量不修改费用、奖励、身份权限、迁移或生产开关。
+
+## 2026-10-01 后续：Windows 干净归档的测试隔离
+
+新候选源码为 `201ffe288b5a237907b3d09480e3e5afbac8ea4b`，相对 main 恰有 9 个站点源码文件、242 行增加、2 行删除。[真实可信 CI 36746889199](https://github.com/HardieBao/lingnet-ascension/actions/runs/36746889199) 通过，并绑定测试合并提交 `af06bfcf11e805f9cafa6f58aed6403dcdfcb0fb`。
+
+证据提交 `60c0016022c19a053a97bbdf96127658f445a2ad` 的干净 Windows 归档安装依赖和构建成功，但完整测试出现一项既有失败：复验 CLI 的原成果摘要与报告不一致。原工作区的章程 fixture 有 21 个 LF、0 个 CRLF；公开归档的同一 fixture 有 21 个 CRLF。本机系统 Git 设置 `core.autocrlf=true`，测试临时仓库在提交时把 CRLF 转为 LF，但报告摘要来自提交前的原文件。
+
+最小命令 `node --experimental-strip-types --test tests/revalidation-ci.test.mjs` 两次稳定复现。只通过进程范围覆盖 `core.autocrlf=false`，其余过滤器和检出代码不变，两项测试立即通过。因此在测试创建的临时仓库中显式设置 `core.autocrlf=false`；未改用户 Git 配置，也未放宽生产字节摘要规则或复验 CLI。
+
+在该干净归档副本应用这一行测试隔离修正后，原完整测试为 144 项、143 通过、1 个原有跳过、0 失败，类型、lint 和实际构建 API/D1 复验退出 0。该测试修正留在独立证据分支供审查，主分支可信测试不由本代码 PR 改写。没有遗留调试日志或新增生产入口。
