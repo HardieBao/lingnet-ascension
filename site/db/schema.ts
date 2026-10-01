@@ -12,6 +12,19 @@ export const cultivators = sqliteTable("cultivators", {
   createdAt: integer("created_at").notNull(),
 }, (table) => [uniqueIndex("idx_cultivators_provider").on(table.provider, table.providerId)]);
 
+export const cultivatorProfiles = sqliteTable("cultivator_profiles", {
+  cultivatorId: text("cultivator_id").primaryKey().references(() => cultivators.id),
+  publicId: text("public_id").notNull().unique(),
+  daohao: text("daohao").notNull(),
+  isPublic: integer("is_public").notNull().default(0),
+  revision: integer("revision").notNull(),
+  updatedAt: integer("updated_at").notNull(),
+}, (table) => [
+  check("profile_daohao_length", sql`length(${table.daohao}) BETWEEN 1 AND 32`),
+  check("profile_visibility", sql`${table.isPublic} IN (0, 1)`),
+  check("profile_revision", sql`${table.revision} >= 1`),
+]);
+
 export const missions = sqliteTable("missions", {
   id: text("id").primaryKey(),
   title: text("title").notNull(),

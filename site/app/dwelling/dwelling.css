@@ -1,0 +1,26 @@
+body:has(.dwelling-page) { min-width: 0; }
+.dwelling-page { max-width: 1080px; margin: 0 auto; padding: 32px 24px 72px; font-size: 16px; line-height: 1.65; overflow-wrap: anywhere; }
+.dwelling-page a { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+.dwelling-page header { margin: 28px 0; }
+.dwelling-page h1 { font-size: 32px; line-height: 1.3; margin: 20px 0 12px; }
+.dwelling-page h2 { font-size: 22px; line-height: 1.4; margin: 0 0 14px; }
+.dwelling-page p { max-width: 72ch; margin: 12px 0; }
+.dwelling-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 48px; align-items: start; }
+.dwelling-section { min-width: 0; padding: 24px 0; border-top: 1px solid var(--border); }
+.dwelling-section fieldset { border: 0; padding: 0; margin: 20px 0; min-width: 0; }
+.profile-name { display: grid; gap: 8px; }
+.profile-name input { width: 100%; min-width: 0; min-height: 44px; padding: 9px 11px; border: 1px solid #365452; border-radius: 3px; background: var(--card); color: var(--foreground); font: inherit; }
+.profile-visibility { display: flex; align-items: center; gap: 12px; min-height: 44px; margin-top: 20px; cursor: pointer; }
+.profile-visibility input { width: 18px; height: 18px; accent-color: var(--primary); flex: none; }
+.profile-actions, .dwelling-links { display: flex; flex-wrap: wrap; gap: 12px; }
+.profile-actions button, .dwelling-links a { min-height: 44px; height: auto; white-space: normal; border-radius: 3px; font-size: 16px; }
+.dwelling-links a { display: inline-flex; align-items: center; }
+.profile-message { min-height: 52px; color: #e5c89b; }
+.dwelling-page :is(a, input, button):focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.dwelling-page :is(input, button):disabled { opacity: .55; cursor: not-allowed; }
+.dwelling-resources { margin: 20px 0; }
+.dwelling-resources > div, .dwelling-inventory li { display: flex; justify-content: space-between; gap: 16px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+.dwelling-resources dt, .dwelling-inventory span:last-child { color: #adc5be; }
+.dwelling-resources dd { margin: 0; font-variant-numeric: tabular-nums; }
+.dwelling-inventory { list-style: none; margin: 16px 0; padding: 0; }
+@media (max-width: 760px) { .dwelling-page { padding: 24px 18px 56px; } .dwelling-layout { grid-template-columns: minmax(0, 1fr); gap: 24px; } .dwelling-page h1 { font-size: 28px; } .profile-actions { display: grid; } }
