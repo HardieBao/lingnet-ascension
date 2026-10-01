@@ -4,10 +4,12 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { isCodeArtifactPath } from "@/lib/code-artifact";
+import type { ClaimOffer } from "@/lib/claim-quote";
 
 type ClaimSummary = { id: string; state: string; expires_at: number };
 
 export function MissionActions({
+  claimOffer,
   missionId,
   missionState,
   occupiedState,
@@ -19,6 +21,7 @@ export function MissionActions({
   artifactPath,
   lockReason,
 }: {
+  claimOffer: ClaimOffer | null;
   missionId: string;
   missionState: string;
   occupiedState: string | null;
@@ -28,13 +31,14 @@ export function MissionActions({
   atClaimLimit: boolean;
   accessReason: string | null;
   artifactPath: string | null;
-  lockReason: string;
+  lockReason: string | null;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [artifact, setArtifact] = useState<File | null>(null);
   const [pullNumber, setPullNumber] = useState("");
+  const [confirming, setConfirming] = useState(false);
   const codeTask = isCodeArtifactPath(artifactPath);
   const validPullNumber = /^[1-9]\d*$/.test(pullNumber.trim()) && Number.isSafeInteger(Number(pullNumber.trim()));
 
@@ -53,7 +57,7 @@ export function MissionActions({
       };
       if (!response.ok) {
         setMessage(data.error || "操作失败，请重试。");
-        return;
+        return false;
       }
       if (data.submission?.verdict && !data.submission.verdict.passed) {
         setMessage("天道审判未通过：" + data.submission.verdict.checks.filter((check: { passed: boolean }) => !check.passed).map((check: { detail: string }) => check.detail).join("；"));
@@ -61,25 +65,50 @@ export function MissionActions({
         setMessage("操作完成，状态已更新。");
       }
       router.refresh();
+      return true;
     } catch {
       setMessage("网络暂不可用，请检查连接后重试。");
+      return false;
     } finally {
       setBusy(false);
     }
   }
 
   if (missionState === "done") return <p className="action-status">本悬赏已纳入正式成果。</p>;
-  if (missionState !== "open") return <p className="action-status">{lockReason}</p>;
+  if (claim?.state === "frozen" || occupiedState === "frozen") return <p className="action-status">成果已冻结，等待独立复核。冻结期间仍占用认领席位，不能重跑、提交或主动释放；原租约和押金按复核规则处理。</p>;
+  if (missionState !== "open" || !claim && lockReason) return <p className="action-status">{lockReason}</p>;
   if (!claim && occupiedState) return <p className="action-status">{occupiedState === "approved" ? "成果已批准，等待合入公开仓库。" : "此悬赏已有修士认领。"}</p>;
   if (!signedIn) {
     return <><Button asChild className="claim-button"><a href={signInPath}>登录后认领悬赏</a></Button><p className="detail-note">使用 GitHub 身份登录，模型凭据仍留在本机。</p></>;
   }
   if (!claim && accessReason) return <p className="action-status">{accessReason}</p>;
-  if (!claim && atClaimLimit) return <p className="action-status">认领席位已满，请先完成或释放一张悬赏。</p>;
+  if (!claim && atClaimLimit) return <p className="action-status">认领席位已满，请从「我的在途悬赏」查看占用记录。冻结任务须等待独立复核，不能主动释放。</p>;
+  if (!claim && !claimOffer) return <p className="action-status">认领契约暂不可用，请刷新后核对。</p>;
 
   return (
     <div className="mission-actions">
-      {!claim ? <Button className="claim-button" disabled={busy} onClick={() => act("/api/claims", JSON.stringify({ missionId }), "application/json")}>认领悬赏</Button> : null}
+      {!claim ? <Button className="claim-button" data-claim-quote={claimOffer?.quote} disabled={busy} aria-expanded={confirming}
+        aria-controls="claim-confirmation" onClick={() => { setMessage(""); setConfirming(true); }}>认领悬赏</Button> : null}
+      {!claim && confirming && claimOffer ? <section className="claim-confirmation" id="claim-confirmation" aria-labelledby="claim-confirmation-title">
+        <h3 id="claim-confirmation-title">核对本次新认领</h3>
+        <p>{missionId} · {claimOffer.title}</p>
+        <dl>
+          <div><dt>任务品阶</dt><dd>{claimOffer.rank}</dd></div>
+          <div><dt>固定基线</dt><dd><code>{claimOffer.base_commit.slice(0, 8)}</code></dd></div>
+          <div><dt>交付范围</dt><dd><code>{claimOffer.allowed_paths}</code></dd></div>
+          <div><dt>游戏押金</dt><dd>冻结 {claimOffer.deposit} 游戏 Token</dd></div>
+          <div><dt>模型额度</dt><dd>{claimOffer.model.id}<br />总计 {claimOffer.model.tokenBudget.toLocaleString()} 模型 Token，单次输出最多 {claimOffer.model.maxOutputTokens.toLocaleString()}</dd></div>
+          <div><dt>独立接受奖励</dt><dd>{claimOffer.reward_token} 游戏 Token · {claimOffer.reward_cultivation} 修为 · {claimOffer.reward_merit} 功德</dd></div>
+        </dl>
+        <p>认领占用一个席位，须在 20 分钟内开始闭关。旧认领的租约、模型额度和提交资格不会恢复；本次按新认领重新核验。</p>
+        <p>这一步不启动模型，也不确认模型费用。模型 Token 不是游戏灵石或现金价格上限；真实调用仍须先核验代理契约，并在本机单独确认费用。</p>
+        <div className="claim-confirmation-actions">
+          <Button className="claim-button" disabled={busy} onClick={async () => {
+            if (await act("/api/claims", JSON.stringify({ missionId, quote: claimOffer.quote }), "application/json")) setConfirming(false);
+          }}>{busy ? "正在认领…" : "核对并认领"}</Button>
+          <Button variant="ghost" className="claim-button secondary-action" disabled={busy} onClick={() => { setConfirming(false); setMessage(""); }}>取消，暂不认领</Button>
+        </div>
+      </section> : null}
       {claim?.state === "claimed" ? <>
         <p className="action-status">已认领，请在 20 分钟内开跑。</p>
         <Button className="claim-button" disabled={busy} onClick={() => act(`/api/claims/${claim.id}/start`)}>开始闭关</Button>
