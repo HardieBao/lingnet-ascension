@@ -57,7 +57,11 @@ export default async function EquipmentPage() {
             <div className="equipment-price"><strong>{item.price.toLocaleString()}</strong><span>Token</span></div>
             <span className="equipment-owned">{ownedItem ? ownedItem.equipped_at ? "已装备" : "已拥有" : "未拥有"}</span>
             <EquipmentActions
+              key={`${cultivator?.id ?? "guest"}:${item.id}:${EQUIPMENT_CATALOG_VERSION}:${item.price}`}
               itemId={item.id}
+              itemName={item.name}
+              price={item.price}
+              catalogVersion={EQUIPMENT_CATALOG_VERSION}
               owned={!!ownedItem}
               equipped={!!ownedItem?.equipped_at}
               affordable={balance !== null && balance >= item.price}

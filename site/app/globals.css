@@ -313,6 +313,11 @@ a { text-decoration: none; }
 .equipment-price span, .equipment-owned { font-size: 14px; color: #9fbcae; }
 .equipment-button { min-width: 165px; height: 42px; border-radius: 3px; }
 .equipment-action { display: grid; justify-items: end; gap: 6px; }
+.equipment-confirmation { width: 100%; min-width: 0; border-top: 1px solid #315250; padding-top: 16px; font-size: 16px; text-align: left; overflow-wrap: anywhere; }
+.equipment-confirmation h3 { font-size: 18px; margin: 0 0 12px; }
+.equipment-confirmation p { line-height: 1.65; margin: 12px 0; }
+.equipment-confirmation-actions { display: grid; gap: 12px; }
+.equipment-confirmation .equipment-button { width: 100%; min-width: 0; min-height: 44px; height: auto; white-space: normal; }
 .equipment-error { max-width: 220px; color: #e5c89b; font-size: 14px; line-height: 1.5; text-align: right; margin: 0; }
 .equipment-foot { margin-top: 30px; color: #a6c2b8; font-size: 14px; line-height: 1.7; }
 .equipment-foot a { color: #9ae3d1; text-decoration: underline; }
