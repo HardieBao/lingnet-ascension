@@ -35,9 +35,13 @@ function github(request) {
       published_at: new Date(one ? publication : secondPublishedAt).toISOString() });
   }
   if (url.pathname === `${root}/commits/v1` || url.pathname === `${root}/commits/v2`) {
-    return Response.json({ sha: url.pathname.endsWith("v1") ? first : second });
+    assert.equal(request.headers.get("Accept"), "application/vnd.github.sha");
+    return new Response(url.pathname.endsWith("v1") ? first : second);
   }
-  if (url.pathname === `${root}/commits/main`) return Response.json({ sha: mainCommit });
+  if (url.pathname === `${root}/commits/main`) {
+    assert.equal(request.headers.get("Accept"), "application/vnd.github.sha");
+    return new Response(mainCommit);
+  }
   if (url.pathname.startsWith(`${root}/compare/`)) {
     const comparison = url.pathname.slice(`${root}/compare/`.length);
     if (comparison === `${second}...${"d".repeat(40)}`) return Response.json({ status: mainLineageStatus });
