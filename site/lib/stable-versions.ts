@@ -30,18 +30,37 @@ async function boundedJson(url: string, fetcher: typeof fetch): Promise<Record<s
   return value as Record<string, unknown>;
 }
 
+async function commitSha(ref: string, fetcher: typeof fetch): Promise<string> {
+  const response = await fetcher(`${API}/commits/${encodeURIComponent(ref)}`, {
+    headers: { ...HEADERS, Accept: "application/vnd.github.sha" },
+  });
+  if (!response.ok || !response.body) throw new Error("GitHub commit evidence unavailable");
+  const reader = response.body.getReader();
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  let text = "", size = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    size += value.byteLength;
+    if (size > 64) { await reader.cancel(); throw new Error("GitHub commit evidence too large"); }
+    text += decoder.decode(value, { stream: true });
+  }
+  const sha = (text + decoder.decode()).trim();
+  if (!SHA.test(sha)) throw new Error("Invalid GitHub commit evidence");
+  return sha.toLowerCase();
+}
+
 async function release(tag: string, fetcher: typeof fetch): Promise<StableVersion | null> {
   const published = await boundedJson(`${API}/releases/tags/${encodeURIComponent(tag)}`, fetcher);
   const publishedAt = typeof published.published_at === "string" ? Date.parse(published.published_at) : NaN;
   if (published.tag_name !== tag || published.draft !== false || published.prerelease !== false || published.immutable !== true ||
       !Number.isSafeInteger(published.id) || (published.id as number) < 1 || !Number.isFinite(publishedAt)) return null;
-  const commit = await boundedJson(`${API}/commits/${encodeURIComponent(tag)}`, fetcher);
-  if (typeof commit.sha !== "string" || !SHA.test(commit.sha)) return null;
-  return { releaseId: published.id as number, tag, commit: commit.sha.toLowerCase(), publishedAt };
+  const commit = await commitSha(tag, fetcher);
+  return { releaseId: published.id as number, tag, commit, publishedAt };
 }
 
 async function isDescendant(earlier: string, later: string, fetcher: typeof fetch): Promise<boolean> {
-  const comparison = await boundedJson(`${API}/compare/${earlier}...${later}`, fetcher);
+  const comparison = await boundedJson(`${API}/compare/${earlier}...${later}?per_page=1&page=2`, fetcher);
   return comparison.status === "ahead" || comparison.status === "identical";
 }
 
@@ -68,9 +87,8 @@ export async function inspectStableVersions(input: {
     const check = await verifyFileIntegration(input.artifactPath, version.commit, input.artifactSha256, fetcher);
     if (!check.passed) return { passed: false, reason: "公开版本中的成果摘要不一致或已回滚" };
   }
-  const current = await boundedJson(`${API}/commits/main`, fetcher);
-  if (typeof current.sha !== "string" || !SHA.test(current.sha)) throw new Error("Current main commit unavailable");
-  const currentCheck = await verifyFileIntegration(input.artifactPath, current.sha, input.artifactSha256, fetcher);
+  const current = await commitSha("main", fetcher);
+  const currentCheck = await verifyFileIntegration(input.artifactPath, current, input.artifactSha256, fetcher);
   if (!currentCheck.passed) return { passed: false, reason: "当前主分支成果已变化或回滚" };
   return { passed: true, proof: { first, second } };
 }
@@ -81,9 +99,7 @@ export async function inspectCurrentRollback(input: {
   if (!/^[a-f0-9]{64}$/i.test(input.artifactSha256) ||
       !/^[A-Za-z0-9_./-]+$/.test(input.artifactPath) || input.artifactPath.startsWith("/") ||
       input.artifactPath.split("/").includes("..")) throw new Error("Invalid settlement evidence");
-  const current = await boundedJson(`${API}/commits/main`, fetcher);
-  if (typeof current.sha !== "string" || !SHA.test(current.sha)) throw new Error("Current main commit unavailable");
-  const mainCommit = current.sha.toLowerCase();
+  const mainCommit = await commitSha("main", fetcher);
   const path = input.artifactPath.split("/").map(encodeURIComponent).join("/");
   const response = await fetcher(`${API}/contents/${path}?ref=${mainCommit}`, {
     headers: { ...HEADERS, Accept: "application/vnd.github.raw+json" },
