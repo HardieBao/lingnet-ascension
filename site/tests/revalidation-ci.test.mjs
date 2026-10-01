@@ -25,6 +25,7 @@ test("trusted revalidation CLI replays the exact integrated document without app
     git("config", "user.name", "Revalidation Fixture");
     git("config", "user.email", "fixture@example.invalid");
     git("config", "commit.gpgsign", "false");
+    git("config", "core.autocrlf", "false");
     const content = readFileSync(new URL("./fixtures/gov001-charter.md", import.meta.url));
     copyFileSync(new URL("./fixtures/gov001-charter.md", import.meta.url), join(repository, "GOVERNANCE.md"));
     git("add", "GOVERNANCE.md");
