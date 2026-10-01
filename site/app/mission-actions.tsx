@@ -28,7 +28,7 @@ export function MissionActions({
   atClaimLimit: boolean;
   accessReason: string | null;
   artifactPath: string | null;
-  lockReason: string;
+  lockReason: string | null;
 }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
@@ -69,13 +69,14 @@ export function MissionActions({
   }
 
   if (missionState === "done") return <p className="action-status">本悬赏已纳入正式成果。</p>;
-  if (missionState !== "open") return <p className="action-status">{lockReason}</p>;
+  if (claim?.state === "frozen" || occupiedState === "frozen") return <p className="action-status">成果已冻结，等待独立复核。冻结期间仍占用认领席位，不能重跑、提交或主动释放；原租约和押金按复核规则处理。</p>;
+  if (missionState !== "open" || !claim && lockReason) return <p className="action-status">{lockReason}</p>;
   if (!claim && occupiedState) return <p className="action-status">{occupiedState === "approved" ? "成果已批准，等待合入公开仓库。" : "此悬赏已有修士认领。"}</p>;
   if (!signedIn) {
     return <><Button asChild className="claim-button"><a href={signInPath}>登录后认领悬赏</a></Button><p className="detail-note">使用 GitHub 身份登录，模型凭据仍留在本机。</p></>;
   }
   if (!claim && accessReason) return <p className="action-status">{accessReason}</p>;
-  if (!claim && atClaimLimit) return <p className="action-status">认领席位已满，请先完成或释放一张悬赏。</p>;
+  if (!claim && atClaimLimit) return <p className="action-status">认领席位已满，请从「我的在途悬赏」查看占用记录。冻结任务须等待独立复核，不能主动释放。</p>;
 
   return (
     <div className="mission-actions">
