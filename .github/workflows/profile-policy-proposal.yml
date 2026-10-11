@@ -1,0 +1,80 @@
+name: Profile policy proposal self-check
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'ci/**'
+      - 'site/tests/profile-ci.test.mjs'
+      - '.github/workflows/profile-policy-proposal.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  proposed-profile-audit:
+    name: Proposed profile audit (not required gate)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PROFILE_BASE: 40d8180f3b9b0573a6deb3314ad7176156cc7370
+      PROFILE_HEAD: 2a2d159be7a0f0a6a4834bf6c7a7c5cb11836ff1
+    steps:
+      - name: Checkout policy proposal
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: policy
+          persist-credentials: false
+      - name: Checkout fixed baseline
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ env.PROFILE_BASE }}
+          path: trusted
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Checkout fixed PR21 source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ env.PROFILE_HEAD }}
+          path: candidate
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Scope and command regression tests
+        run: node --test policy/site/tests/profile-ci.test.mjs
+      - name: Proposed complete Linux audit of fixed PR21
+        run: |
+          test "$(git -C trusted rev-parse HEAD)" = "$PROFILE_BASE"
+          test "$(git -C candidate rev-parse HEAD)" = "$PROFILE_HEAD"
+          cp policy/ci/verify-pr.mjs policy/ci/profile-candidate.mjs policy/ci/check-profile-privacy.mjs trusted/ci/
+          node --experimental-strip-types trusted/ci/verify-pr.mjs trusted candidate "$PROFILE_BASE"
+      - name: Broken revision guard cannot pass a candidate-controlled noop test
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from 'node:assert/strict';
+          import { readFileSync, writeFileSync } from 'node:fs';
+          import { resolve } from 'node:path';
+          import { spawnSync } from 'node:child_process';
+          import { buildCodeCheckArgs } from './trusted/ci/verify-pr.mjs';
+          const path = 'trusted/site/lib/cultivator-profile.ts';
+          const source = readFileSync(path, 'utf8');
+          assert.equal(source.split('AND revision = ?').length, 2);
+          writeFileSync(path, source.replace('AND revision = ?', 'AND ? >= 0'));
+          writeFileSync('trusted/site/scripts/verify-profile-privacy.mjs', 'process.exit(0);\n');
+          const result = spawnSync('docker', buildCodeCheckArgs(resolve('trusted'), 'profile-privacy'),
+            { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
+          if (result.error) throw result.error;
+          console.log(result.stdout); console.error(result.stderr);
+          assert.equal(result.status, 1);
+          assert.match(result.stdout + result.stderr, /200 instead of 409/);
+          console.log('PROFILE_NEGATIVE_CONTROL=passed: trusted assertions caught broken revision matching despite a noop candidate script.');
+          NODE
+      - name: Record immutable audit identities without release approval
+        env:
+          POLICY_HEAD: ${{ github.event.pull_request.head.sha }}
+          POLICY_TEST_MERGE: ${{ github.sha }}
+        run: node -e "console.log(JSON.stringify({profileHead:process.env.PROFILE_HEAD,base:process.env.PROFILE_BASE,policyHead:process.env.POLICY_HEAD,policyTestMerge:process.env.POLICY_TEST_MERGE,releaseApproved:false}))"

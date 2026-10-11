@@ -4,6 +4,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { artifactPathForMission, verifyMissionContent } from "../site/lib/verifier.ts";
 import { parseRevalidationReport } from "../site/lib/revalidation-report.ts";
+import { PROFILE_CANDIDATE_PATHS, validateProfileCandidate } from "./profile-candidate.mjs";
 
 const CODE_PREFIXES = ["site/app/", "site/lib/", "site/db/", "site/public/"];
 const BUILD_OUTPUT_DIRS = ["dist", ".vinext", ".next", ".wrangler", ".sites-runtime", "node_modules/.vite-temp"];
@@ -14,6 +15,8 @@ export function classifyChangedPaths(paths) {
   if (paths.length === 1 && paths[0] === "docs/WORLD_BRIEF.md") return "world-brief";
   if (paths.length === 1 && paths[0] === "docs/ARCHITECTURE_SPIKE.md") return "architecture-spike";
   if (paths.length === 1 && paths[0] === "docs/TOKEN_TERMS.md") return "token-terms";
+  if (paths.length === PROFILE_CANDIDATE_PATHS.length && new Set(paths).size === paths.length &&
+      paths.every((path) => PROFILE_CANDIDATE_PATHS.includes(path))) return "profile-privacy";
   if (paths.length > 0 && paths.every((path) => CODE_PREFIXES.some((prefix) => path.startsWith(prefix)))) return "code-regression";
   return "unsupported";
 }
@@ -38,8 +41,8 @@ export function verifyDocument(missionId, path) {
 
 export function verifyCharter(path) { verifyDocument("GOV-001", path); }
 
-export function buildCodeCheckArgs(trusted) {
-  return [
+export function buildCodeCheckArgs(trusted, scope = "code-regression") {
+  const args = [
     "run", "--rm", "--network", "none", "--read-only", "--cap-drop", "ALL",
     "--security-opt", "no-new-privileges", "--user", "10001:10001",
     "--env", "HOME=/tmp", "--env", "npm_config_cache=/tmp/npm-cache",
@@ -52,6 +55,11 @@ export function buildCodeCheckArgs(trusted) {
     "lingnet-trusted-ci", "sh", "-lc",
     "cd /work/site && npm test && npm run typecheck -- --incremental false && npm run lint && npm run build",
   ];
+  if (scope === "profile-privacy") {
+    args.splice(args.indexOf("lingnet-trusted-ci"), 0, "--cpus", "2", "--memory", "3g", "--pids-limit", "512");
+    args[args.length - 1] += " && node ../ci/check-profile-privacy.mjs";
+  }
+  return args;
 }
 
 export function buildCodeTypegenArgs(trusted) {
@@ -82,6 +90,7 @@ export function verifyPullRequest(trustedPath, candidatePath, baseSha) {
   const paths = names.toString("utf8").split("\0").filter(Boolean);
   const scope = classifyChangedPaths(paths);
   if (scope === "unsupported") throw new Error("改动没有对应的可信验证器，不能自动判定通过：" + paths.join("、"));
+  if (scope === "profile-privacy") validateProfileCandidate(candidate, paths);
   if (scope === "revalidation-report") {
     const path = join(candidate, paths[0]);
     const stat = lstatSync(path);
@@ -98,14 +107,14 @@ export function verifyPullRequest(trustedPath, candidatePath, baseSha) {
     return;
   }
 
-  const patch = execFileSync("git", ["diff", "--no-renames", "--binary", baseSha, "HEAD", "--", ...CODE_PREFIXES], { cwd: candidate, maxBuffer: 8_000_000 });
+  const patch = execFileSync("git", ["diff", "--no-renames", "--binary", baseSha, "HEAD", "--", ...(scope === "profile-privacy" ? ["site"] : CODE_PREFIXES)], { cwd: candidate, maxBuffer: 8_000_000 });
   run("git", ["apply", "--index", "-"], trusted, patch);
   const npm = process.platform === "win32" ? "npm.cmd" : "npm";
   const site = join(trusted, "site");
   run(npm, ["ci", "--ignore-scripts", "--no-audit", "--no-fund"], site);
   run("docker", ["build", "--file", join(trusted, "ci", "Dockerfile"), "--tag", "lingnet-trusted-ci", join(trusted, "ci")], trusted);
   prepareCodeCheck(trusted);
-  run("docker", buildCodeCheckArgs(trusted), trusted);
+  run("docker", buildCodeCheckArgs(trusted, scope), trusted);
   console.log("主分支验证器上的回归检查通过；这不是任务专属验收或正式成果确认。");
 }
 
