@@ -17,6 +17,7 @@ import { getRealmState } from "@/lib/realm-state";
 import { realmNames, type Realm } from "@/lib/realms";
 import { officialTokenBonus } from "@/lib/rewards";
 import { artifactPathForMission } from "@/lib/verifier";
+import { isInvitationBeta } from "@/lib/beta-access";
 import { MissionActions } from "./mission-actions";
 import { RealmActions } from "./realm-actions";
 
@@ -69,6 +70,12 @@ async function loadHomeData(requestedMissionId?: string) {
 }
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ mission?: string }> }) {
+  const beta = isInvitationBeta(env);
+  const stage = beta ? "邀请制 Beta" : "Pre-Alpha";
+  const revision: unknown = Reflect.get(env, "SOURCE_REVISION");
+  const pinned = typeof revision === "string" && /^[a-f0-9]{40}$/.test(revision);
+  const source = pinned ? `https://github.com/HardieBao/lingnet-ascension/tree/${revision}` : beta
+    ? "https://github.com/HardieBao/lingnet-ascension" : "https://github.com/HardieBao/lingnet-ascension/tree/pre-alpha-2026-09-27";
   const { mission } = await searchParams;
   const data = await loadHomeData(mission).catch(() => null);
   if (!data) return <main className="unavailable"><h1>任务大殿暂不可用</h1><p>数据服务正在恢复，请稍后刷新。</p></main>;
@@ -107,17 +114,17 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
             {cultivator && isMaintainer(cultivator) ? <Link href="/economy">经济对账</Link> : null}
             <a href="#rules">修炼法则</a>
           </nav>
-          <div className="side-foot">模型凭据留在本机 · 当前为 Pre-Alpha<br /><a href="https://github.com/HardieBao/lingnet-ascension/tree/pre-alpha-2026-09-27" target="_blank" rel="noopener noreferrer">查看对应源码 · AGPL-3.0</a></div>
+          <div className="side-foot">模型凭据留在本机 · {stage}<br /><a href={source} target="_blank" rel="noopener noreferrer">{pinned ? "查看固定部署源码" : beta ? "公开源码 · 部署版本待核对" : "查看对应源码"} · AGPL-3.0</a></div>
         </aside>
 
         <section className="main-panel">
           <header className="topbar">
             <div className="breadcrumb">万象天网 <span>/</span> 宗门悬赏</div>
-            <Badge variant="outline" className="top-status">灵网初开 · Pre-Alpha</Badge>
+            <Badge variant="outline" className="top-status">灵网初开 · {stage}</Badge>
           </header>
           <div className="content">
             <div className="section-heading">
-              <div><p className="eyebrow">TASK HALL · 第一赛季</p><h1>任务大殿</h1><p className="intro">Pre-Alpha 受限预览，暂仅主理人可登录验收；真实模型调用与双人调账关闭，尚非正式 MVP。</p></div>
+              <div><p className="eyebrow">TASK HALL · 第一赛季</p><h1>任务大殿</h1><p className="intro">{beta ? "邀请制 Beta：真实 GitHub 登录与测试记录；模型执行、奖励复核与调账暂不开放，尚非完整生产 MVP。邀请链接请勿公开转发。" : "Pre-Alpha 受限预览，暂仅主理人可登录验收；真实模型调用与双人调账关闭，尚非正式 MVP。"}</p></div>
               <div className="season-count"><strong>{String(openCount).padStart(2, "0")}<span>/ 61</span></strong><small>当前开放</small></div>
             </div>
             <div className="stat-strip" id="season">

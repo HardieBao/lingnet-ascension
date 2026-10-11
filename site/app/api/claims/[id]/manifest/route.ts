@@ -4,10 +4,14 @@ import { getClaim } from "@/lib/claims";
 import { CALCULATION_ARRAY_ID } from "@/lib/equipment";
 import { getMission } from "@/lib/missions";
 import { buildTaskPackage } from "@/lib/manifest";
+import { env } from "cloudflare:workers";
+import { isInvitationBeta } from "@/lib/beta-access";
 
 export async function GET(_request: Request, context: { params: Promise<{ id: string }> }) {
   const cultivator = await getCurrentCultivator();
   if (!cultivator) return Response.json({ error: "请先登录" }, { status: 401 });
+  if (isInvitationBeta(env)) return Response.json({ error: "邀请制 Beta 暂不开放模型执行；不会生成可运行的模型任务包。" },
+    { status: 503, headers: { "Cache-Control": "private, no-store" } });
   const { id } = await context.params;
   const claim = await getClaim(id);
   if (!claim || claim.cultivator_id !== cultivator.id || claim.state !== "running" || claim.expires_at <= Date.now()) {

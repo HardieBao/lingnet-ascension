@@ -2,6 +2,7 @@ import { env } from "cloudflare:workers";
 import { headers } from "next/headers";
 import { database } from "@/db/runtime";
 import { getChatGPTUser } from "@/app/chatgpt-auth";
+import { betaInvitationVersion, isInvitationBeta } from "@/lib/beta-access";
 
 export type Cultivator = {
   id: string;
@@ -14,8 +15,14 @@ export type Cultivator = {
 const SESSION_COOKIE = "lingnet_session";
 const SESSION_MAX_AGE = 60 * 60 * 24 * 14;
 
-export function canAccessPreview(cultivatorId: string): boolean {
+export function canAccessPreview(cultivatorId: string, invitationVersion?: unknown): boolean {
   const previewId: unknown = Reflect.get(env, "PREVIEW_ONLY_GITHUB_ID");
+  if (isInvitationBeta(env)) {
+    if (typeof previewId !== "string" || !/^[1-9]\d*$/.test(previewId)) return false;
+    if (cultivatorId === `github:${previewId}`) return true;
+    const version = betaInvitationVersion(env);
+    return !!version && invitationVersion === version && /^github:[1-9]\d*$/.test(cultivatorId);
+  }
   return previewId === undefined || typeof previewId === "string" && /^[1-9]\d*$/.test(previewId) &&
     cultivatorId === `github:${previewId}`;
 }
@@ -45,6 +52,7 @@ export async function createSession(cultivatorId: string): Promise<string> {
     sub: cultivatorId,
     ver: account.session_version,
     exp: Math.floor(Date.now() / 1000) + SESSION_MAX_AGE,
+    betaInvite: betaInvitationVersion(env),
   })));
   const signature = await crypto.subtle.sign("HMAC", await sessionKey(), new TextEncoder().encode(payload));
   return `${payload}.${base64url(new Uint8Array(signature))}`;
@@ -62,7 +70,7 @@ export async function readSession(value: string | undefined): Promise<string | n
     const payload = JSON.parse(new TextDecoder().decode(decodeBase64url(parts[0])));
     if (typeof payload.sub !== "string" || !Number.isSafeInteger(payload.ver) ||
         typeof payload.exp !== "number" || payload.exp <= Date.now() / 1000) return null;
-    if (!canAccessPreview(payload.sub)) return null;
+    if (!canAccessPreview(payload.sub, payload.betaInvite)) return null;
     const account = await database().prepare(
       "SELECT session_version FROM cultivators WHERE id = ?"
     ).bind(payload.sub).first<{ session_version: number }>();
@@ -109,6 +117,7 @@ export function clearSessionCookie(secure: boolean): string {
 }
 
 export function isMaintainer(cultivator: Cultivator): boolean {
+  if (isInvitationBeta(env)) return false;
   const maintainerId = env.MAINTAINER_GITHUB_ID ??
     (import.meta.env.DEV ? process.env.MAINTAINER_GITHUB_ID : undefined);
   return cultivator.provider === "github" && !!maintainerId && cultivator.provider_id === maintainerId;
