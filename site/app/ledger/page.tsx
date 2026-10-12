@@ -4,6 +4,7 @@ import { database } from "@/db/runtime";
 import { getCurrentCultivator } from "@/lib/auth";
 import { LEDGER_BALANCES_SQL, LEDGER_EVENTS_SQL, LEDGER_PAGE_SIZE, ledgerSourceLabel } from "@/lib/ledger-history";
 import { recoveryState } from "@/lib/recovery-state";
+import { isInvitationBeta } from "@/lib/beta-access";
 
 export const dynamic = "force-dynamic";
 export const metadata = { title: "我的账本 | 灵网纪元", description: "查看游戏 Token、修为和功德的来源记录。" };
@@ -24,7 +25,7 @@ async function loadLedger(before?: string, beforeId?: string) {
   const [balances, page, recovery] = await Promise.all([
     db.prepare(LEDGER_BALANCES_SQL).bind(cultivator.id).first<LedgerBalances>(),
     db.prepare(LEDGER_EVENTS_SQL).bind(cultivator.id, cursorAt, cursorAt, cursorAt, cursorId, LEDGER_PAGE_SIZE + 1).all<LedgerEvent>(),
-    recoveryState(db, cultivator.id),
+    recoveryState(db, cultivator.id, isInvitationBeta(env)),
   ]);
   const events = page.results.slice(0, LEDGER_PAGE_SIZE);
   const last = events.at(-1);
@@ -47,7 +48,10 @@ export default async function LedgerPage({ searchParams }: { searchParams: Promi
   return <main className="ledger-page">
     <Link href="/">← 返回任务大殿</Link>
     <header><p className="eyebrow">CULTIVATION LEDGER</p><h1>我的账本</h1><p>游戏资源逐笔记录来源；本机模型 Token 与真实费用不在此账本内。</p></header>
-    {recovery?.hold || hasDebt ? <section className="ledger-recovery" aria-label="奖励回滚状态">
+    {!recovery ? <section className="ledger-recovery" aria-label="奖励回滚状态">
+      <h2>回滚保护状态未知</h2><p>保护状态尚不可读取，不能视为零欠账或已解冻。以下仅显示已有账本记录；Beta 的模型执行、奖励复核与调账仍关闭。</p>
+    </section> : null}
+    {recovery && (recovery.hold || hasDebt) ? <section className="ledger-recovery" aria-label="奖励回滚状态">
       <h2>{recovery.hold ? "奖励回滚，账户暂时冻结" : "回滚欠账待抵扣"}</h2>
       <p>{recovery.hold
         ? "独立复核完成前，暂不能购买装备、领取新奖励或突破境界。"
@@ -56,7 +60,7 @@ export default async function LedgerPage({ searchParams }: { searchParams: Promi
       <p>如需核对，请在项目 Issue 中联系维护者；历史流水不会删除。</p>
     </section> : null}
     <div className="ledger-balances" aria-label="当前资源余额">
-      <div><span>可用 Token</span><strong>{balances?.token ?? 0}</strong></div>
+      <div><span>{recovery ? "可用 Token" : "账面 Token"}</span><strong>{balances?.token ?? 0}</strong></div>
       <div><span>冻结 Token</span><strong>{balances?.token_locked ?? 0}</strong></div>
       <div><span>修为</span><strong>{balances?.cultivation ?? 0}</strong></div>
       <div><span>功德</span><strong>{balances?.merit ?? 0}</strong></div>

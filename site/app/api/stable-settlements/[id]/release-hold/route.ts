@@ -4,12 +4,13 @@ import { getCurrentCultivator } from "@/lib/auth";
 import { artifactSafetyIssues } from "@/lib/artifact-safety";
 import { rejectForeignMutation } from "@/lib/request-origin";
 import { readSmallJson } from "@/lib/small-json";
+import { isInvitationBeta } from "@/lib/beta-access";
 
 export async function POST(request: Request, context: { params: Promise<{ id: string }> }) {
   const foreign = rejectForeignMutation(request);
   if (foreign) return foreign;
   const reviewer = await getCurrentCultivator();
-  const approvedId: unknown = Reflect.get(env, "RECOVERY_APPROVER_GITHUB_ID");
+  const approvedId: unknown = isInvitationBeta(env) ? undefined : Reflect.get(env, "RECOVERY_APPROVER_GITHUB_ID");
   if (!reviewer || reviewer.provider !== "github" || typeof approvedId !== "string" ||
       !/^[1-9]\d*$/.test(approvedId) || reviewer.provider_id !== approvedId) {
     return Response.json({ error: "需要独立的追回复核人" }, { status: 403 });
