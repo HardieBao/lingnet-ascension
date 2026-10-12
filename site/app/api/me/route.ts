@@ -1,6 +1,8 @@
 import { database } from "@/db/runtime";
 import { getCurrentCultivator } from "@/lib/auth";
 import { recoveryState } from "@/lib/recovery-state";
+import { env } from "cloudflare:workers";
+import { isInvitationBeta } from "@/lib/beta-access";
 
 export async function GET() {
   const cultivator = await getCurrentCultivator();
@@ -8,11 +10,12 @@ export async function GET() {
   const db = database();
   const [totals, recovery] = await Promise.all([db.prepare(
     "SELECT resource, COALESCE(SUM(delta), 0) AS balance FROM ledger_events WHERE cultivator_id = ? GROUP BY resource"
-  ).bind(cultivator.id).all<{ resource: string; balance: number }>(), recoveryState(db, cultivator.id)]);
+  ).bind(cultivator.id).all<{ resource: string; balance: number }>(), recoveryState(db, cultivator.id, isInvitationBeta(env))]);
   const balances = Object.fromEntries(totals.results.map((row) => [row.resource, row.balance]));
   return Response.json({
     cultivator,
     recovery,
+    ...(recovery ? {} : { recoveryStatus: "unavailable" }),
     balances: {
       token: balances.token ?? 0,
       tokenLocked: balances.token_locked ?? 0,

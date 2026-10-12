@@ -11,9 +11,14 @@ export const RECOVERY_STATE_SQL = `
     COALESCE((SELECT outstanding FROM stable_reward_debts WHERE cultivator_id = ? AND resource = 'merit'), 0) AS merit
 `;
 
-export async function recoveryState(db: D1Database, cultivatorId: string): Promise<RecoveryState> {
+export async function recoveryState(db: D1Database, cultivatorId: string, allowUnavailable = false): Promise<RecoveryState | null> {
+  try {
   const row = await db.prepare(RECOVERY_STATE_SQL).bind(cultivatorId, cultivatorId, cultivatorId, cultivatorId)
     .first<{ hold: number; token: number; cultivation: number; merit: number }>();
   return { hold: row?.hold === 1, debt: { token: row?.token ?? 0,
     cultivation: row?.cultivation ?? 0, merit: row?.merit ?? 0 } };
+  } catch (error) {
+    if (allowUnavailable) return null;
+    throw error;
+  }
 }
