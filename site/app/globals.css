@@ -160,7 +160,7 @@ body {
 }
 
 html { scroll-behavior: smooth; }
-body { min-width: 320px; }
+body { min-width: min(320px, 100%); }
 a { text-decoration: none; }
 .shell {
   min-height: 100vh;

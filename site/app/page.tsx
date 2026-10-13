@@ -16,6 +16,7 @@ import { listMissions } from "@/lib/missions";
 import { getRealmState } from "@/lib/realm-state";
 import { realmNames, type Realm } from "@/lib/realms";
 import { officialTokenBonus } from "@/lib/rewards";
+import { isRecoveryReviewer } from "@/lib/stable-reward-workbench";
 import { artifactPathForMission } from "@/lib/verifier";
 import { isInvitationBeta } from "@/lib/beta-access";
 import { MissionActions } from "./mission-actions";
@@ -112,6 +113,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ m
             {cultivator ? <Link href="/ledger">我的账本</Link> : null}
             {cultivator && isMaintainer(cultivator) ? <Link href="/review">宗门复核</Link> : null}
             {cultivator && isMaintainer(cultivator) ? <Link href="/economy">经济对账</Link> : null}
+            {cultivator && (isMaintainer(cultivator) || isRecoveryReviewer(cultivator, Reflect.get(env, "RECOVERY_APPROVER_GITHUB_ID"))) ? <Link href="/stable-rewards">稳定奖励复核</Link> : null}
             <a href="#rules">修炼法则</a>
           </nav>
           <div className="side-foot">模型凭据留在本机 · {stage}<br /><a href={source} target="_blank" rel="noopener noreferrer">{pinned ? "查看固定部署源码" : beta ? "公开源码 · 部署版本待核对" : "查看对应源码"} · AGPL-3.0</a></div>
