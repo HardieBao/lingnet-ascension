@@ -28,7 +28,7 @@ export async function verifyFileIntegration(
     return { passed: false, reason: "提交或成果摘要格式无效" };
   }
   const headers = { Accept: "application/vnd.github+json", "User-Agent": "LingNet-Ascension" };
-  const compare = await fetcher(`${REPOSITORY_API}/compare/${commit}...main?per_page=1`, { headers });
+  const compare = await fetcher(`${REPOSITORY_API}/compare/${commit}...main?per_page=1&page=2`, { headers });
   if (!compare.ok) return { passed: false, reason: "无法确认提交是否已合入主分支" };
   const relationship = await compare.json() as { status?: string };
   if (relationship.status !== "ahead" && relationship.status !== "identical") {
