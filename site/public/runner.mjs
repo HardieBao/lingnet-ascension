@@ -415,6 +415,21 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
     else if (action === "resume" && taskPackagePath && option && consent === "--preset" && process.argv[6] && process.argv[7] === "--ack-model-costs" && process.argv.length === 8) {
       await runTask(taskPackagePath, { ackModelCosts: true, checkpointId: option, presetId: process.argv[6] });
     }
+    else if (action === "preset-ui" && taskPackagePath && process.argv.length === 4) {
+      const { startPresetWorkbench } = await import("./runner-preset-workbench.mjs").catch(() => { throw new Error("请下载 runner-preset-workbench.mjs 与 runner-preset-ui.mjs 到 Runner 同目录"); });
+      let packageValue;
+      try { packageValue = JSON.parse(await readFile(taskPackagePath, "utf8")); } catch { throw new Error("任务包文件无效，请重新下载；不回显文件内容"); }
+      const workbench = await startPresetWorkbench(packageValue);
+      console.log(`本机功法殿：${workbench.origin}/`);
+      console.log("不启动模型，不上传提示词。关闭网页不会停止服务；在此终端输入 stop 或按 Ctrl+C 关闭，已存功法保留。");
+      let stop;
+      try {
+        await new Promise((done) => { stop = done; process.stdin.once("data", stop); process.once("SIGINT", stop); process.once("SIGTERM", stop); });
+      } finally {
+        process.stdin.pause(); process.stdin.removeListener("data", stop); process.removeListener("SIGINT", stop); process.removeListener("SIGTERM", stop);
+        await workbench.close();
+      }
+    }
     else if (action === "presets" && taskPackagePath && process.argv.length === 4) {
       const { listPresets } = await import("./runner-presets.mjs");
       console.log(JSON.stringify(await listPresets(JSON.parse(await readFile(taskPackagePath, "utf8")))));
@@ -446,7 +461,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
       await runPreflight(taskPackagePath, option);
     }
     else {
-      console.error("用法：doctor | run <任务包.json> [--preset <功法编号>] --ack-model-costs | resume <任务包.json> <检查点编号> [--preset <功法编号>] --ack-model-costs | checkpoints <任务包.json> | checkpoint-save <任务包.json> <工作区> | checkpoint-discard <任务包.json> <检查点编号> | presets <任务包.json> | preset-save <任务包.json> <配置.json> | preset-discard <任务包.json> <功法编号> | preflight <任务包.json> <成果文件>");
+      console.error("用法：doctor | run <任务包.json> [--preset <功法编号>] --ack-model-costs | resume <任务包.json> <检查点编号> [--preset <功法编号>] --ack-model-costs | checkpoints <任务包.json> | checkpoint-save <任务包.json> <工作区> | checkpoint-discard <任务包.json> <检查点编号> | preset-ui <任务包.json> | presets <任务包.json> | preset-save <任务包.json> <配置.json> | preset-discard <任务包.json> <功法编号> | preflight <任务包.json> <成果文件>");
       process.exitCode = 2;
     }
   } catch (error) {

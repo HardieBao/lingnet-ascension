@@ -87,9 +87,9 @@ export function MissionActions({
       {claim?.state === "running" ? <>
         <p className="action-status">闭关中 · 租约有效至 {new Date(claim.expires_at).toLocaleTimeString("zh-CN")}</p>
         <p className="detail-note">新认领按任务包锁定总额度 30,000 模型 Token，单次输出最多 2,048；重试共用余额。这不是游戏 Token，也不是现金价格上限。旧版无预算任务包只能离线预检，请释放后重新认领。</p>
-        <p className="detail-note">把下方七个 Runner 文件下载到同一目录，先运行 <code>node runner.mjs doctor</code>，按提示准备 Docker 隔离镜像。只有代理限额契约已核验，且确认承担模型费用后，才可运行 <code>node --env-file=.env.local runner.mjs run 任务包.json --ack-model-costs</code>。密钥只供本机可信网关使用，不交给模型或上传平台；当前代理尚未核验，真实调用默认关闭。</p>
+        <p className="detail-note">把下方九个 Runner 文件下载到同一目录，先运行 <code>node runner.mjs doctor</code>，按提示准备 Docker 隔离镜像。只有代理限额契约已核验，且确认承担模型费用后，才可运行 <code>node --env-file=.env.local runner.mjs run 任务包.json --ack-model-costs</code>。密钥只供本机可信网关使用，不交给模型或上传平台；当前代理尚未核验，真实调用默认关闭。</p>
         <p className="detail-note">v4 任务包支持元神印记：每位修士本机共用 1 槽，储物袋后 2 槽；基础保留 24 小时，护心符每认领可在失败后延长一次 24 小时。用 <code>node runner.mjs checkpoints 任务包.json</code> 查看，恢复命令为 <code>node --env-file=.env.local runner.mjs resume 任务包.json 检查点编号 --ack-model-costs</code>。每个印记只能恢复一次，不延长租约、不补模型额度；只恢复限定产物并重建上下文，不保存私人会话。用量不明时仍停止模型调用。</p>
-        <p className="detail-note">功法基础 1 槽，传功玉简后 2 槽。用 <code>preset-save 任务包.json 配置.json</code> 保存、<code>presets 任务包.json</code> 查看，再在运行命令中追加 <code>--preset 功法编号</code>（放在费用确认参数前）。只允许推理档位、补充提示和更严格的输出上限；不允许密钥、任意命令或提高任务预算。</p>
+        <p className="detail-note">功法基础 1 槽，传功玉简后 2 槽。运行 <code>node runner.mjs preset-ui 任务包.json</code>，在它给出的本机地址创建、导入导出或明确删除功法；此页不启动模型，也不需要私密环境配置。在终端输入 stop 或按 Ctrl+C 停止，已存功法保留。已有 <code>preset-save</code>、<code>presets</code> 命令继续可用。实际运行仍须手动追加 <code>--preset 功法编号</code>（放在费用确认参数前）；不允许密钥、任意命令或提高任务预算。</p>
         {codeTask
           ? <p className="detail-note code-task-note">Runner 仅产出指定文件。装备演算阵盘后会自动执行本地测试、类型、lint和构建；也可用 <code>node runner.mjs preflight 任务包.json 成果文件</code> 手动预检。固定基线缺少可信检查配置时不能开检。把成果提交到本仓库的 Fork，向 main 发起只修改该文件的 PR；仍须远端可信 CI 通过，再填写 PR 编号并等待独立复核。本地或PR通过都不等于正式奖励。</p>
           : <p className="detail-note">装备演算阵盘后，Runner 会在生成成果后自动执行本地结构预检。修改成果后也可运行 <code>node runner.mjs preflight 任务包.json 成果.md</code>；本地通过仍需服务端独立审判和宗门复核。</p>}
@@ -100,6 +100,8 @@ export function MissionActions({
         <a href="/budget-gateway.mjs" download>下载本机预算网关</a>
         <a href="/runner-checkpoints.mjs" download>下载检查点恢复模块</a>
         <a href="/runner-presets.mjs" download>下载功法预设模块</a>
+        <a href="/runner-preset-workbench.mjs" download>下载本机功法管理模块</a>
+        <a href="/runner-preset-ui.mjs" download>下载本机功法页面</a>
         <a href="/runner.Dockerfile" download>下载隔离镜像构建文件</a>
         {codeTask ? <>
           <label className="upload-field" htmlFor="code-pr-number">GitHub PR 编号
