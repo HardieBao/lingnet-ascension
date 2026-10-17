@@ -4,6 +4,7 @@ import { join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { artifactPathForMission, verifyMissionContent } from "../site/lib/verifier.ts";
 import { parseRevalidationReport } from "../site/lib/revalidation-report.ts";
+import { isFixedPlatformCandidate, verifyPlatformCandidate } from "./verify-platform-candidate.mjs";
 
 const CODE_PREFIXES = ["site/app/", "site/lib/", "site/db/", "site/public/"];
 const BUILD_OUTPUT_DIRS = ["dist", ".vinext", ".next", ".wrangler", ".sites-runtime", "node_modules/.vite-temp"];
@@ -15,6 +16,7 @@ export function classifyChangedPaths(paths) {
   if (paths.length === 1 && paths[0] === "docs/ARCHITECTURE_SPIKE.md") return "architecture-spike";
   if (paths.length === 1 && paths[0] === "docs/TOKEN_TERMS.md") return "token-terms";
   if (paths.length > 0 && paths.every((path) => CODE_PREFIXES.some((prefix) => path.startsWith(prefix)))) return "code-regression";
+  if (isFixedPlatformCandidate(paths)) return "platform-candidate";
   return "unsupported";
 }
 
@@ -82,6 +84,11 @@ export function verifyPullRequest(trustedPath, candidatePath, baseSha) {
   const paths = names.toString("utf8").split("\0").filter(Boolean);
   const scope = classifyChangedPaths(paths);
   if (scope === "unsupported") throw new Error("改动没有对应的可信验证器，不能自动判定通过：" + paths.join("、"));
+  if (scope === "platform-candidate") {
+    const head = execFileSync("git", ["rev-parse", "HEAD"], { cwd: candidate, encoding: "utf8" }).trim();
+    verifyPlatformCandidate(trusted, candidate, baseSha, head);
+    return;
+  }
   if (scope === "revalidation-report") {
     const path = join(candidate, paths[0]);
     const stat = lstatSync(path);

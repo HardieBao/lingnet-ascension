@@ -1,0 +1,133 @@
+name: Full platform policy proposal self-check
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - ci/verify-pr.mjs
+      - ci/verify-platform-candidate.mjs
+      - ci/check-full-platform.mjs
+      - site/tests/platform-candidate-ci.test.mjs
+      - .github/workflows/platform-policy-proposal.yml
+
+permissions:
+  contents: read
+
+jobs:
+  proposal:
+    name: Proposed full audit (not required gate or release approval)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TARGET_BASE: 723df7ee1acf6676bed63a14616d49ebd9784e82
+      TARGET_HEAD: 7f8c996af7fdc2d03bf92e29d3c09946ce80bac6
+    steps:
+      - name: Verify the exact public runtime proposal and current baseline
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          node --input-type=module <<'NODE'
+          import assert from "node:assert/strict";
+          import { execFileSync } from "node:child_process";
+          const api = path => JSON.parse(execFileSync("gh", ["api", `repos/HardieBao/lingnet-ascension/${path}`], { encoding: "utf8" }));
+          const proposal = api("pulls/25"), main = api("git/ref/heads/main");
+          assert.equal(proposal.head.sha, process.env.TARGET_HEAD);
+          assert.equal(proposal.base.sha, process.env.TARGET_BASE);
+          assert.equal(main.object.sha, process.env.TARGET_BASE);
+          assert.equal(proposal.state, "open");
+          console.log("Pinned runtime PR25 and current main; this is not approval.");
+          NODE
+      - name: Checkout unchanged baseline
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ env.TARGET_BASE }}
+          path: pristine
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Checkout fixed runtime candidate
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          ref: ${{ env.TARGET_HEAD }}
+          path: candidate
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Checkout unadopted policy proposal
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1
+        with:
+          path: policy
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020
+        with:
+          node-version: '24'
+          package-manager-cache: false
+      - name: Exercise policy input and immutable migration rejection
+        run: |
+          node --experimental-strip-types --test policy/site/tests/platform-candidate-ci.test.mjs
+          node --experimental-strip-types --input-type=module <<'NODE'
+          import assert from "node:assert/strict";
+          import { execFileSync } from "node:child_process";
+          import { classifyChangedPaths } from "./policy/ci/verify-pr.mjs";
+          const paths = execFileSync("git", ["-C", "candidate", "diff", "--name-only", "-z",
+            process.env.TARGET_BASE, process.env.TARGET_HEAD]).toString().split("\0").filter(Boolean);
+          assert.equal(paths.length, 106);
+          assert.equal(classifyChangedPaths(paths), "platform-candidate", "FULL_PLATFORM_ROUTE");
+          assert.equal(classifyChangedPaths(paths.slice(1)), "unsupported");
+          assert.equal(classifyChangedPaths([...paths, "ci/verify-pr.mjs"]), "unsupported");
+          assert.equal(classifyChangedPaths(["site/app/page.tsx"]), "code-regression");
+          assert.equal(classifyChangedPaths(["site/app/page.tsx", "site/tests/unknown.test.mjs"]), "unsupported");
+          console.log("Fixed 106-path route and existing single-task restrictions passed.");
+          NODE
+      - name: Run the proposed required-entry route on the fixed full candidate
+        run: |
+          git clone --quiet --no-hardlinks pristine trusted
+          node --experimental-strip-types policy/ci/verify-pr.mjs trusted candidate "$TARGET_BASE"
+      - name: Reject privacy regression even when changed candidate tests are no-ops
+        run: |
+          git clone --quiet --no-hardlinks pristine trusted-negative
+          git clone --quiet --no-hardlinks candidate negative-candidate
+          node --input-type=module <<'NODE'
+          import assert from "node:assert/strict";
+          import { readFileSync, writeFileSync } from "node:fs";
+          import { join } from "node:path";
+          import { execFileSync, spawnSync } from "node:child_process";
+          const root = "negative-candidate", path = join(root, "site/lib/own-results.ts");
+          const original = readFileSync(path, "utf8"), match = "s.cultivator_id = ? AND c.state";
+          assert.equal(original.split(match).length, 2);
+          writeFileSync(path, original.replace(match, "(? IS NOT NULL) AND c.state"));
+          const changedTests = execFileSync("git", ["-C", root, "diff", "--name-only", "-z",
+            process.env.TARGET_BASE, process.env.TARGET_HEAD, "--", "site/tests"]).toString().split("\0")
+            .filter(name => name.endsWith(".test.mjs"));
+          for (const name of changedTests) {
+            writeFileSync(join(root, name), "import test from 'node:test'; test('Synthetic candidate no-op', () => {});\n");
+          }
+          const git = args => execFileSync("git", ["-C", root, ...args], { encoding: "utf8" }).trim();
+          git(["config", "user.name", "Synthetic CI negative control"]);
+          git(["config", "user.email", "fixture@local.invalid"]);
+          git(["add", "site/lib/own-results.ts", "site/tests"]);
+          git(["commit", "-qm", "Synthetic owner-scope regression with no-op tests"]);
+          const negativeHead = git(["rev-parse", "HEAD"]);
+          console.log(JSON.stringify({ negativeBase: process.env.TARGET_HEAD, negativeHead, changedTests: changedTests.length }));
+          const result = spawnSync(process.execPath, ["--experimental-strip-types", "policy/ci/verify-pr.mjs",
+            "trusted-negative", root, process.env.TARGET_BASE], { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
+          console.log(result.stdout ?? "");
+          console.log(result.stderr ?? "");
+          assert.notEqual(result.status, 0, "The deliberately broken candidate must not pass");
+          assert.match((result.stdout ?? "") + (result.stderr ?? ""), /PRIVATE_RESULTS_OWNER_SCOPE/);
+          console.log("TRUSTED_PLATFORM_NEGATIVE_CONTROL=passed; synthetic privacy regression caught despite changed candidate tests being no-ops");
+          NODE
+      - name: Record pinned evidence without approving release
+        env:
+          POLICY_HEAD: ${{ github.event.pull_request.head.sha }}
+          POLICY_TEST_MERGE: ${{ github.sha }}
+        run: |
+          node --input-type=module <<'NODE'
+          for (const key of ["TARGET_BASE", "TARGET_HEAD", "POLICY_HEAD", "POLICY_TEST_MERGE"]) {
+            if (!/^[0-9a-f]{40}$/.test(process.env[key] ?? "")) throw new Error(`Missing immutable evidence: ${key}`);
+          }
+          console.log(JSON.stringify({ targetBase: process.env.TARGET_BASE, targetHead: process.env.TARGET_HEAD,
+            policyHead: process.env.POLICY_HEAD, policyTestMerge: process.env.POLICY_TEST_MERGE,
+            releaseApproved: false, requiredGateChanged: false, syntheticOnly: true }));
+          NODE
