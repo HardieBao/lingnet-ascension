@@ -5,6 +5,7 @@ on:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
     paths:
+      - ci/verify-pr.mjs
       - ci/verify-platform-candidate.mjs
       - ci/check-full-platform.mjs
       - site/tests/platform-candidate-ci.test.mjs
@@ -63,26 +64,44 @@ jobs:
           node-version: '24'
           package-manager-cache: false
       - name: Exercise policy input and immutable migration rejection
-        run: node --experimental-strip-types --test policy/site/tests/platform-candidate-ci.test.mjs
-      - name: Run the complete proposed Linux audit entry
+        run: |
+          node --experimental-strip-types --test policy/site/tests/platform-candidate-ci.test.mjs
+          node --experimental-strip-types --input-type=module <<'NODE'
+          import assert from "node:assert/strict";
+          import { execFileSync } from "node:child_process";
+          import { classifyChangedPaths } from "./policy/ci/verify-pr.mjs";
+          const paths = execFileSync("git", ["-C", "candidate", "diff", "--name-only", "-z",
+            process.env.TARGET_BASE, process.env.TARGET_HEAD]).toString().split("\0").filter(Boolean);
+          assert.equal(paths.length, 106);
+          assert.equal(classifyChangedPaths(paths), "platform-candidate", "FULL_PLATFORM_ROUTE");
+          assert.equal(classifyChangedPaths(paths.slice(1)), "unsupported");
+          assert.equal(classifyChangedPaths([...paths, "ci/verify-pr.mjs"]), "unsupported");
+          assert.equal(classifyChangedPaths(["site/app/page.tsx"]), "code-regression");
+          assert.equal(classifyChangedPaths(["site/app/page.tsx", "site/tests/unknown.test.mjs"]), "unsupported");
+          console.log("Fixed 106-path route and existing single-task restrictions passed.");
+          NODE
+      - name: Run the proposed required-entry route on the fixed full candidate
         run: |
           git clone --quiet --no-hardlinks pristine trusted
-          node --experimental-strip-types policy/ci/verify-platform-candidate.mjs trusted candidate "$TARGET_BASE" "$TARGET_HEAD"
-      - name: Reject privacy regression even when candidate tests are no-ops
+          node --experimental-strip-types policy/ci/verify-pr.mjs trusted candidate "$TARGET_BASE"
+      - name: Reject privacy regression even when changed candidate tests are no-ops
         run: |
           git clone --quiet --no-hardlinks pristine trusted-negative
           git clone --quiet --no-hardlinks candidate negative-candidate
           node --input-type=module <<'NODE'
           import assert from "node:assert/strict";
-          import { readFileSync, readdirSync, writeFileSync } from "node:fs";
+          import { readFileSync, writeFileSync } from "node:fs";
           import { join } from "node:path";
           import { execFileSync, spawnSync } from "node:child_process";
           const root = "negative-candidate", path = join(root, "site/lib/own-results.ts");
           const original = readFileSync(path, "utf8"), match = "s.cultivator_id = ? AND c.state";
           assert.equal(original.split(match).length, 2);
           writeFileSync(path, original.replace(match, "(? IS NOT NULL) AND c.state"));
-          for (const name of readdirSync(join(root, "site/tests")).filter(name => name.endsWith(".test.mjs"))) {
-            writeFileSync(join(root, "site/tests", name), "import test from 'node:test'; test('Synthetic candidate no-op', () => {});\n");
+          const changedTests = execFileSync("git", ["-C", root, "diff", "--name-only", "-z",
+            process.env.TARGET_BASE, process.env.TARGET_HEAD, "--", "site/tests"]).toString().split("\0")
+            .filter(name => name.endsWith(".test.mjs"));
+          for (const name of changedTests) {
+            writeFileSync(join(root, name), "import test from 'node:test'; test('Synthetic candidate no-op', () => {});\n");
           }
           const git = args => execFileSync("git", ["-C", root, ...args], { encoding: "utf8" }).trim();
           git(["config", "user.name", "Synthetic CI negative control"]);
@@ -90,13 +109,14 @@ jobs:
           git(["add", "site/lib/own-results.ts", "site/tests"]);
           git(["commit", "-qm", "Synthetic owner-scope regression with no-op tests"]);
           const negativeHead = git(["rev-parse", "HEAD"]);
-          const result = spawnSync(process.execPath, ["--experimental-strip-types", "policy/ci/verify-platform-candidate.mjs",
-            "trusted-negative", root, process.env.TARGET_BASE, negativeHead], { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
+          console.log(JSON.stringify({ negativeBase: process.env.TARGET_HEAD, negativeHead, changedTests: changedTests.length }));
+          const result = spawnSync(process.execPath, ["--experimental-strip-types", "policy/ci/verify-pr.mjs",
+            "trusted-negative", root, process.env.TARGET_BASE], { encoding: "utf8", maxBuffer: 16 * 1024 * 1024 });
           console.log(result.stdout ?? "");
           console.log(result.stderr ?? "");
           assert.notEqual(result.status, 0, "The deliberately broken candidate must not pass");
           assert.match((result.stdout ?? "") + (result.stderr ?? ""), /PRIVATE_RESULTS_OWNER_SCOPE/);
-          console.log("TRUSTED_PLATFORM_NEGATIVE_CONTROL=passed; synthetic privacy regression caught despite no-op candidate tests");
+          console.log("TRUSTED_PLATFORM_NEGATIVE_CONTROL=passed; synthetic privacy regression caught despite changed candidate tests being no-ops");
           NODE
       - name: Record pinned evidence without approving release
         env:

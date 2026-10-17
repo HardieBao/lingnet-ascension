@@ -1,10 +1,11 @@
 import { execFileSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import { chmodSync, existsSync, lstatSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { buildCodeCheckArgs, buildCodeTypegenArgs } from "./verify-pr.mjs";
 
-// Separate review proposal: does not modify the required pull-request verifier or task acceptance.
+// Unadopted policy proposal: the live required gate and task acceptance remain unchanged.
 const SOURCE = ["site/app/", "site/lib/", "site/db/", "site/public/"];
 const MIGRATION_BLOBS = {
   "site/drizzle/0017_cultivator_profiles.sql": "5fe907c6f9ade4793c7a33e3706c1e82e095e6a0",
@@ -24,6 +25,12 @@ export function platformCandidateScope(paths) {
       /^site\/scripts\/(?:(?:verify|manual)-[A-Za-z0-9_-]+\.mjs|serve-game-demo\.mjs|fixtures\/[A-Za-z0-9_-]+\.mjs)$/.test(path) ||
       Object.hasOwn(MIGRATION_BLOBS, path);
   }) ? "platform-candidate" : "unsupported";
+}
+
+export function isFixedPlatformCandidate(paths) {
+  if (platformCandidateScope(paths) !== "platform-candidate" || paths.length !== 106) return false;
+  return createHash("sha256").update([...paths].sort().join("\n")).digest("hex") ===
+    "7ba327484330d84c733c6b48a66af3f92586d0771e7a2b1fb1df549bf9a85a03";
 }
 
 function git(path, args, input) {
@@ -53,6 +60,7 @@ export function verifyPlatformCandidate(trustedPath, candidatePath, baseSha, hea
     const stat = lstatSync(join(candidate, path));
     if (!stat.isFile() || stat.isSymbolicLink() || stat.size > 512 * 1024) throw new Error("平台候选文件类型或大小无效");
   }
+  if (!isFixedPlatformCandidate(paths)) throw new Error("平台候选路径不匹配固定的完整106路径范围");
   if (process.platform !== "linux") throw new Error("完整平台隔离审计需在Linux CI运行；当前环境未执行安装或容器");
   const patch = git(candidate, ["diff", "--no-renames", "--binary", baseSha, headSha, "--", "site"]);
   git(trusted, ["apply", "--index", "-"], patch);
