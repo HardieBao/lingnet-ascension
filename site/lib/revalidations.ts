@@ -12,6 +12,35 @@ export type RevalidationRecord = {
   decision: "accept" | "reject" | null; decided_by: string | null; reason: string | null; decided_at: number | null;
 };
 
+export type RevalidationWorkbenchRecord = RevalidationRecord & {
+  mission_id: string; title: string; reporter: string; author_id: string;
+};
+
+export type AvailableRevalidationTarget = RevalidationTarget & { title: string; author: string };
+
+export const REVALIDATION_AVAILABLE_TARGETS_SQL = `
+  SELECT s.id AS submission_id, c.mission_id, s.cultivator_id AS author_id, author.provider_id AS author_github_id,
+    m.title, author.display_name AS author,
+    CASE WHEN json_valid(c.reward_snapshot) THEN json_extract(c.reward_snapshot, '$.allowedPaths') END AS artifact_path,
+    lower(s.integrated_commit) AS integrated_commit, lower(s.artifact_sha256) AS artifact_sha256
+  FROM submissions s JOIN claims c ON c.id = s.claim_id AND c.cultivator_id = s.cultivator_id
+    JOIN missions m ON m.id = c.mission_id JOIN cultivators author ON author.id = s.cultivator_id
+  WHERE s.state = 'accepted' AND c.state = 'completed' AND m.state = 'done'
+    AND s.integrated_at IS NOT NULL AND author.provider = 'github' AND s.cultivator_id != ?
+    AND NOT EXISTS (SELECT 1 FROM result_revalidations r
+      LEFT JOIN result_revalidation_decisions d ON d.revalidation_id = r.id
+      WHERE r.submission_id = s.id AND r.cultivator_id = ? AND (d.decision IS NULL OR d.decision = 'accept'))
+  ORDER BY s.integrated_at DESC, s.id DESC LIMIT 50
+`;
+
+export const REVALIDATION_WORKBENCH_SQL = `
+  SELECT r.*, d.decision, d.decided_by, d.reason, d.decided_at,
+    c.mission_id, m.title, reporter.display_name AS reporter, s.cultivator_id AS author_id
+  FROM result_revalidations r LEFT JOIN result_revalidation_decisions d ON d.revalidation_id = r.id
+    JOIN submissions s ON s.id = r.submission_id JOIN claims c ON c.id = s.claim_id
+    JOIN missions m ON m.id = c.mission_id JOIN cultivators reporter ON reporter.id = r.cultivator_id
+`;
+
 export const REVALIDATION_TARGET_SQL = `
   SELECT s.id AS submission_id, c.mission_id, s.cultivator_id AS author_id, author.provider_id AS author_github_id,
     CASE WHEN json_valid(c.reward_snapshot) THEN json_extract(c.reward_snapshot, '$.allowedPaths') END AS artifact_path,

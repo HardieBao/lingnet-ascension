@@ -1,0 +1,13 @@
+.stable-reward-page h2 { font-size: 22px; margin: 26px 0 12px; }
+.stable-reward-history > p { color: #a6c2b8; line-height: 1.7; }
+.stable-reward-record .review-item-top { flex-wrap: wrap; }
+.stable-reward-record p { overflow-wrap: anywhere; white-space: pre-wrap; }
+.stable-reward-amounts { display: flex; flex-wrap: wrap; gap: 28px; margin: 18px 0; }
+.stable-reward-amounts dt { color: #9cb8ae; font-size: 13px; }
+.stable-reward-amounts dd { font-size: 25px; margin: 4px 0 0; font-variant-numeric: tabular-nums; }
+.stable-reward-evidence { margin: 18px 0; }
+.stable-reward-evidence summary, .stable-reward-evidence a { color: #a2ead2; cursor: pointer; }
+.stable-reward-evidence dd { overflow-wrap: anywhere; min-width: 0; }
+.stable-reward-full { grid-column: 1 / -1; }
+.stable-reward-select { width: 100%; min-width: 0; padding: 10px; font-size: 16px; background: #0b181a; color: #e4eee9; border: 1px solid #315250; }
+.stable-reward-select:focus-visible { outline: 2px solid #9ae3d1; outline-offset: 2px; }

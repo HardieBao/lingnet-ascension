@@ -265,7 +265,7 @@ export function doctor() {
       fix: "启动 Docker，并运行 docker build -f runner.Dockerfile -t lingnet-runner:codex-0.156.1 ." },
   ];
   for (const check of checks) console.log(`${check.passed ? "通过" : "失败"} · ${check.name}${check.passed ? "" : `：${check.fix}`}`);
-  console.log("提示 · 模型密钥只供本机可信网关使用，不交给模型容器或上传平台；新版任务需同目录的 runner-sandbox.mjs、runner-workspace.mjs、budget-gateway.mjs、runner-checkpoints.mjs、runner-presets.mjs。");
+  console.log("提示 · 模型密钥只供本机可信网关使用，不交给模型容器或上传平台；新版任务需同目录的 runner-sandbox.mjs、runner-workspace.mjs、budget-gateway.mjs、runner-checkpoints.mjs、runner-presets.mjs、runner-progress.mjs。");
   return checks.every((check) => check.passed);
 }
 
@@ -341,6 +341,10 @@ export async function runTask(taskPackagePath, { ackModelCosts = false, checkpoi
   const profile = presetId ? await (await import("./runner-presets.mjs")).getPreset(taskPackage, presetId) : null;
   const checkpointApi = payload.schemaVersion === 4 ? await import("./runner-checkpoints.mjs").catch(() => { throw new Error("请下载 runner-checkpoints.mjs，放在 Runner 同目录"); }) : null;
   if (checkpointId && !checkpointApi) throw new Error("恢复需要重新下载 v4 任务包");
+  const progress = payload.schemaVersion === 4
+    ? await (await import("./runner-progress.mjs").catch(() => { throw new Error("请下载 runner-progress.mjs，放在 Runner 同目录"); })).startRunnerProgress(payload)
+    : null;
+  try {
   if (!doctor()) throw new Error("环境检查未通过，模型不会启动");
   const workspace = await mkdtemp(join(tmpdir(), "lingnet-runner-"));
   console.log(`独立工作区：${workspace}`);
@@ -349,6 +353,7 @@ export async function runTask(taskPackagePath, { ackModelCosts = false, checkpoi
   const head = (await runProcess("git", ["rev-parse", "HEAD"], { cwd: workspace })).stdout.trim();
   if (head !== payload.repository.baseCommit) throw new Error("固定基线校验失败");
   if (checkpointId) {
+    await progress?.phase("restoring");
     await checkpointApi.restoreCheckpoint(taskPackage, checkpointId, workspace);
     console.log("限定产物已恢复；模型将重新建立上下文，不恢复私人会话或增加额度。");
   }
@@ -356,6 +361,7 @@ export async function runTask(taskPackagePath, { ackModelCosts = false, checkpoi
   console.log("基线已校验，准备本机模型运行记录……");
   const run = await beginRunRecord(taskPackage, process.cwd(), profile);
   console.log(`本机运行记录：${run.directory}`);
+  await progress?.phase("model");
   let result;
   try {
     result = await runIsolatedModel({ ...payload, ...(profile ? { executionProfile: profile } : {}) }, workspace, modelPrompt(payload, checkpointId, profile));
@@ -367,6 +373,7 @@ export async function runTask(taskPackagePath, { ackModelCosts = false, checkpoi
   }
   const usage = reportedCliUsage(result.stdout);
   await finishRunRecord(run, "model-completed", usage, result.budget);
+  await progress?.phase("validating");
   const status = (await runProcess("git", ["status", "--porcelain", "--untracked-files=all"], { cwd: workspace })).stdout;
   assertOnlyAllowedChanges(status, payload.mission.artifactPath);
   const artifact = join(workspace, payload.mission.artifactPath);
@@ -375,11 +382,13 @@ export async function runTask(taskPackagePath, { ackModelCosts = false, checkpoi
     throw new Error("成果不是有效的单文件交付物，或超过 128 KiB");
   }
   const output = resolve(process.cwd(), `${payload.mission.id}-${basename(payload.mission.artifactPath)}`);
+  await progress?.phase("exporting");
   await copyFile(artifact, output, constants.COPYFILE_EXCL);
   console.log(`成果已保存：${output}`);
   if (usage) console.log(`本机模型报告用量：输入 ${usage.input_tokens}，输出 ${usage.output_tokens}；仅为已报告回合，不是费用账单或游戏 Token。`);
   else console.log("本机模型用量：未知；这不是游戏 Token。");
   if (payload.equipment.localPreflight) {
+    await progress?.phase("preflight");
     console.log("演算阵盘已装备，正在执行本地预检……");
     let passed;
     try { passed = await preflightFile(payload, output); }
@@ -394,7 +403,12 @@ export async function runTask(taskPackagePath, { ackModelCosts = false, checkpoi
   } else {
     console.log("请回到任务页面上传 Markdown。服务端会独立复验，Runner 不决定奖励。");
   }
+  await progress?.finish("ready");
   return output;
+  } catch (error) {
+    await progress?.finish("failed").catch(() => {});
+    throw error;
+  }
 }
 
 if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1])) {
@@ -415,6 +429,21 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
     else if (action === "resume" && taskPackagePath && option && consent === "--preset" && process.argv[6] && process.argv[7] === "--ack-model-costs" && process.argv.length === 8) {
       await runTask(taskPackagePath, { ackModelCosts: true, checkpointId: option, presetId: process.argv[6] });
     }
+    else if (action === "preset-ui" && taskPackagePath && process.argv.length === 4) {
+      const { startPresetWorkbench } = await import("./runner-preset-workbench.mjs").catch(() => { throw new Error("请下载 runner-preset-workbench.mjs 与 runner-preset-ui.mjs 到 Runner 同目录"); });
+      let packageValue;
+      try { packageValue = JSON.parse(await readFile(taskPackagePath, "utf8")); } catch { throw new Error("任务包文件无效，请重新下载；不回显文件内容"); }
+      const workbench = await startPresetWorkbench(packageValue);
+      console.log(`本机功法殿：${workbench.origin}/`);
+      console.log("不启动模型，不上传提示词。关闭网页不会停止服务；在此终端输入 stop 或按 Ctrl+C 关闭，已存功法保留。");
+      let stop;
+      try {
+        await new Promise((done) => { stop = done; process.stdin.once("data", stop); process.once("SIGINT", stop); process.once("SIGTERM", stop); });
+      } finally {
+        process.stdin.pause(); process.stdin.removeListener("data", stop); process.removeListener("SIGINT", stop); process.removeListener("SIGTERM", stop);
+        await workbench.close();
+      }
+    }
     else if (action === "presets" && taskPackagePath && process.argv.length === 4) {
       const { listPresets } = await import("./runner-presets.mjs");
       console.log(JSON.stringify(await listPresets(JSON.parse(await readFile(taskPackagePath, "utf8")))));
@@ -433,6 +462,11 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
       const { listCheckpoints } = await import("./runner-checkpoints.mjs");
       console.log(JSON.stringify(await listCheckpoints(JSON.parse(await readFile(taskPackagePath, "utf8")))));
     }
+    else if (action === "usage-report" && taskPackagePath && option && process.argv.length === 5) {
+      const { exportUsageReport } = await import("./runner-usage-report.mjs").catch(() => { throw new Error("请下载 runner-usage-report.mjs 与状态模块到 Runner 同目录"); });
+      try { console.log(JSON.stringify(await exportUsageReport(taskPackagePath, option))); }
+      catch { throw new Error("无法导出用量报告；请核对任务包和目录，报告文件不得已存在，不回显私密内容"); }
+    }
     else if (action === "checkpoint-save" && taskPackagePath && option && process.argv.length === 5) {
       const { saveCheckpoint } = await import("./runner-checkpoints.mjs");
       console.log(JSON.stringify(await saveCheckpoint(JSON.parse(await readFile(taskPackagePath, "utf8")), resolve(option), { status: "model-completed" })));
@@ -446,7 +480,7 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
       await runPreflight(taskPackagePath, option);
     }
     else {
-      console.error("用法：doctor | run <任务包.json> [--preset <功法编号>] --ack-model-costs | resume <任务包.json> <检查点编号> [--preset <功法编号>] --ack-model-costs | checkpoints <任务包.json> | checkpoint-save <任务包.json> <工作区> | checkpoint-discard <任务包.json> <检查点编号> | presets <任务包.json> | preset-save <任务包.json> <配置.json> | preset-discard <任务包.json> <功法编号> | preflight <任务包.json> <成果文件>");
+      console.error("用法：doctor | run <任务包.json> [--preset <功法编号>] --ack-model-costs | resume <任务包.json> <检查点编号> [--preset <功法编号>] --ack-model-costs | checkpoints <任务包.json> | checkpoint-save <任务包.json> <工作区> | checkpoint-discard <任务包.json> <检查点编号> | preset-ui <任务包.json> | presets <任务包.json> | preset-save <任务包.json> <配置.json> | preset-discard <任务包.json> <功法编号> | usage-report <任务包.json> <报告.json> | preflight <任务包.json> <成果文件>");
       process.exitCode = 2;
     }
   } catch (error) {

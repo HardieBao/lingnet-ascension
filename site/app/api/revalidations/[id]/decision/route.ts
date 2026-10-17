@@ -1,5 +1,6 @@
 import { database } from "@/db/runtime";
 import { getCurrentCultivator, isMaintainer } from "@/lib/auth";
+import { artifactSafetyIssues } from "@/lib/artifact-safety";
 import { rejectForeignMutation } from "@/lib/request-origin";
 import { inspectRevalidationPullRequest } from "@/lib/revalidation-source";
 import { REVALIDATION_DECISION_SQL, REVALIDATION_RECORD_SQL, REVALIDATION_TARGET_SQL,
@@ -15,6 +16,9 @@ export async function POST(request: Request, context: { params: Promise<{ id: st
   if (!input || !["accept", "reject"].includes(String(input.decision)) || typeof input.reason !== "string" ||
       input.reason.trim().length < 8 || input.reason.trim().length > 500) {
     return Response.json({ error: "请选择采纳或驳回，并提供 8–500 字理由" }, { status: 400 });
+  }
+  if (artifactSafetyIssues(input.reason).length) {
+    return Response.json({ error: "复核理由不能包含密钥或私人凭据，请仅说明处理依据" }, { status: 400 });
   }
   const { id } = await context.params;
   const db = database();

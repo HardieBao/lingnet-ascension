@@ -9,9 +9,17 @@ export async function POST(request: Request) {
   if (foreign) return foreign;
   const cultivator = await getCurrentCultivator();
   if (!cultivator) return Response.json({ error: "请先登录" }, { status: 401 });
-  const input = await readSmallJson(request) as { itemId?: unknown } | null;
+  const input = await readSmallJson(request) as { itemId?: unknown; expectedPrice?: unknown; catalogVersion?: unknown } | null;
   const item = typeof input?.itemId === "string" ? getEquipmentItem(input.itemId) : undefined;
   if (!item) return Response.json({ error: "装备不存在" }, { status: 400 });
+  const quoted = input?.expectedPrice !== undefined || input?.catalogVersion !== undefined;
+  if (quoted && (typeof input?.expectedPrice !== "number" || !Number.isSafeInteger(input.expectedPrice) || input.expectedPrice < 0 ||
+      typeof input.catalogVersion !== "number" || !Number.isSafeInteger(input.catalogVersion) || input.catalogVersion < 1)) {
+    return Response.json({ error: "购买确认信息无效，请刷新后重新核对" }, { status: 400 });
+  }
+  if (quoted && (input?.expectedPrice !== item.price || input?.catalogVersion !== EQUIPMENT_CATALOG_VERSION)) {
+    return Response.json({ error: "装备目录或价格已变更，请刷新后重新确认购买" }, { status: 409 });
+  }
 
   const db = database();
   const inventoryId = crypto.randomUUID();

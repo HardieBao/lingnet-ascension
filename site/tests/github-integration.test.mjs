@@ -16,7 +16,7 @@ test("integration requires an ancestor of main with byte-identical artifact", as
       : new Response(content);
   };
   assert.deepEqual(await verifyMissionIntegration("GOV-001", commit, digest, fetcher), { passed: true });
-  assert.match(requests[0], /compare\/a{40}\.\.\.main/);
+  assert.match(decodeURIComponent(requests[0]), /compare\/a{40}\.\.\.refs\/heads\/main/);
   assert.match(requests[1], /contents\/GOVERNANCE\.md\?ref=a{40}/);
 });
 
@@ -71,4 +71,18 @@ test("GOV-004T integration checks its own nested artifact", async () => {
   };
   assert.deepEqual(await verifyMissionIntegration("GOV-004T", commit, digest, fetcher), { passed: true });
   assert.match(requests[1], /contents\/docs\/TOKEN_TERMS\.md\?ref=a{40}/);
+});
+
+test("an artifact present only in a main tag is not evidence of integration into the main branch", async () => {
+  const comparisons = [];
+  const result = await verifyMissionIntegration("GOV-001", commit, digest, async (url) => {
+    const path = decodeURIComponent(new URL(url).pathname);
+    if (path.includes("/compare/")) {
+      comparisons.push(path);
+      return Response.json({ status: path.endsWith("...refs/heads/main") ? "diverged" : "ahead" });
+    }
+    return new Response(content);
+  });
+  assert.deepEqual(result, { passed: false, reason: "该提交尚未进入 main 分支" });
+  assert.deepEqual(comparisons, [`/repos/HardieBao/lingnet-ascension/compare/${commit}...refs/heads/main`]);
 });

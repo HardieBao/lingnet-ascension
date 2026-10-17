@@ -1,0 +1,20 @@
+body:has(.my-results-page) { min-width: 0; }
+.my-results-page { max-width: 1080px; margin: 0 auto; padding: 32px 24px 72px; font-size: 16px; line-height: 1.65; overflow-wrap: anywhere; }
+.my-results-page :is(a, summary) { min-height: 44px; color: var(--primary); cursor: pointer; }
+.my-results-page a { display: inline-flex; align-items: center; text-decoration: underline; text-underline-offset: 3px; }
+.my-results-page header { margin: 28px 0; }
+.my-results-page h1 { font-size: 32px; line-height: 1.3; margin: 20px 0 12px; }
+.my-results-page h2 { font-size: 22px; line-height: 1.4; margin: 0 0 16px; }
+.my-results-page p { max-width: 72ch; margin: 12px 0; }
+.my-results-controls, .my-results-pagination { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px 24px; padding: 16px 0; }
+.my-results-state, .my-result-row { padding: 24px 0; border-top: 1px solid var(--border); }
+.my-result-row summary { padding: 9px 0; }
+.my-result-row dl { margin: 12px 0; }
+.my-result-row dl > div { margin: 16px 0; }
+.my-result-row dt, .my-results-page footer { color: #adc5be; }
+.my-result-row dd { margin: 6px 0 0; }
+.my-results-page code { font-size: 16px; overflow-wrap: anywhere; }
+.my-results-page footer { padding-top: 24px; border-top: 1px solid var(--border); }
+.my-results-page :is(a, summary):focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.my-results-page :is(a, summary):hover { color: var(--foreground); }
+@media (max-width: 760px) { .my-results-page { padding: 24px 18px 56px; } .my-results-page h1 { font-size: 28px; } }
