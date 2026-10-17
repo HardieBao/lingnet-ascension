@@ -1,0 +1,18 @@
+body:has(.season-page) { min-width: 0; }
+.season-page { max-width: 1080px; margin: 0 auto; padding: 32px 24px 72px; font-size: 16px; line-height: 1.65; overflow-wrap: anywhere; }
+.season-page a { display: inline-flex; align-items: center; min-height: 44px; color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+.season-page header { margin: 28px 0; }
+.season-page h1 { font-size: 32px; line-height: 1.3; margin: 20px 0 12px; }
+.season-page h2 { font-size: 22px; line-height: 1.4; margin: 0 0 18px; }
+.season-page p { max-width: 72ch; margin: 12px 0; }
+.season-records { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 48px; padding: 28px 0; border-top: 1px solid var(--border); }
+.season-counts { margin: 0 0 20px; }
+.season-counts > div { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px; align-items: baseline; padding: 12px 0; border-bottom: 1px solid var(--border); }
+.season-counts dt { color: #adc5be; }
+.season-counts dd { margin: 0; font-size: 24px; font-variant-numeric: tabular-nums; }
+.season-records p, .season-page footer { color: #adc5be; }
+.season-state { padding: 24px 0; border-top: 1px solid var(--border); }
+.season-empty { padding: 16px 0; }
+.season-page footer { padding-top: 24px; border-top: 1px solid var(--border); }
+.season-page a:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+@media (max-width: 760px) { .season-page { padding: 24px 18px 56px; } .season-page h1 { font-size: 28px; } .season-records { grid-template-columns: minmax(0, 1fr); gap: 32px; } }

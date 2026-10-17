@@ -12,6 +12,20 @@ export const cultivators = sqliteTable("cultivators", {
   createdAt: integer("created_at").notNull(),
 }, (table) => [uniqueIndex("idx_cultivators_provider").on(table.provider, table.providerId)]);
 
+export const cultivatorProfiles = sqliteTable("cultivator_profiles", {
+  cultivatorId: text("cultivator_id").primaryKey().references(() => cultivators.id),
+  publicId: text("public_id").notNull().unique(),
+  daohao: text("daohao").notNull(),
+  isPublic: integer("is_public").notNull().default(0),
+  contributionsPublic: integer("contributions_public").notNull().default(0),
+  revision: integer("revision").notNull(),
+  updatedAt: integer("updated_at").notNull(),
+}, (table) => [
+  check("profile_daohao_length", sql`length(${table.daohao}) BETWEEN 1 AND 32`),
+  check("profile_visibility", sql`${table.isPublic} IN (0, 1)`),
+  check("profile_revision", sql`${table.revision} >= 1`),
+]);
+
 export const missions = sqliteTable("missions", {
   id: text("id").primaryKey(),
   title: text("title").notNull(),
@@ -32,6 +46,44 @@ export const missions = sqliteTable("missions", {
   requiredMerit: integer("required_merit").notNull().default(0),
   createdAt: integer("created_at").notNull(),
 });
+
+export const sects = sqliteTable("sects", {
+  id: text("id").primaryKey(),
+  name: text("name").notNull(),
+  nameKey: text("name_key").notNull(),
+  description: text("description").notNull(),
+  ownerId: text("owner_id").notNull().references(() => cultivators.id),
+  state: text("state").notNull().default("pending"),
+  createdAt: integer("created_at").notNull(),
+  updatedAt: integer("updated_at").notNull(),
+  reviewedBy: text("reviewed_by").references(() => cultivators.id),
+  reviewReason: text("review_reason"),
+  reviewedAt: integer("reviewed_at"),
+}, (table) => [
+  uniqueIndex("idx_sects_current_name").on(table.nameKey).where(sql`state IN ('pending', 'active')`),
+  uniqueIndex("idx_sects_current_owner").on(table.ownerId).where(sql`state IN ('pending', 'active')`),
+  check("sect_name_length", sql`length(${table.name}) BETWEEN 1 AND 40`),
+  check("sect_description_length", sql`length(${table.description}) <= 500`),
+  check("sect_state", sql`${table.state} IN ('pending', 'active', 'rejected', 'archived')`),
+]);
+
+export const sectMemberships = sqliteTable("sect_memberships", {
+  sectId: text("sect_id").notNull().references(() => sects.id),
+  cultivatorId: text("cultivator_id").notNull().references(() => cultivators.id),
+  state: text("state").notNull().default("pending"),
+  isPublic: integer("is_public").notNull().default(0),
+  revision: integer("revision").notNull().default(1),
+  createdAt: integer("created_at").notNull(),
+  updatedAt: integer("updated_at").notNull(),
+  changedBy: text("changed_by").notNull().references(() => cultivators.id),
+}, (table) => [
+  primaryKey({ columns: [table.sectId, table.cultivatorId] }),
+  uniqueIndex("idx_membership_current_cultivator").on(table.cultivatorId).where(sql`state IN ('pending', 'active')`),
+  index("idx_membership_sect_state").on(table.sectId, table.state),
+  check("sect_membership_state", sql`${table.state} IN ('pending', 'active', 'rejected', 'left')`),
+  check("sect_membership_visibility", sql`${table.isPublic} IN (0, 1)`),
+  check("sect_membership_revision", sql`${table.revision} >= 1`),
+]);
 
 export const missionDependencies = sqliteTable("mission_dependencies", {
   missionId: text("mission_id").notNull().references(() => missions.id),
@@ -67,6 +119,21 @@ export const submissions = sqliteTable("submissions", {
   reviewedAt: integer("reviewed_at"),
   integratedAt: integer("integrated_at"),
 }, (table) => [index("idx_submissions_state").on(table.state)]);
+
+export const modelUsageReports = sqliteTable("model_usage_reports", {
+  id: text("id").primaryKey(),
+  claimId: text("claim_id").notNull().references(() => claims.id),
+  cultivatorId: text("cultivator_id").notNull().references(() => cultivators.id),
+  digest: text("digest").notNull(),
+  reportJson: text("report_json").notNull(),
+  receivedAt: integer("received_at").notNull(),
+}, (table) => [
+  uniqueIndex("idx_usage_claim_digest").on(table.claimId, table.digest),
+  index("idx_usage_owner_time").on(table.cultivatorId, table.receivedAt),
+  check("usage_report_size", sql`length(CAST(${table.reportJson} AS BLOB)) <= 4096`),
+  check("usage_report_json", sql`json_valid(${table.reportJson})`),
+  check("usage_report_digest", sql`length(${table.digest}) = 64`),
+]);
 
 export const artifactPayloads = sqliteTable("artifact_payloads", {
   artifactKey: text("artifact_key").primaryKey(),

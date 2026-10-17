@@ -37,7 +37,7 @@ test("code result requires merged PR and byte-identical file on main", async () 
   const { requests, fetcher } = fixture();
   assert.deepEqual(await verifyCodeIntegration(source, "123", merged, fetcher), { passed: true });
   assert.match(requests[0], /pulls\/7$/);
-  assert.match(requests[1], new RegExp(`compare/${merged}\\.\\.\\.main`));
+  assert.match(decodeURIComponent(requests[1]), new RegExp(`compare/${merged}\\.\\.\\.refs/heads/main`));
   assert.match(requests[2], new RegExp(`contents/${source.filePath}\\?ref=${merged}`));
 });
 

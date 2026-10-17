@@ -30,7 +30,7 @@ function fixture() {
     }
     if (url.endsWith("/actions/runs/99")) return Response.json(run);
     if (url.includes("/actions/runs/99/jobs")) return Response.json(jobs);
-    if (url.includes(`/compare/${commit}...main`)) return Response.json({ status: "ahead" });
+    if (decodeURIComponent(url).includes(`/compare/${commit}...refs/heads/main`)) return Response.json({ status: "ahead" });
     if (url.includes(`/contents/GOVERNANCE.md?ref=${commit}`)) return new Response(content);
     return new Response("unexpected fixture endpoint", { status: 404 });
   };
@@ -105,5 +105,20 @@ test("revalidation scope is bound to immutable base/head, not a live PR file lis
       return data.fetcher(url, options);
     };
     assert.equal((await inspectRevalidationPullRequest(7, 99, "202", expected, fetcher)).passed, false);
+  }
+});
+
+test("credential-shaped findings are refused without returning their content", async () => {
+  const { inspectRevalidationPullRequest } = await import("../lib/revalidation-source.ts");
+  for (const findings of [
+    "合成报告中的访问凭据 sk-" + "x".repeat(24),
+    "合成报告中的私人配置 PASSWORD=synthetic_private_password",
+    "合成报告中的私钥头 -----BEGIN PRIVATE KEY-----",
+  ]) {
+    const data = fixture();
+    data.report.findings = findings;
+    const result = await inspectRevalidationPullRequest(7, 99, "202", expected, data.fetcher);
+    assert.equal(result.passed, false);
+    assert(!JSON.stringify(result).includes(findings), "A refusal must not echo the sensitive observation");
   }
 });
